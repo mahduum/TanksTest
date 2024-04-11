@@ -1,0 +1,14 @@
+{
+	"Name" : "Wall",
+	"Components" : 
+	[
+		{
+			"Type" : "TextureComponent",
+			"Texture" : "BrickWall.png",
+			"Width" : 30,
+			"Height" : 35,
+			"PositionX" : 0,
+			"PositionY" : 0
+		}
+	]
+}

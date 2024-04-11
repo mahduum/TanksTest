@@ -1,0 +1,17 @@
+{
+	"Name" : "Player",
+	"Components" : 
+	[
+		{
+			"Type" : "TextureComponent",
+			"Texture" : "RedTankFront.png",
+			"Width" : 50,
+			"Height" : 45,
+			"PositionX" : 300,
+			"PositionY" : 480
+		},
+		{
+			"Type" : "PlayerInputComponent"
+		}
+	]
+}

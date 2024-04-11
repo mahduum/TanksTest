@@ -1,0 +1,22 @@
+Tanks Programming Test Description
+
+We have just prepared a small presentation of our game which is based on the very old classic game "Tank 1990" (https://90kids.com/tank-1990/). One of our programmers thought that it would be awesome to revive some old memories from our childhood. That being said our new game isn't really playble in the current state. It doesn't perform very well and it looks that its development stopped in the middle of the production. On top of that our Programmers in the team spotted major problems in the code, that wouldn't allow this game to go into the production line before fixing them. Unfortunately we have higher priorities right now. What could we do? I have an idea! Maybe you could help us? :)
+
+Let me give you some hints. It might actually work! ;) Let's try to do it together!
+- Try to go through the Code and make needed changes that would make the Code production ready and prepared for further development
+- Add some life into the game - I believe we're missing some crucial mechanics to actually call this application a "Game"...
+	- Maybe if the player could shoot from the tank it would be fun to play? :) Let's try it!
+	- We should most likely as well allow player to destroy some environmnent parts, at least shooting would be useful for something... ;)
+	- What about the solid bricks? Not everyrthing needs to be crashed!
+	- Let's also try to add some interactions into the game:
+		- Maybe a simple Tank AI that could cross the Player's path?
+		- Or maybe Second player that could play with his own Keyboard bindings? That would be awesome!
+	- The last but not least, what would be the game if it doesn't define any winning conditions? Let's try to add them as well!
+		
+A lot of the things to be done here. We should most likely choose wisely which topics are the most important for us. I know you can help us with that! :)
+
+Few things to have in mind while approaching this Task:
+- We value much more quality over quantity of the features introduced into the game - if you don't have enough time to help us fully with our game, take the topics that seem to be the most important on the list (accroding to your own judgement) and polish them to make them as good as they can be
+- If we had all the time in the world we could make all the features in the world. But like with everything, we have our limits. There will be a moment when you simply don't have more time to make it right... But if you had more time, what would you do to enhance your current solution? Leave us some comments / document on where would you put more efforts to make it better.
+
+Have Fun! The task shouldn't take more than a couple of days. Once it's ready, send us your solution. Should you have any questions, don't hesitate to contact us here: magdalena.negacz@teyon.com or piotr.derkowski@teyon.com
