@@ -15,18 +15,18 @@ BoxColliderComponent::BoxColliderComponent(Entity* Owner)
 {
 }
 
+void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
+{
+    m_BoxOffsetMin.x = Config.value("OffsetMinX", 0);
+    m_BoxOffsetMin.y = Config.value("OffsetMinY", 0);
+    m_BoxOffsetMax.x = Config.value("OffsetMaxX", 0);
+    m_BoxOffsetMax.y = Config.value("OffsetMaxY", 0);
+}
+
 void BoxColliderComponent::Initialize()
 {
     m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();//todo make it independent of texture later on
     //for now set from texture, later on set from player, read offset from json to
-
-    if(GetOwner()->GetComponent<PlayerInputComponent>())
-    {
-        m_BoxOffsetMin.x = 5;
-        m_BoxOffsetMin.y = 3;
-        m_BoxOffsetMax.x = -5;
-        m_BoxOffsetMax.y = -3;
-    }
 
     OnUpdateWorldTransform();
 
