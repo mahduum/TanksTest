@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 
+class CollisionWorld;
 class Scene;
 class ResourceManager;
 
@@ -25,6 +26,8 @@ public:
 	ResourceManager* GetResourceManager() { return m_ResourceManager; }
 	const std::vector<SDL_Event>& GetEvents() { return m_Events; }
 	void SetActiveScene(Scene* Scene) { m_ActiveScene = Scene; }
+	Scene* GetActiveScene() const { return m_ActiveScene; }
+	CollisionWorld* GetCollisionWorld() { return m_CollisionWorld; }
 	void CreateActiveSceneFromTemplate(std::string Name);
 
 private:
@@ -34,6 +37,7 @@ private:
 	SDL_Renderer* m_Renderer;
 	Scene* m_ActiveScene;
 	ResourceManager* m_ResourceManager;
+	CollisionWorld* m_CollisionWorld;
 	
 	unsigned int FramesPerSecond;
 	unsigned int TimePerFrameInMs;

@@ -97,7 +97,7 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend)
 				nlohmann::json EntitySpecs = Legend[Key];
 
 				Entity* NewEntity = ResourceManagerPtr->CreateEntityFromDataTemplate(EntitySpecs["Type"]);
-				TextureCompoent* TextureComponentPtr = NewEntity->GetComponent<TextureCompoent>();
+				TextureComponent* TextureComponentPtr = NewEntity->GetComponent<TextureComponent>();
 				int Width = EntitySpecs["Width"];
 				int Height = EntitySpecs["Height"];
 				TextureComponentPtr->SetPosition(Column * Width, Row * Height);

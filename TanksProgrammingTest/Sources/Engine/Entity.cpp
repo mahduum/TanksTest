@@ -2,6 +2,7 @@
 #include "EntityComponent.h"
 #include "Engine.h"
 #include "ResourceManager.h"
+#include "TextureComponent.h"
 
 void Entity::LoadFromConfig(nlohmann::json Config)
 {
@@ -30,14 +31,22 @@ void Entity::Initialize()
 	{
 		Component->Initialize();
 	}
+
+	auto TextureRect = GetComponent<::TextureComponent>()->GetRectangle();
+	m_Position.x = TextureRect.x;
+	m_Position.y = TextureRect.y;
 }
 
 void Entity::Update(float DeltaTime)
 {
+	//compute world transform if needed
+	//update components
 	for (EntityComponent* Component : m_Components)
 	{
 		Component->Update(DeltaTime);
 	}
+	//update self if available (assumes entity itself has some functionality)
+	//compute world transform
 }
 
 void Entity::Draw()
@@ -64,4 +73,19 @@ void Entity::AddComponent(EntityComponent* Component)
 void Entity::RemoveComponent(EntityComponent* Component)
 {
 	auto RetIt = std::remove(m_Components.begin(), m_Components.end(), Component);
+}
+
+void Entity::UpdateWorldTransform()
+{
+	if (m_UpdateWorldTransform == false) return;
+
+	m_UpdateWorldTransform = false;
+
+	//recalculate position
+
+	for (auto Comp : m_Components)
+	{
+		Comp->OnUpdateWorldTransform();
+	}
+
 }

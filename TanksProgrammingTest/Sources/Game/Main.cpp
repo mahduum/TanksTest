@@ -2,6 +2,7 @@
 #include "ResourceManager.h"
 #include "TextureComponent.h"
 #include "PlayerInputComponent.h"
+#include "BoxColliderComponent.h"
 
 int main(int argc, char* argv[])
 {
@@ -9,7 +10,8 @@ int main(int argc, char* argv[])
 
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 	ResourceManagerPtr->RegisterComponent("PlayerInputComponent", new PlayerInputComponent());
-	ResourceManagerPtr->RegisterComponent("TextureComponent", new TextureCompoent());
+	ResourceManagerPtr->RegisterComponent("TextureComponent", new TextureComponent());
+	ResourceManagerPtr->RegisterComponent("BoxColliderComponent", new BoxColliderComponent());
 
 	Engine::Get()->CreateActiveSceneFromTemplate("MainScene");
 

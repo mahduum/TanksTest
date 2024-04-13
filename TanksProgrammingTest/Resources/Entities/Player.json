@@ -5,13 +5,16 @@
 		{
 			"Type" : "TextureComponent",
 			"Texture" : "RedTankFront.png",
-			"Width" : 50,
-			"Height" : 45,
+			"Width" : 40,
+			"Height" : 36,
 			"PositionX" : 300,
 			"PositionY" : 480
 		},
 		{
 			"Type" : "PlayerInputComponent"
+		},
+		{
+			"Type" : "BoxColliderComponent"
 		}
 	]
 }

@@ -19,16 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Engine\CollisionWorld.cpp" />
     <ClCompile Include="Sources\Engine\Engine.cpp" />
     <ClCompile Include="Sources\Engine\Entity.cpp" />
     <ClCompile Include="Sources\Engine\EntityComponent.cpp" />
     <ClCompile Include="Sources\Engine\ResourceManager.cpp" />
     <ClCompile Include="Sources\Engine\Scene.cpp" />
     <ClCompile Include="Sources\Engine\TextureComponent.cpp" />
+    <ClCompile Include="Sources\Game\BoxColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\Main.cpp" />
     <ClCompile Include="Sources\Game\PlayerInputComponent.cpp" />
+    <ClCompile Include="Sources\Engine\TestClass1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Engine\CollisionWorld.h" />
     <ClInclude Include="Sources\Engine\Engine.h" />
     <ClInclude Include="Sources\Engine\Entity.h" />
     <ClInclude Include="Sources\Engine\EntityComponent.h" />
@@ -36,7 +40,12 @@
     <ClInclude Include="Sources\Engine\Scene.h" />
     <ClInclude Include="Sources\Engine\TextureComponent.h" />
     <ClInclude Include="Sources\Engine\EngineUtils.h" />
+    <ClInclude Include="Sources\Game\BoxColliderComponent.h" />
     <ClInclude Include="Sources\Game\PlayerInputComponent.h" />
+    <ClInclude Include="Sources\Engine\TestClass1.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="External\SDL2_image-2.0.5\lib\x64\SDL2_image.dll" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -50,26 +59,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -103,13 +112,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Sources\Engine;$(ProjectDir)\External\json-develop\single_include;$(ProjectDir)\External\SDL2-2.0.14\include;$(ProjectDir)\External\SDL2_image-2.0.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\External\SDL2-2.0.14\lib\x64;$(ProjectDir)\External\SDL2_image-2.0.5\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Sources\Engine;$(ProjectDir)External\json-develop\single_include;$(ProjectDir)\External\SDL2-2.0.14\include;$(ProjectDir)External\SDL2_image-2.0.5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\External\SDL2-2.0.14\lib\x64\;$(ProjectDir)\External\SDL2_image-2.0.5\lib\x64\;$(LibraryPath)\</LibraryPath>
+    <AllProjectIncludesArePublic>false</AllProjectIncludesArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)\Sources\Engine;$(ProjectDir)\External\json-develop\single_include;$(ProjectDir)\External\SDL2-2.0.14\include;$(ProjectDir)\External\SDL2_image-2.0.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\External\SDL2-2.0.14\lib\x64;$(ProjectDir)\External\SDL2_image-2.0.5\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\External\SDL2-2.0.14\lib\x64;$(ProjectDir)External\SDL2_image-2.0.5\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

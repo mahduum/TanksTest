@@ -3,12 +3,14 @@
 #include <stdio.h>
 #include "Scene.h"
 #include "ResourceManager.h"
+#include "CollisionWorld.h"
 
 Engine::Engine()
 	: m_Window(nullptr)
 	, m_Renderer(nullptr)
 	, m_ActiveScene(nullptr)
 	, m_ResourceManager(nullptr)
+	, m_CollisionWorld(nullptr)
 	, FramesPerSecond(60)
 	, TimePerFrameInMs(1000 / FramesPerSecond)
 	, TimePerFramInSceonds(TimePerFrameInMs / 1000.f)
@@ -36,6 +38,8 @@ void Engine::Initialize()
 	Uint32 renderFlags = SDL_RENDERER_ACCELERATED;
 
 	m_Renderer = SDL_CreateRenderer(m_Window, -1, renderFlags);
+
+	m_CollisionWorld = new CollisionWorld();
 
 	m_ResourceManager = new ResourceManager("Resources");
 	m_ResourceManager->LoadResources();

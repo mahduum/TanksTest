@@ -1,18 +1,18 @@
 #include "TextureComponent.h"
 #include "Engine.h"
 
-TextureCompoent::TextureCompoent(Entity* Owner)
+TextureComponent::TextureComponent(Entity* Owner)
 	: EntityComponent(Owner)
-	, m_Rectangle{0,0,0,0}
+	, m_Rectangle{0,0,0,0}, Surface(nullptr), Texture(nullptr)
 {
 }
 
-TextureCompoent::TextureCompoent()
-	: TextureCompoent(nullptr)
+TextureComponent::TextureComponent()
+	: TextureComponent(nullptr)
 {
 }
 
-void TextureCompoent::LoadFromConfig(nlohmann::json Config)
+void TextureComponent::LoadFromConfig(nlohmann::json Config)
 {
 	std::string TextureName = Config.value("Texture", "");
 	if (!TextureName.empty())
@@ -24,37 +24,45 @@ void TextureCompoent::LoadFromConfig(nlohmann::json Config)
 	m_Rectangle.h = Config.value("Height", 10);
 	m_Rectangle.x = Config.value("PositionX", 0);
 	m_Rectangle.y = Config.value("PositionY", 0);
+
+	//set position in owner
 }
 
-void TextureCompoent::Initialize()
+void TextureComponent::Initialize()
 {
+	Surface = IMG_Load(TexturePath.c_str());
+	Texture = SDL_CreateTextureFromSurface(Engine::Get()->GetRenderer(), Surface);
 }
 
-void TextureCompoent::UnInitialize()
+void TextureComponent::UnInitialize()
 {
-}
-
-void TextureCompoent::Draw()
-{
-	SDL_Surface* Surface = IMG_Load(TexturePath.c_str());
-	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Engine::Get()->GetRenderer(), Surface);
 	SDL_FreeSurface(Surface);
-
-	SDL_RenderCopy(Engine::Get()->GetRenderer(), Texture, nullptr, &m_Rectangle);
 }
 
-void TextureCompoent::SetTextureFromAssetName(std::string Name)
+void TextureComponent::Draw()
+{
+	SDL_RenderCopy(Engine::Get()->GetRenderer(), Texture, nullptr, &m_Rectangle);
+	//const SDL_Point Center{ m_Rectangle.x + m_Rectangle.w / 2, m_Rectangle.y + m_Rectangle.h / 2 };
+	//SDL_RenderCopyEx(Engine::Get()->GetRenderer(), Texture, nullptr, &m_Rectangle, 90, &Center, SDL_FLIP_NONE);
+}
+
+void TextureComponent::OnUpdateWorldTransform()
+{
+	EntityComponent::OnUpdateWorldTransform();
+}
+
+void TextureComponent::SetTextureFromAssetName(std::string Name)
 {
 	TexturePath = "Resources/Images/" + Name;
 }
 
-void TextureCompoent::SetPosition(int x, int y)
+void TextureComponent::SetPosition(int x, int y)
 {
 	m_Rectangle.x = x;
 	m_Rectangle.y = y;
 }
 
-void TextureCompoent::SetScale(int w, int h)
+void TextureComponent::SetScale(int w, int h)
 {
 	m_Rectangle.w = w;
 	m_Rectangle.h = h;

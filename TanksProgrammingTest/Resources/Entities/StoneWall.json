@@ -6,9 +6,12 @@
 			"Type" : "TextureComponent",
 			"Texture" : "StoneWall.png",
 			"Width" : 30,
-			"Height" : 35,
+			"Height" : 36,
 			"PositionX" : 0,
 			"PositionY" : 0
+		},
+		{
+			"Type" : "BoxColliderComponent"
 		}
 	]
 }

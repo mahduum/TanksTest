@@ -3,19 +3,21 @@
 #include "EntityComponent.h"
 #include "Engine.h"
 
-class TextureCompoent : public EntityComponent
+class TextureComponent : public EntityComponent//todo rotatable texture
 {
 
 public:
-	TextureCompoent(Entity* Owner);
-	TextureCompoent();
+	TextureComponent(Entity* Owner);
+	TextureComponent();
 
-	virtual EntityComponent* Clone() const override { return new TextureCompoent(*this); }
+	virtual EntityComponent* Clone() const override { return new TextureComponent(*this); }
 
 	virtual void LoadFromConfig(nlohmann::json Config) override;
 	virtual void Initialize() override;
 	virtual void UnInitialize() override;
 	virtual void Draw() override;
+	virtual void OnUpdateWorldTransform() override;
+
 
 	void SetTextureFromAssetName(std::string Name);
 	void SetPosition(int x, int y);
@@ -25,4 +27,7 @@ public:
 private:
 	std::string TexturePath;
 	SDL_Rect m_Rectangle;
+
+	SDL_Surface* Surface;//todo: must be a pointer? make better pointer
+	SDL_Texture* Texture;//todo: must be a pointer? make better pointer
 };

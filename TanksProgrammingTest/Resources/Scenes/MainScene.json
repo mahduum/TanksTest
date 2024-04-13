@@ -14,13 +14,13 @@
 			{
 				"Type" : "Wall",
 				"Width" : 30,
-				"Height" : 35
+				"Height" : 36
 			},
 			"+" :
 			{
 				"Type" : "StoneWall",
 				"Width" : 30,
-				"Height" : 35
+				"Height" : 36
 			}
 		},
 		"Content" :

@@ -2,7 +2,7 @@
 
 #include "EntityComponent.h"
 
-class TextureCompoent;
+class TextureComponent;
 
 class PlayerInputComponent : public EntityComponent
 {
@@ -16,6 +16,8 @@ public:
 	virtual void Initialize() override;
 	virtual void Update(float DeltaTime) override;
 
+	void FixCollisions();
+
 private:
-	TextureCompoent* m_TextureComponent;
+	TextureComponent* m_TextureComponent;
 };

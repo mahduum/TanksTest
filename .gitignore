@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+TanksProgrammingTest/Debug
+TanksProgrammingTest/x64
+x64/Debug
+x64/Release
+.vs
+Debug
