@@ -89,5 +89,8 @@
     <ClInclude Include="Sources\Engine\TestClass1.h">
       <Filter>Source Files\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Engine\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

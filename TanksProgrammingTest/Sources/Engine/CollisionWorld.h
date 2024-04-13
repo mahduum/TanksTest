@@ -1,11 +1,13 @@
 #pragma once
 #include <functional>
 
-struct Vector2
-{
-	int x;
-	int y;
-};
+#include "MathLib.h"
+
+//struct Vector2
+//{
+//	int x;
+//	int y;
+//};
 
 class CollisionWorld
 {

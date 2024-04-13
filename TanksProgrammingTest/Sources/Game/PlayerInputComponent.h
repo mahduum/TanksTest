@@ -17,6 +17,7 @@ public:
 	virtual void Update(float DeltaTime) override;
 
 	void FixCollisions();
+	void FixCollisionsAABB();
 
 private:
 	TextureComponent* m_TextureComponent;

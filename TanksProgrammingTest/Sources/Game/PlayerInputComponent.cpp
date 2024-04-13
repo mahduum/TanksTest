@@ -4,6 +4,7 @@
 #include "TextureComponent.h"
 #include "Entity.h"
 #include "Engine.h"
+#include "MathLib.h"
 
 
 PlayerInputComponent::PlayerInputComponent(Entity* Owner)
@@ -31,6 +32,8 @@ void PlayerInputComponent::Update(float DeltaTime)
 	int DeltaY = 0;
 
 	std::vector<SDL_Event> Events = Engine::Get()->GetEvents();
+
+	auto MathLibTest = Vector2::Zero;
 	
 	for (const SDL_Event& Event : Events)
 	{
@@ -72,7 +75,8 @@ void PlayerInputComponent::Update(float DeltaTime)
 	SrcRectangle.x += DeltaX;
 	SrcRectangle.y += DeltaY;
 
-	FixCollisions();
+	//FixCollisions();
+	FixCollisionsAABB();
 	
 	//window limits:
 	int MaxWidth = 0, MaxHeight = 0;
@@ -159,4 +163,43 @@ void PlayerInputComponent::FixCollisions()
 	}
 
 
+}
+
+void PlayerInputComponent::FixCollisionsAABB()
+{
+	SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
+
+	const std::vector<BoxColliderComponent*> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();
+	BoxColliderComponent* PlayerCollider = GetOwner()->GetComponent<BoxColliderComponent>();
+	PlayerCollider->OnUpdateWorldTransform();
+
+	Vector2 CollisionDelta (0, 0);
+	for (BoxColliderComponent* Collider : Colliders)
+	{
+		Vector2 TempCollisionDelta(0, 0);
+
+		if (Collider != PlayerCollider && PlayerCollider->TryGetCollisionDelta(*Collider, TempCollisionDelta))
+		{
+			SDL_Log("Found collision with delta x: %f, y: %f", TempCollisionDelta.x, TempCollisionDelta.y);
+			if(MathLib::Abs(TempCollisionDelta.x) > MathLib::Abs(CollisionDelta.x))
+			{
+				CollisionDelta.x = TempCollisionDelta.x;
+			}
+
+			if (MathLib::Abs(TempCollisionDelta.y) > MathLib::Abs(CollisionDelta.y))
+			{
+				CollisionDelta.y = TempCollisionDelta.y;
+			}
+		}
+	}
+
+	if(MathLib::NearZero(CollisionDelta.x) && MathLib::NearZero(CollisionDelta.y))
+	{
+		return;
+	}
+
+	SrcRectangle.x -= static_cast<int>(CollisionDelta.x);
+	SrcRectangle.y -= static_cast<int>(CollisionDelta.y);
+
+	PlayerCollider->OnUpdateWorldTransform();//todo and other comps
 }

@@ -5,6 +5,7 @@
 #include <SDL_timer.h>
 #include <vector>
 #include <string>
+#include "CollisionUtils.h"
 
 class CollisionWorld;
 class Scene;

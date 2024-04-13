@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Engine\CollisionUtils.cpp" />
     <ClCompile Include="Sources\Engine\CollisionWorld.cpp" />
     <ClCompile Include="Sources\Engine\Engine.cpp" />
     <ClCompile Include="Sources\Engine\Entity.cpp" />
     <ClCompile Include="Sources\Engine\EntityComponent.cpp" />
+    <ClCompile Include="Sources\Engine\MathLib.cpp" />
     <ClCompile Include="Sources\Engine\ResourceManager.cpp" />
     <ClCompile Include="Sources\Engine\Scene.cpp" />
     <ClCompile Include="Sources\Engine\TextureComponent.cpp" />
@@ -32,10 +34,12 @@
     <ClCompile Include="Sources\Engine\TestClass1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Engine\CollisionUtils.h" />
     <ClInclude Include="Sources\Engine\CollisionWorld.h" />
     <ClInclude Include="Sources\Engine\Engine.h" />
     <ClInclude Include="Sources\Engine\Entity.h" />
     <ClInclude Include="Sources\Engine\EntityComponent.h" />
+    <ClInclude Include="Sources\Engine\MathLib.h" />
     <ClInclude Include="Sources\Engine\ResourceManager.h" />
     <ClInclude Include="Sources\Engine\Scene.h" />
     <ClInclude Include="Sources\Engine\TextureComponent.h" />

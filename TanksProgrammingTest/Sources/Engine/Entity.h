@@ -44,6 +44,6 @@ private:
 	std::list<EntityComponent*> m_Components;//todo make it unordered set
 	std::string m_Name;
 	
-	Vector2 m_Position = {0, 0};
+	Vector2 m_Position;
 	bool m_UpdateWorldTransform = true;
 };

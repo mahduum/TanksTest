@@ -5,7 +5,7 @@
 		{
 			"Type" : "TextureComponent",
 			"Texture" : "RedTankFront.png",
-			"Width" : 40,
+			"Width" : 44,
 			"Height" : 36,
 			"PositionX" : 300,
 			"PositionY" : 480
