@@ -76,7 +76,19 @@ void PlayerInputComponent::Update(float DeltaTime)
 	SrcRectangle.y += DeltaY;
 
 	//FixCollisions();
-	FixCollisionsAABB();
+	Vector2 CollisionDelta(0, 0);
+	FixCollisionsAABB(CollisionDelta);
+
+	if (DeltaX != 0 && std::abs(CollisionDelta.x) < std::abs(DeltaX))
+	{
+		//moved horizontally set rotation in x
+		GetOwner()->m_Rotation = DeltaX > 0 ? 90 : -90;
+	}
+	else if (std::abs(CollisionDelta.y) < std::abs(DeltaY))
+	{
+		//moved vertically set rotation in y
+		GetOwner()->m_Rotation = DeltaY > 0 ? 180 : 0;
+	}
 	
 	//window limits:
 	int MaxWidth = 0, MaxHeight = 0;
@@ -165,7 +177,7 @@ void PlayerInputComponent::FixCollisions()
 
 }
 
-void PlayerInputComponent::FixCollisionsAABB()
+void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
 	SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
 
@@ -173,7 +185,6 @@ void PlayerInputComponent::FixCollisionsAABB()
 	BoxColliderComponent* PlayerCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 	PlayerCollider->OnUpdateWorldTransform();
 
-	Vector2 CollisionDelta (0, 0);
 	for (BoxColliderComponent* Collider : Colliders)
 	{
 		Vector2 TempCollisionDelta(0, 0);

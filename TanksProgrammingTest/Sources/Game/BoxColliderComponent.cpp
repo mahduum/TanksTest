@@ -4,7 +4,6 @@
 #include "TextureComponent.h"
 
 #include "Entity.h"
-#include "PlayerInputComponent.h"
 
 BoxColliderComponent::BoxColliderComponent(): BoxColliderComponent(nullptr)
 {
@@ -21,6 +20,11 @@ void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
     m_BoxOffsetMin.y = Config.value("OffsetMinY", 0);
     m_BoxOffsetMax.x = Config.value("OffsetMaxX", 0);
     m_BoxOffsetMax.y = Config.value("OffsetMaxY", 0);
+
+	//m_BoxOffsetMin.x = Config.value("OffsetMinY", 0);
+ //   m_BoxOffsetMin.y = Config.value("OffsetMinX", 0);
+ //   m_BoxOffsetMax.x = Config.value("OffsetMaxY", 0);
+ //   m_BoxOffsetMax.y = Config.value("OffsetMaxX", 0);
 }
 
 void BoxColliderComponent::Initialize()

@@ -2,6 +2,7 @@
 
 #include "EntityComponent.h"
 
+class Vector2;
 class TextureComponent;
 
 class PlayerInputComponent : public EntityComponent
@@ -17,7 +18,7 @@ public:
 	virtual void Update(float DeltaTime) override;
 
 	void FixCollisions();
-	void FixCollisionsAABB();
+	void FixCollisionsAABB(Vector2& collisionDelta);
 
 private:
 	TextureComponent* m_TextureComponent;

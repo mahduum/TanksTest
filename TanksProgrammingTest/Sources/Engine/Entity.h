@@ -39,6 +39,7 @@ public:
 	}
 
 	void UpdateWorldTransform();
+	float m_Rotation = 0;
 	
 private:
 	std::list<EntityComponent*> m_Components;//todo make it unordered set
