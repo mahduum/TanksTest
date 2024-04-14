@@ -49,12 +49,10 @@ void BoxColliderComponent::UnInitialize()
 
 void BoxColliderComponent::OnUpdateWorldTransform()
 {
-    //set new box size to new position
-	EntityComponent::OnUpdateWorldTransform();//todo check collisions
-    //todo for now use texture component
     auto TexRect = &m_TextureComponent->GetRectangle();
-    m_Box.m_Min.Set(Vector2(TexRect->x, TexRect->y) + m_BoxOffsetMin);
-    m_Box.m_Max.Set(Vector2(TexRect->x + TexRect->w, TexRect->y + TexRect->h) + m_BoxOffsetMax);
+    auto [x, y] = GetOwner()->GetPositionXY();
+    m_Box.m_Min.Set(Vector2(x, y) + m_BoxOffsetMin);
+    m_Box.m_Max.Set(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);//todo update also scale from entity
 }
 
 SDL_Rect* BoxColliderComponent::GetRectangle() const

@@ -6,8 +6,6 @@
 #include "Engine.h"
 #include "MathLib.h"
 #include "ProjectileSpawnerComponent.h"
-#include "ResourceManager.h"
-#include "Scene.h"
 
 
 PlayerInputComponent::PlayerInputComponent(Entity* Owner)
@@ -31,10 +29,9 @@ void PlayerInputComponent::Initialize()
 void PlayerInputComponent::Update(float DeltaTime)
 {
 	const int Speed = 100;
-	SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
 
-	int DeltaX = 0;
-	int DeltaY = 0;
+	int PredictedDeltaX = 0;
+	int PredictedDeltaY = 0;
 
 	std::vector<SDL_Event> Events = Engine::Get()->GetEvents();
 	
@@ -48,19 +45,19 @@ void PlayerInputComponent::Update(float DeltaTime)
 				{
 					case SDL_SCANCODE_W :
 					case SDL_SCANCODE_UP :
-						DeltaY -= Speed / 30;
+						PredictedDeltaY -= Speed / 30;
 						break;
 					case SDL_SCANCODE_A :
 					case SDL_SCANCODE_LEFT :
-						DeltaX -= Speed / 30;
+						PredictedDeltaX -= Speed / 30;
 						break;
 					case SDL_SCANCODE_S :
 					case SDL_SCANCODE_DOWN :
-						DeltaY += Speed / 30;
+						PredictedDeltaY += Speed / 30;
 						break;
 					case SDL_SCANCODE_D :
 					case SDL_SCANCODE_RIGHT :
-						DeltaX += Speed / 30;
+						PredictedDeltaX += Speed / 30;
 						break;
 					case SDL_SCANCODE_SPACE ://SHOOT AND RETURN
 						Shoot();
@@ -72,136 +69,53 @@ void PlayerInputComponent::Update(float DeltaTime)
 		}
 	}
 
-	//iterate all entities: todo return only nearby objects
-	if(DeltaX == 0 && DeltaY == 0)
+	//TODO: All below goes into transform component, if this is a collision fixer
+
+	if(PredictedDeltaX == 0 && PredictedDeltaY == 0)
 	{
 		return;
 	}
 
-	SrcRectangle.x += DeltaX;
-	SrcRectangle.y += DeltaY;
+	GetOwner()->SetTranslation(PredictedDeltaX, PredictedDeltaY);
+	
+	Vector2 BacktraceCollisionDelta(0, 0);
 
-	//FixCollisions();
-	Vector2 CollisionDelta(0, 0);
-	FixCollisionsAABB(CollisionDelta);
+	FixCollisionsAABB(BacktraceCollisionDelta);//if collision delta is the same as movement delta then now update
 
-	if (DeltaX != 0 && std::abs(CollisionDelta.x) < std::abs(DeltaX))
+	if (PredictedDeltaX != 0 && std::abs(BacktraceCollisionDelta.x) < std::abs(PredictedDeltaX))
 	{
 		//moved horizontally set rotation in x
-		GetOwner()->SetRotation(DeltaX > 0 ? FacingDirection::RIGHT : FacingDirection::LEFT);
+		GetOwner()->SetRotation(PredictedDeltaX > 0 ? FacingDirection::RIGHT : FacingDirection::LEFT);
+		GetOwner()->SetComponentsTransformDirty();//will update in entity update
 	}
-	else if (std::abs(CollisionDelta.y) < std::abs(DeltaY))
+	else if (std::abs(BacktraceCollisionDelta.y) < std::abs(PredictedDeltaY))
 	{
 		//moved vertically set rotation in y
-		GetOwner()->SetRotation(DeltaY > 0 ? FacingDirection::DOWN : FacingDirection::UP);
-	}
-	
-	//window limits:
-	int MaxWidth = 0, MaxHeight = 0;
-	SDL_GetWindowSize(Engine::Get()->GetWindow(), &MaxWidth, &MaxHeight);
-
-	if (SrcRectangle.x + SrcRectangle.w > MaxWidth)
-	{
-		SrcRectangle.x = MaxWidth - SrcRectangle.w;
-	}
-
-	if (SrcRectangle.x < 0)
-	{
-		SrcRectangle.x = 0;
-	}
-
-	if (SrcRectangle.y + SrcRectangle.h > MaxHeight)
-	{
-		SrcRectangle.y = MaxHeight - SrcRectangle.h;
-	}
-
-	if (SrcRectangle.y < 0)
-	{
-		SrcRectangle.y = 0;
-	}
-
-	//todo: change rotation on first click, on second move
-}
-
-void PlayerInputComponent::Shoot() const
-{
-	SDL_Log("Spawning projectile...");
-	m_ProjectileSpawnerComponent->SpawnProjectile();
-}
-
-void PlayerInputComponent::FixCollisions()
-{
-	SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
-
-	const std::vector<BoxColliderComponent*> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();
-	BoxColliderComponent* PlayerCollider = GetOwner()->GetComponent<BoxColliderComponent>();
-	SDL_Rect PlayerRect{ *PlayerCollider->GetRectangle() };
-
-	SDL_Rect Intersection{ 0, 0, 0, 0 };
-
-	for (BoxColliderComponent* Collider : Colliders)
-	{
-		if (Collider != PlayerCollider && SDL_HasIntersection(Collider->GetRectangle(), PlayerCollider->GetRectangle()))
-		{
-			SDL_Rect* ColliderRect = Collider->GetRectangle();
-
-			SDL_Rect IntersectionTemp{ 0, 0, 0, 0 };
-			SDL_IntersectRect(ColliderRect, PlayerCollider->GetRectangle(), &IntersectionTemp);
-
-			if (Intersection.w < IntersectionTemp.w) 
-			{
-				Intersection.w = IntersectionTemp.w;
-				Intersection.x = IntersectionTemp.x;
-			}
-			if (Intersection.h < IntersectionTemp.h)
-			{
-				Intersection.h = IntersectionTemp.h;
-				Intersection.y = IntersectionTemp.y;
-			}
-		}
-	}
-
-	if (Intersection.w < Intersection.h)
-	{
-		if (Intersection.x == PlayerRect.x)
-		{
-			SrcRectangle.x += Intersection.w;
-		}
-
-		if (Intersection.x > PlayerRect.x)
-		{
-			SrcRectangle.x -= Intersection.w;
-		}
+		GetOwner()->SetRotation(PredictedDeltaY > 0 ? FacingDirection::DOWN : FacingDirection::UP);
+		GetOwner()->SetComponentsTransformDirty();//will update in entity update
 	}
 	else
 	{
-		if (Intersection.y == PlayerRect.y)
-		{
-			SrcRectangle.y += Intersection.h;
-		}
-
-		if (Intersection.y > PlayerRect.y)
-		{
-			SrcRectangle.y -= Intersection.h;
-		}
+		SDL_Log("Entity cannot move.");
 	}
-
-
 }
 
 void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
-	SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
+	//SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
 
 	const std::vector<BoxColliderComponent*> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();
-	BoxColliderComponent* PlayerCollider = GetOwner()->GetComponent<BoxColliderComponent>();
-	PlayerCollider->OnUpdateWorldTransform();
+	BoxColliderComponent* OwnersCollider = GetOwner()->GetComponent<BoxColliderComponent>();
+
+	//first update only collider for testing
+	OwnersCollider->OnUpdateWorldTransform();//todo with line segment first cache the previous position then the next one and combine boxes prev-predicted to do sweep
+												//for diagonal shots can do rotated box collision check
 
 	for (BoxColliderComponent* Collider : Colliders)
 	{
 		Vector2 TempCollisionDelta(0, 0);
 
-		if (Collider != PlayerCollider && PlayerCollider->TryGetCollisionDelta(*Collider, TempCollisionDelta))
+		if (Collider != OwnersCollider && OwnersCollider->TryGetCollisionDelta(*Collider, TempCollisionDelta))
 		{
 			SDL_Log("Found collision with delta x: %f, y: %f", TempCollisionDelta.x, TempCollisionDelta.y);
 			if(MathLib::Abs(TempCollisionDelta.x) > MathLib::Abs(CollisionDelta.x))
@@ -216,13 +130,57 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 		}
 	}
 
-	if(MathLib::NearZero(CollisionDelta.x) && MathLib::NearZero(CollisionDelta.y))
+	auto OwnersBox = OwnersCollider->GetBox();
+	int MaxWidth = 0, MaxHeight = 0;
+	SDL_GetWindowSize(Engine::Get()->GetWindow(), &MaxWidth, &MaxHeight);
+
+	if (MathLib::NearZero(CollisionDelta.x))
+	{
+		//check screen
+		//window limits:
+
+		if (OwnersBox.m_Max.x > MaxWidth)
+		{
+			CollisionDelta.x = OwnersBox.m_Max.x - MaxWidth;
+		}
+
+		if (OwnersBox.m_Min.x < 0)
+		{
+			CollisionDelta.x = OwnersBox.m_Min.x;
+		}
+	}
+
+	if (MathLib::NearZero(CollisionDelta.y))
+	{
+		if (OwnersBox.m_Max.y > MaxHeight)
+		{
+			CollisionDelta.y = OwnersBox.m_Max.y - MaxHeight;
+		}
+
+		if (OwnersBox.m_Min.y < 0)
+		{
+			CollisionDelta.y = OwnersBox.m_Min.y;
+		}
+	}
+
+	if (MathLib::NearZero(CollisionDelta.x) && MathLib::NearZero(CollisionDelta.y))
 	{
 		return;
 	}
 
-	SrcRectangle.x -= static_cast<int>(CollisionDelta.x);
-	SrcRectangle.y -= static_cast<int>(CollisionDelta.y);
+	//SrcRectangle.x -= static_cast<int>(CollisionDelta.x);
+	//SrcRectangle.y -= static_cast<int>(CollisionDelta.y);
 
-	PlayerCollider->OnUpdateWorldTransform();//todo and other comps
+	GetOwner()->SetTranslation(-static_cast<int>(CollisionDelta.x), -static_cast<int>(CollisionDelta.y));
+
+	//todo only here update everything with position:
+	//...
+
+	OwnersCollider->OnUpdateWorldTransform();//todo and other comps
+}
+
+void PlayerInputComponent::Shoot() const
+{
+	SDL_Log("Spawning projectile...");
+	m_ProjectileSpawnerComponent->SpawnProjectile();
 }

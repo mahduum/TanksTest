@@ -20,7 +20,6 @@ public:
 	void OnUpdateWorldTransform() override;
 
 	void SpawnProjectile();
-	bool m_Spawn = false;
 private:
 
 	void GetTopSpawnPoint(Vector2& OutSpawnPoint) const;

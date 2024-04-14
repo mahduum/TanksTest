@@ -18,7 +18,6 @@ public:
 	virtual void Initialize() override;
 	virtual void Update(float DeltaTime) override;
 
-	void FixCollisions();
 	void FixCollisionsAABB(Vector2& collisionDelta);//TODO PUT IT ON A DIFFERENT COMPONENT, DEFER INPUT TO DIFFERENT COMPONENT
 
 	void Shoot() const;

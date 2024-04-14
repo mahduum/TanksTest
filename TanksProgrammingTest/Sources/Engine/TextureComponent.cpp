@@ -60,7 +60,8 @@ void TextureComponent::Draw()
 
 void TextureComponent::OnUpdateWorldTransform()
 {
-	//SetPosition(GetOwner()->m_)
+	auto [x, y] = GetOwner()->GetPositionXY();
+	SetPosition(x, y);
 }
 
 void TextureComponent::SetTextureFromAssetName(std::string Name)

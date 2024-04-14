@@ -50,7 +50,8 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 	Entity* Projectile = ResourceManagerPtr->CreateEntityFromDataTemplate("Projectile");//add name to config
 
 	Vector2 SpawnPoint(0,0);
-	switch (FacingDirection Facing = GetOwner()->GetFacingDirection())
+	FacingDirection Facing = GetOwner()->GetFacingDirection();
+	switch (Facing)
 	{
 		case FacingDirection::UP:
 			GetTopSpawnPoint(SpawnPoint);
@@ -67,7 +68,9 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 	}
 
 	Projectile->GetComponent<TextureComponent>()->SetPosition(SpawnPoint.x, SpawnPoint.y);
+	Projectile->SetRotation(Facing);
 	Projectile->Initialize();
+	SDL_Log("Projectile rotation set to: %f, %f", Projectile->GetForwardVector().x, Projectile->GetForwardVector().y);
 	Engine::Get()->GetActiveScene()->AddEntity(Projectile);
 }
 

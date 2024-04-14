@@ -12,7 +12,7 @@
         },
         {
             "Type" : "ProjectileMovementComponent",
-            "Speed" : 1000
+            "Speed" : 500
         },
         {
 			"Type" : "BoxColliderComponent",

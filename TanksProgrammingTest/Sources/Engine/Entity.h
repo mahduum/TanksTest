@@ -38,11 +38,12 @@ public:
 		return nullptr;
 	}
 
-	void UpdateWorldTransform();
+	void UpdateComponentsTransform();
 
 	void SetPosition(Vector2 position);
-	void SetPosition(const int x, const int y);
+	void SetPosition(int x, int y);
 	void SetRotation(FacingDirection direction);
+	void SetTranslation(int x, int y);
 
 	auto GetPositionXY() const -> std::tuple<int, int>;
 	Vector2 GetPosition() const;
@@ -51,6 +52,8 @@ public:
 	FacingDirection GetFacingDirection() const;
 
 	float GetRotationDegrees() const;
+
+	void SetComponentsTransformDirty();
 
 	
 private:
@@ -63,5 +66,5 @@ private:
 	float m_RotationDegrees = 0;
 	FacingDirection m_FacingDirection = FacingDirection::UP;
 
-	bool m_UpdateWorldTransform = true;
+	bool m_UpdateComponentsTransform = true;
 };

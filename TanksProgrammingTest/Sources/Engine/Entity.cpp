@@ -34,21 +34,22 @@ void Entity::Initialize()
 
 	auto TextureRect = GetComponent<::TextureComponent>()->GetRectangle();
 
-	m_Position.x = TextureRect.x;
-	m_Position.y = TextureRect.y;
-	SetRotation(FacingDirection::UP);
+	SetPosition(TextureRect.x, TextureRect.y);;
 }
 
 void Entity::Update(float DeltaTime)
 {
-	//compute world transform if needed
-	//update components
+	//todo: make update groups, first transform group then representation group
+	//Transform group: first update predicted transforms with input groups, updated colliders transforms, correct transforms and colliders.
+	//Update representation groups transforms -> that way we are sure that representation has correct transform to update to
+	UpdateComponentsTransform();
+
 	for (EntityComponent* Component : m_Components)
 	{
 		Component->Update(DeltaTime);
 	}
-	//update self if available (assumes entity itself has some functionality)
-	//compute world transform
+
+	UpdateComponentsTransform();
 }
 
 void Entity::Draw()
@@ -77,19 +78,16 @@ void Entity::RemoveComponent(EntityComponent* Component)
 	auto RetIt = std::remove(m_Components.begin(), m_Components.end(), Component);
 }
 
-void Entity::UpdateWorldTransform()
+void Entity::UpdateComponentsTransform()
 {
-	if (m_UpdateWorldTransform == false) return;
+	if (m_UpdateComponentsTransform == false) return;
 
-	m_UpdateWorldTransform = false;
-
-	//recalculate position
+	m_UpdateComponentsTransform = false;
 
 	for (auto Comp : m_Components)
 	{
 		Comp->OnUpdateWorldTransform();
 	}
-
 }
 
 void Entity::SetPosition(Vector2 position)
@@ -97,14 +95,14 @@ void Entity::SetPosition(Vector2 position)
 	m_Position.Set(position);
 }
 
-void Entity::SetPosition(const int x, const int y)
+void Entity::SetPosition(int x, int y)
 {
 	m_Position.Set(static_cast<float>(x), static_cast<float>(y));
 }
 
 void Entity::SetRotation(FacingDirection direction)
 {
-
+	//todo if there is time use showing different textures in
 	switch (direction)//todo make this a matrix
 	{
 		case FacingDirection::RIGHT:
@@ -130,6 +128,12 @@ void Entity::SetRotation(FacingDirection direction)
 	}
 
 	m_FacingDirection = direction;
+}
+
+void Entity::SetTranslation(int x, int y)
+{
+	m_Position.x += x;
+	m_Position.y += y;
 }
 
 auto Entity::GetPositionXY() const -> std::tuple<int, int>
@@ -160,4 +164,9 @@ FacingDirection Entity::GetFacingDirection() const
 float Entity::GetRotationDegrees() const
 {
 	return m_RotationDegrees;
+}
+
+void Entity::SetComponentsTransformDirty()
+{
+	m_UpdateComponentsTransform = true;
 }

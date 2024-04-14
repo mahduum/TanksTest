@@ -25,10 +25,11 @@ public:
 	void SetPosition(const Vector2 position);//
 	void SetScaleOffset(const Vector2 offset);
 	void SetBoxWithOffset(const Vector2 boxMinPosition, const Vector2 boxMaxPosition, const Vector2 boxMinOffset, const Vector2 boxMaxOffset);
-	SDL_Rect* GetRectangle() const;
 	const AABB& GetBox() const { return m_Box; }
 
 private:
+	SDL_Rect* GetRectangle() const;
+
 	TextureComponent* m_TextureComponent;
 	AABB m_Box;//reduce the box and shift offset
 
