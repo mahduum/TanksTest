@@ -2,6 +2,7 @@
 
 #include "EntityComponent.h"
 
+class ProjectileSpawnerComponent;
 class Vector2;
 class TextureComponent;
 
@@ -18,8 +19,11 @@ public:
 	virtual void Update(float DeltaTime) override;
 
 	void FixCollisions();
-	void FixCollisionsAABB(Vector2& collisionDelta);
+	void FixCollisionsAABB(Vector2& collisionDelta);//TODO PUT IT ON A DIFFERENT COMPONENT, DEFER INPUT TO DIFFERENT COMPONENT
+
+	void Shoot() const;
 
 private:
 	TextureComponent* m_TextureComponent;
+	ProjectileSpawnerComponent* m_ProjectileSpawnerComponent;
 };

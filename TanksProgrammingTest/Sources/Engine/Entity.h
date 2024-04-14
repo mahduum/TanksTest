@@ -39,12 +39,29 @@ public:
 	}
 
 	void UpdateWorldTransform();
-	float m_Rotation = 0;
+
+	void SetPosition(Vector2 position);
+	void SetPosition(const int x, const int y);
+	void SetRotation(FacingDirection direction);
+
+	auto GetPositionXY() const -> std::tuple<int, int>;
+	Vector2 GetPosition() const;
+	Vector2 GetForwardVector() const;
+	Vector2 GetRightVector() const;
+	FacingDirection GetFacingDirection() const;
+
+	float GetRotationDegrees() const;
+
 	
 private:
 	std::list<EntityComponent*> m_Components;//todo make it unordered set
 	std::string m_Name;
 	
 	Vector2 m_Position;
+	Vector2 m_ForwardDirection;
+	Vector2 m_RightDirection;
+	float m_RotationDegrees = 0;
+	FacingDirection m_FacingDirection = FacingDirection::UP;
+
 	bool m_UpdateWorldTransform = true;
 };

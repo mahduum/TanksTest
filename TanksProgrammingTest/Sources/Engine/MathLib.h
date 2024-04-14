@@ -8,6 +8,14 @@
 #include <memory.h>
 #include <limits>
 
+enum class FacingDirection
+{
+	RIGHT,
+	LEFT,
+	UP,
+	DOWN
+};
+
 namespace MathLib
 {
 	const float Pi = 3.1415926535f;
@@ -248,10 +256,10 @@ public:
 	static Vector2 Transform(const Vector2& vec, const class Matrix3& mat, float w = 1.0f);
 
 	static const Vector2 Zero;
-	static const Vector2 UnitX;
-	static const Vector2 UnitY;
-	static const Vector2 NegUnitX;
-	static const Vector2 NegUnitY;
+	static const Vector2 Right;
+	static const Vector2 Down;
+	static const Vector2 Left;
+	static const Vector2 Up;
 };
 
 class Matrix3

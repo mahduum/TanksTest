@@ -12,7 +12,7 @@ void Scene::LoadFromConfig(nlohmann::json Config)
 	if (Config.find("Entities") != Config.end())
 	{
 		ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
-		for (auto Item : Config["Entities"].items())
+		for (auto Item : Config["Entities"].items())//entities that are not fixed in layout
 		{
 			Entity* NewEntity = new Entity();
 
@@ -97,11 +97,16 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend)
 				nlohmann::json EntitySpecs = Legend[Key];
 
 				Entity* NewEntity = ResourceManagerPtr->CreateEntityFromDataTemplate(EntitySpecs["Type"]);
+
 				TextureComponent* TextureComponentPtr = NewEntity->GetComponent<TextureComponent>();
 				int Width = EntitySpecs["Width"];
 				int Height = EntitySpecs["Height"];
 				TextureComponentPtr->SetPosition(Column * Width, Row * Height);
 				TextureComponentPtr->SetScale(Width, Height);
+
+				NewEntity->SetPosition(Column * Width, Row * Height);
+				NewEntity->SetRotation(FacingDirection::UP);
+
 				AddEntity(NewEntity);
 			}
 			++Column;

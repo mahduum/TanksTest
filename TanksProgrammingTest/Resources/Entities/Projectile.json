@@ -1,0 +1,25 @@
+{
+    "Name" : "Projectile",
+    "Components" : 
+    [
+        {
+            "Type" : "TextureComponent",
+			"Texture" : "Bullet.png",
+			"Width" : 10,
+			"Height" : 10,
+			"PositionX" : 300,
+			"PositionY" : 480
+        },
+        {
+            "Type" : "ProjectileMovementComponent",
+            "Speed" : 1000
+        },
+        {
+			"Type" : "BoxColliderComponent",
+			"OffsetMinX" : 2,
+			"OffsetMinY" : 2,
+			"OffsetMaxX" : -2,
+			"OffsetMaxY" : -2
+		}
+    ]
+}

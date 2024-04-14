@@ -5,11 +5,15 @@
 #include "Entity.h"
 #include "Engine.h"
 #include "MathLib.h"
+#include "ProjectileSpawnerComponent.h"
+#include "ResourceManager.h"
+#include "Scene.h"
 
 
 PlayerInputComponent::PlayerInputComponent(Entity* Owner)
 	: EntityComponent(Owner)
 	, m_TextureComponent(nullptr)
+	, m_ProjectileSpawnerComponent(nullptr)
 {
 }
 
@@ -21,6 +25,7 @@ PlayerInputComponent::PlayerInputComponent()
 void PlayerInputComponent::Initialize()
 {
 	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();
+	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<ProjectileSpawnerComponent>();
 }
 
 void PlayerInputComponent::Update(float DeltaTime)
@@ -32,8 +37,6 @@ void PlayerInputComponent::Update(float DeltaTime)
 	int DeltaY = 0;
 
 	std::vector<SDL_Event> Events = Engine::Get()->GetEvents();
-
-	auto MathLibTest = Vector2::Zero;
 	
 	for (const SDL_Event& Event : Events)
 	{
@@ -59,6 +62,9 @@ void PlayerInputComponent::Update(float DeltaTime)
 					case SDL_SCANCODE_RIGHT :
 						DeltaX += Speed / 30;
 						break;
+					case SDL_SCANCODE_SPACE ://SHOOT AND RETURN
+						Shoot();
+						return;
 					default:
 						break;
 				}
@@ -82,12 +88,12 @@ void PlayerInputComponent::Update(float DeltaTime)
 	if (DeltaX != 0 && std::abs(CollisionDelta.x) < std::abs(DeltaX))
 	{
 		//moved horizontally set rotation in x
-		GetOwner()->m_Rotation = DeltaX > 0 ? 90 : -90;
+		GetOwner()->SetRotation(DeltaX > 0 ? FacingDirection::RIGHT : FacingDirection::LEFT);
 	}
 	else if (std::abs(CollisionDelta.y) < std::abs(DeltaY))
 	{
 		//moved vertically set rotation in y
-		GetOwner()->m_Rotation = DeltaY > 0 ? 180 : 0;
+		GetOwner()->SetRotation(DeltaY > 0 ? FacingDirection::DOWN : FacingDirection::UP);
 	}
 	
 	//window limits:
@@ -115,6 +121,12 @@ void PlayerInputComponent::Update(float DeltaTime)
 	}
 
 	//todo: change rotation on first click, on second move
+}
+
+void PlayerInputComponent::Shoot() const
+{
+	SDL_Log("Spawning projectile...");
+	m_ProjectileSpawnerComponent->SpawnProjectile();
 }
 
 void PlayerInputComponent::FixCollisions()

@@ -33,8 +33,10 @@ void Entity::Initialize()
 	}
 
 	auto TextureRect = GetComponent<::TextureComponent>()->GetRectangle();
+
 	m_Position.x = TextureRect.x;
 	m_Position.y = TextureRect.y;
+	SetRotation(FacingDirection::UP);
 }
 
 void Entity::Update(float DeltaTime)
@@ -88,4 +90,74 @@ void Entity::UpdateWorldTransform()
 		Comp->OnUpdateWorldTransform();
 	}
 
+}
+
+void Entity::SetPosition(Vector2 position)
+{
+	m_Position.Set(position);
+}
+
+void Entity::SetPosition(const int x, const int y)
+{
+	m_Position.Set(static_cast<float>(x), static_cast<float>(y));
+}
+
+void Entity::SetRotation(FacingDirection direction)
+{
+
+	switch (direction)//todo make this a matrix
+	{
+		case FacingDirection::RIGHT:
+			m_ForwardDirection.Set(Vector2::Right);
+			m_RightDirection.Set(Vector2::Up);
+			m_RotationDegrees = 90;
+			break;
+		case FacingDirection::LEFT:
+			m_ForwardDirection.Set(Vector2::Left);
+			m_RightDirection.Set(Vector2::Down);
+			m_RotationDegrees = -90;
+			break;
+		case FacingDirection::UP:
+			m_ForwardDirection.Set(Vector2::Up);
+			m_RightDirection.Set(Vector2::Left);
+			m_RotationDegrees = 0;
+			break;
+		case FacingDirection::DOWN:
+			m_ForwardDirection.Set(Vector2::Down);
+			m_RightDirection.Set(Vector2::Right);
+			m_RotationDegrees = 180;
+			break;
+	}
+
+	m_FacingDirection = direction;
+}
+
+auto Entity::GetPositionXY() const -> std::tuple<int, int>
+{
+	return std::make_tuple( static_cast<int>(m_Position.x), static_cast<int>(m_Position.y));
+}
+
+Vector2 Entity::GetPosition() const
+{
+	return m_Position;
+}
+
+Vector2 Entity::GetForwardVector() const
+{
+	return m_ForwardDirection;
+}
+
+Vector2 Entity::GetRightVector() const
+{
+	return m_RightDirection;
+}
+
+FacingDirection Entity::GetFacingDirection() const
+{
+	return m_FacingDirection;
+}
+
+float Entity::GetRotationDegrees() const
+{
+	return m_RotationDegrees;
 }

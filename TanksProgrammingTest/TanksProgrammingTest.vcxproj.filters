@@ -54,6 +54,18 @@
     <ClCompile Include="Sources\Engine\CollisionWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Engine\CollisionUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Engine\MathLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Game\ProjectileMovementComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Game\ProjectileSpawnerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Engine\Engine.h">
@@ -89,7 +101,16 @@
     <ClInclude Include="Sources\Engine\TestClass1.h">
       <Filter>Source Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Engine\Math.h">
+    <ClInclude Include="Sources\Engine\CollisionUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Engine\MathLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Game\ProjectileMovementComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Game\ProjectileSpawnerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

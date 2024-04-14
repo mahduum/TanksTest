@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Game\ProjectileSpawnerComponent.cpp" />
+    <ClCompile Include="Sources\Game\ProjectileMovementComponent.cpp" />
     <ClCompile Include="Sources\Engine\CollisionUtils.cpp" />
     <ClCompile Include="Sources\Engine\CollisionWorld.cpp" />
     <ClCompile Include="Sources\Engine\Engine.cpp" />
@@ -34,6 +36,8 @@
     <ClCompile Include="Sources\Engine\TestClass1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Game\ProjectileSpawnerComponent.h" />
+    <ClInclude Include="Sources\Game\ProjectileMovementComponent.h" />
     <ClInclude Include="Sources\Engine\CollisionUtils.h" />
     <ClInclude Include="Sources\Engine\CollisionWorld.h" />
     <ClInclude Include="Sources\Engine\Engine.h" />

@@ -21,6 +21,12 @@
 				"Type" : "StoneWall",
 				"Width" : 35,
 				"Height" : 35
+			},
+			"-" : 
+			{
+				"Type" : "Projectile",
+				"Width" : 35,
+				"Height" : 35
 			}
 		},
 		"Content" :

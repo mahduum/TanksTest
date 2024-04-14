@@ -49,7 +49,7 @@ void TextureComponent::Draw()
 	{
 		const SDL_Point Center{ m_Rectangle.w/2, m_Rectangle.h/2 };
 		SDL_Rect Rect{ m_Rectangle.x, m_Rectangle.y, m_Rectangle.h, m_Rectangle.w };
-		SDL_RenderCopyEx(Engine::Get()->GetRenderer(), Texture, nullptr, &m_Rectangle, GetOwner()->m_Rotation, &Center, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(Engine::Get()->GetRenderer(), Texture, nullptr, &m_Rectangle, GetOwner()->GetRotationDegrees(), &Center, SDL_FLIP_NONE);
 	}
 	else
 	{

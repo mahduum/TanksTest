@@ -156,14 +156,14 @@ bool Intersect(const LineSegment& l, const AABB& b, float& outT,
 	// Vector to save all possible t values, and normals for those sides
 	std::vector<std::pair<float, Vector2>> tValues;
 	// Test the x planes
-	TestSidePlane(l.m_Start.x, l.m_End.x, b.m_Min.x, Vector2::NegUnitX,
+	TestSidePlane(l.m_Start.x, l.m_End.x, b.m_Min.x, Vector2::Left,
 		tValues);
-	TestSidePlane(l.m_Start.x, l.m_End.x, b.m_Max.x, Vector2::UnitX,
+	TestSidePlane(l.m_Start.x, l.m_End.x, b.m_Max.x, Vector2::Right,
 		tValues);
 	// Test the y planes
-	TestSidePlane(l.m_Start.y, l.m_End.y, b.m_Min.y, Vector2::NegUnitY,
+	TestSidePlane(l.m_Start.y, l.m_End.y, b.m_Min.y, Vector2::Up,
 		tValues);
-	TestSidePlane(l.m_Start.y, l.m_End.y, b.m_Max.y, Vector2::UnitY,
+	TestSidePlane(l.m_Start.y, l.m_End.y, b.m_Max.y, Vector2::Down,
 		tValues);
 
 	// Sort the t values in ascending order
