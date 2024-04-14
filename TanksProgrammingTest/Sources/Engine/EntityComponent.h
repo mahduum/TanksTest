@@ -19,7 +19,7 @@ public:
 	virtual void Update(float DeltaTime);
 	virtual void Draw();
 	virtual void UnInitialize();
-	virtual void OnUpdateWorldTransform();
+	virtual void OnUpdateTransform();
 
 	void SetOwner(Entity* Owner) { m_Owner = Owner; }
 	Entity* GetOwner() { return m_Owner; }

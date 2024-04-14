@@ -25,7 +25,7 @@ void EntityComponent::UnInitialize()
 {
 }
 
-void EntityComponent::OnUpdateWorldTransform()
+void EntityComponent::OnUpdateTransform()
 {
 	//todo maybe should be implemented as scene component if there is time 
 }

@@ -86,7 +86,7 @@ void Entity::UpdateComponentsTransform()
 
 	for (auto Comp : m_Components)
 	{
-		Comp->OnUpdateWorldTransform();
+		Comp->OnUpdateTransform();
 	}
 }
 

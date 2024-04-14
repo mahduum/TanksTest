@@ -38,9 +38,9 @@ void ProjectileMovementComponent::UnInitialize()
 	EntityComponent::UnInitialize();
 }
 
-void ProjectileMovementComponent::OnUpdateWorldTransform()
+void ProjectileMovementComponent::OnUpdateTransform()
 {
-	EntityComponent::OnUpdateWorldTransform();
+	EntityComponent::OnUpdateTransform();
 }
 
 void ProjectileMovementComponent::Move(float DeltaTime)

@@ -105,17 +105,17 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 	//SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
 
 	const std::vector<BoxColliderComponent*> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();
-	BoxColliderComponent* OwnersCollider = GetOwner()->GetComponent<BoxColliderComponent>();
+	BoxColliderComponent* MyCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 
 	//first update only collider for testing
-	OwnersCollider->OnUpdateTransform();//todo with line segment first cache the previous position then the next one and combine boxes prev-predicted to do sweep
+	MyCollider->OnUpdateTransform();//todo with line segment first cache the previous position then the next one and combine boxes prev-predicted to do sweep
 												//for diagonal shots can do rotated box collision check
 
-	for (BoxColliderComponent* Collider : Colliders)
+	for (BoxColliderComponent* OtherCollider : Colliders)
 	{
 		Vector2 TempCollisionDelta(0, 0);
 
-		if (Collider != OwnersCollider && OwnersCollider->TryGetCollisionDelta(*Collider, TempCollisionDelta))
+		if (OtherCollider != MyCollider && MyCollider->TryGetCollisionDelta(*OtherCollider, TempCollisionDelta))
 		{
 			SDL_Log("Found collision with delta x: %f, y: %f", TempCollisionDelta.x, TempCollisionDelta.y);
 			if(MathLib::Abs(TempCollisionDelta.x) > MathLib::Abs(CollisionDelta.x))
@@ -130,7 +130,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 		}
 	}
 
-	auto OwnersBox = OwnersCollider->GetBox();
+	auto OwnersBox = MyCollider->GetBox();
 	int MaxWidth = 0, MaxHeight = 0;
 	SDL_GetWindowSize(Engine::Get()->GetWindow(), &MaxWidth, &MaxHeight);
 
@@ -176,7 +176,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 	//todo only here update everything with position:
 	//...
 
-	OwnersCollider->OnUpdateTransform();//todo and other comps
+	MyCollider->OnUpdateTransform();//todo and other comps
 }
 
 void PlayerInputComponent::Shoot() const

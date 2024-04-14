@@ -41,7 +41,7 @@ void ProjectileSpawnerComponent::UnInitialize()
 
 void ProjectileSpawnerComponent::OnUpdateWorldTransform()
 {
-	EntityComponent::OnUpdateWorldTransform();
+	EntityComponent::OnUpdateTransform();
 }
 
 void ProjectileSpawnerComponent::SpawnProjectile()
