@@ -58,7 +58,7 @@ void TextureComponent::Draw()
 	
 }
 
-void TextureComponent::OnUpdateWorldTransform()
+void TextureComponent::OnUpdateTransform()
 {
 	auto [x, y] = GetOwner()->GetPositionXY();
 	SetPosition(x, y);

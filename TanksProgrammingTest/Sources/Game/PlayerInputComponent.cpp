@@ -108,7 +108,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 	BoxColliderComponent* OwnersCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 
 	//first update only collider for testing
-	OwnersCollider->OnUpdateWorldTransform();//todo with line segment first cache the previous position then the next one and combine boxes prev-predicted to do sweep
+	OwnersCollider->OnUpdateTransform();//todo with line segment first cache the previous position then the next one and combine boxes prev-predicted to do sweep
 												//for diagonal shots can do rotated box collision check
 
 	for (BoxColliderComponent* Collider : Colliders)
@@ -176,7 +176,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 	//todo only here update everything with position:
 	//...
 
-	OwnersCollider->OnUpdateWorldTransform();//todo and other comps
+	OwnersCollider->OnUpdateTransform();//todo and other comps
 }
 
 void PlayerInputComponent::Shoot() const
