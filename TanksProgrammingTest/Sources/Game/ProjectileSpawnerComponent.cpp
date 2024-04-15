@@ -39,13 +39,9 @@ void ProjectileSpawnerComponent::UnInitialize()
 	EntityComponent::UnInitialize();
 }
 
-void ProjectileSpawnerComponent::OnUpdateWorldTransform()
-{
-	EntityComponent::OnUpdateTransform();
-}
-
 void ProjectileSpawnerComponent::SpawnProjectile()
 {
+	//todo keep a pool of them
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 	Entity* Projectile = ResourceManagerPtr->CreateEntityFromDataTemplate("Projectile");//add name to config
 

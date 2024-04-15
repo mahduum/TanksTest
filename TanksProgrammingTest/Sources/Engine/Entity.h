@@ -21,7 +21,7 @@ public:
 	void AddComponent(EntityComponent* Component);
 	void RemoveComponent(EntityComponent* Component);
 
-	std::string_view GetName() const { return { m_Name.c_str(), m_Name.size() }; }
+	std::string GetName() const { return { m_Name.c_str(), m_Name.size() }; }
 
 	template <typename ComponentType>
 	ComponentType* GetComponent()
@@ -37,6 +37,8 @@ public:
 		}
 		return nullptr;
 	}
+
+	void OnCollision(CollisionInfo collisionInfo);
 
 	void UpdateComponentsTransform();
 

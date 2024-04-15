@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "ResourceManager.h"
 #include "TextureComponent.h"
+#include "../Game/ICollisionHandlerComponent.h"
 
 void Entity::LoadFromConfig(nlohmann::json Config)
 {
@@ -34,7 +35,7 @@ void Entity::Initialize()
 
 	auto TextureRect = GetComponent<::TextureComponent>()->GetRectangle();
 
-	SetPosition(TextureRect.x, TextureRect.y);;
+	SetPosition(TextureRect.x, TextureRect.y);
 }
 
 void Entity::Update(float DeltaTime)
@@ -47,6 +48,8 @@ void Entity::Update(float DeltaTime)
 	for (EntityComponent* Component : m_Components)
 	{
 		Component->Update(DeltaTime);
+		//for example, we are updating movement on projectile in update, and movement input too, then on movement we move only the collider
+		//
 	}
 
 	UpdateComponentsTransform();
@@ -76,6 +79,18 @@ void Entity::AddComponent(EntityComponent* Component)
 void Entity::RemoveComponent(EntityComponent* Component)
 {
 	auto RetIt = std::remove(m_Components.begin(), m_Components.end(), Component);
+}
+
+void Entity::OnCollision(CollisionInfo collisionInfo)
+{
+	if(auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())
+	{
+		CollisionHandler->OnCollision(collisionInfo);
+	}
+	//todo how to call collision implementation??? it may have a marker component but how we know? this component would need to have
+	//an inheritance and each entity
+	//handle on Abstract collision handler, call on collider class and let it handle it by internally calling the implementor?
+	//get implementor it is assumed to come with base
 }
 
 void Entity::UpdateComponentsTransform()

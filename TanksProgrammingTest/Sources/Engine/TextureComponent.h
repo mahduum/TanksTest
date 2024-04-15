@@ -30,4 +30,10 @@ private:
 
 	SDL_Surface* Surface;//todo: must be a pointer? make better pointer
 	SDL_Texture* Texture;//todo: must be a pointer? make better pointer
+
+	~TextureComponent() override
+	{
+		//SDL_FreeSurface(Surface);
+		SDL_Log("Calling destructor on texture component");
+	}
 };

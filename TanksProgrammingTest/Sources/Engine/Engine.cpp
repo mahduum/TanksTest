@@ -79,6 +79,9 @@ void Engine::MainLoop()
 			if (m_ActiveScene != nullptr)
 			{
 				m_ActiveScene->Update(TimePerFramInSceonds);
+				//run through collisions and correct the movement 
+				m_CollisionWorld->TestSweepAndPrune(m_CollisionWorld->CollisionHandler);
+				//consider calling late update to undo the collisions?
 			}
 
 			LastTime += TimePerFrameInMs;

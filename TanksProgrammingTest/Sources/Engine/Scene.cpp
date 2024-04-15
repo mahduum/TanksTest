@@ -5,6 +5,11 @@
 #include "TextureComponent.h"
 #include <fstream>
 
+Scene::Scene()
+{
+	m_ValidEntitiesEnd = m_Entities.end();
+}
+
 void Scene::LoadFromConfig(nlohmann::json Config)
 {
 	m_Name = Config.value("Name", "");
@@ -14,7 +19,7 @@ void Scene::LoadFromConfig(nlohmann::json Config)
 		ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 		for (auto Item : Config["Entities"].items())//entities that are not fixed in layout
 		{
-			Entity* NewEntity = new Entity();
+			Entity* NewEntity = new Entity();//todo what type of entity...
 
 			nlohmann::json EntityConfig = Item.value();
 			std::string TypeName = EntityConfig.value("Type", "");
@@ -49,36 +54,64 @@ void Scene::Initialize()
 
 void Scene::Update(float DeltaTime)
 {
-	for (Entity* Entity : m_Entities)
+	for (auto It = m_Entities.begin(); It != m_ValidEntitiesEnd; ++It)
 	{
-		Entity->Update(DeltaTime);
+		(*It)->Update(DeltaTime);
 	}
 }
 
 void Scene::Draw()
 {
-	for (Entity* Entity : m_Entities)
+	for (auto It = m_Entities.begin(); It != m_ValidEntitiesEnd; ++It)
 	{
-		Entity->Draw();
+		if ((*It)->GetName() == "Projectile")
+			SDL_Log("Drawing entity from scene by name: %s", (*It)->GetName().data());
+
+		(*It)->Draw();
 	}
 }
 
 void Scene::UnInitialize()
 {
-	for (Entity* Entity : m_Entities)
+	for (auto It = m_Entities.begin(); It != m_ValidEntitiesEnd; ++It)
 	{
-		Entity->UnInitialize();
+		if ((*It)->GetName() == "Projectile")
+			SDL_Log("Uninitializing entity from scene by name: %s", (*It)->GetName().data());
+
+		(*It)->UnInitialize();
 	}
 }
 
 void Scene::AddEntity(Entity* Entity)
 {
-	m_Entities.push_back(Entity);
+	if(m_Entities.end() == m_ValidEntitiesEnd)
+	{
+		m_Entities.push_back(Entity);
+		m_ValidEntitiesEnd = m_Entities.end();
+		SDL_Log("Adding new entity with push back: %s", Entity->GetName().data());
+	}
+	else
+	{
+		SDL_Log("Adding new entity with replace: %s", Entity->GetName().data());
+		delete *m_ValidEntitiesEnd;
+		*m_ValidEntitiesEnd = Entity;
+		++m_ValidEntitiesEnd;
+	}
 }
 
-void Scene::RemoveEntity(Entity* Entity)
+void Scene::RemoveEntity(Entity* Entity)//todo add removed entities to pool for reuse
 {
-	auto RetIt = std::remove(m_Entities.begin(), m_Entities.end(), Entity);
+	std::vector<::Entity*>::iterator RetIt = std::remove(
+		m_Entities.begin(), m_Entities.end(), Entity);
+	if(RetIt != m_Entities.end())
+	{
+		m_ValidEntitiesEnd = RetIt;
+		(*m_ValidEntitiesEnd)->UnInitialize();
+		//::Entity x = **RetIt;
+		SDL_Log("Removed entity from scene by name: %s", (*RetIt)->GetName().data());
+		//x.UnInitialize();
+		//delete* RetIt;
+	}
 }
 
 void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend)

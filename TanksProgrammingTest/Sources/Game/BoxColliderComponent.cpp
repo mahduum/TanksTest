@@ -9,13 +9,21 @@ BoxColliderComponent::BoxColliderComponent(): BoxColliderComponent(nullptr)
 {
 }
 
-BoxColliderComponent::BoxColliderComponent(Entity* Owner)
-    : EntityComponent(Owner), m_TextureComponent(nullptr), m_Box(Vector2::Zero, Vector2::Zero), m_BoxOffsetMin(Vector2::Zero), m_BoxOffsetMax(Vector2::Zero)
+BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
+	ColliderComponent(Owner),
+	m_TextureComponent(nullptr),
+	m_Box(Vector2::Zero, Vector2::Zero),
+	m_PreviousFrameBox(Vector2::Zero, Vector2::Zero),
+	m_BoxOffsetMin(Vector2::Zero),
+	m_BoxOffsetMax(Vector2::Zero)
 {
+
 }
 
 void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 {
+    EntityComponent::LoadFromConfig(Config);
+
     m_BoxOffsetMin.x = Config.value("OffsetMinX", 0);
     m_BoxOffsetMin.y = Config.value("OffsetMinY", 0);
     m_BoxOffsetMax.x = Config.value("OffsetMaxX", 0);
@@ -51,8 +59,8 @@ void BoxColliderComponent::OnUpdateTransform()
 {
     auto TexRect = &m_TextureComponent->GetRectangle();
     auto [x, y] = GetOwner()->GetPositionXY();
-    m_Box.m_Min.Set(Vector2(x, y) + m_BoxOffsetMin);
-    m_Box.m_Max.Set(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);//todo update also scale from entity
+    SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);
+    SetBoxMax(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);//todo update also scale from entity
 }
 
 SDL_Rect* BoxColliderComponent::GetRectangle() const
@@ -89,5 +97,25 @@ void BoxColliderComponent::SetBoxWithOffset(const Vector2 boxMinPosition, const 
 {
     m_Box.m_Min = boxMinPosition + boxMinOffset;
     m_Box.m_Max = boxMaxPosition + boxMaxOffset;
+}
+
+AABB BoxColliderComponent::GetSweepBox() const
+{
+    AABB SweepBox(m_Box.m_Min, m_Box.m_Max);
+    SweepBox.UpdateMinMax(m_PreviousFrameBox.m_Min);
+    SweepBox.UpdateMinMax(m_PreviousFrameBox.m_Max);
+    return SweepBox;
+}
+
+void BoxColliderComponent::SetBoxMin(Vector2 boxMin)
+{
+    m_PreviousFrameBox.m_Min.Set(m_Box.m_Min);
+    m_Box.m_Min.Set(boxMin);
+}
+
+void BoxColliderComponent::SetBoxMax(Vector2 boxMax)
+{
+    m_PreviousFrameBox.m_Max.Set(m_Box.m_Max);
+    m_Box.m_Max.Set(boxMax);
 }
 

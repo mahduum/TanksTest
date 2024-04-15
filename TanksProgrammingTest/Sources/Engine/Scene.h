@@ -12,6 +12,7 @@ class Scene
 {
 
 public:
+	Scene();
 	void LoadFromConfig(nlohmann::json Config);
 	void Initialize();
 	void Update(float DeltaTime);
@@ -40,6 +41,7 @@ public:
 private:
 	void LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend);
 
-	std::list<Entity*> m_Entities;
+	std::vector<Entity*> m_Entities;
+	std::vector<::Entity*>::iterator m_ValidEntitiesEnd;
 	std::string m_Name;
 };

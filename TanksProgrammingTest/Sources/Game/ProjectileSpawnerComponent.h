@@ -17,7 +17,6 @@ public:
 	void Initialize() override;
 	void Update(float DeltaTime) override;
 	void UnInitialize() override;
-	void OnUpdateWorldTransform() override;
 
 	void SpawnProjectile();
 private:

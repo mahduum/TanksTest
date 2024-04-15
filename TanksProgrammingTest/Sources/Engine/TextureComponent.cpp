@@ -16,6 +16,7 @@ TextureComponent::TextureComponent()
 
 void TextureComponent::LoadFromConfig(nlohmann::json Config)
 {
+	EntityComponent::LoadFromConfig(Config);
 	std::string TextureName = Config.value("Texture", "");
 	if (!TextureName.empty())
 	{
@@ -38,7 +39,16 @@ void TextureComponent::Initialize()
 
 void TextureComponent::UnInitialize()
 {
-	SDL_FreeSurface(Surface);
+	if(Texture != nullptr)
+	{
+		SDL_DestroyTexture(Texture);
+	}
+
+	//free(Surface);
+	if(Surface != nullptr)
+	{
+		SDL_FreeSurface(Surface);
+	}
 }
 
 void TextureComponent::Draw()
@@ -55,7 +65,6 @@ void TextureComponent::Draw()
 	{
 		SDL_RenderCopy(Engine::Get()->GetRenderer(), Texture, nullptr, &m_Rectangle);
 	}
-	
 }
 
 void TextureComponent::OnUpdateTransform()

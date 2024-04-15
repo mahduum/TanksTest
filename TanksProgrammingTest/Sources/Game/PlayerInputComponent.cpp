@@ -28,6 +28,7 @@ void PlayerInputComponent::Initialize()
 
 void PlayerInputComponent::Update(float DeltaTime)
 {
+	//SDL_Log("Delta time: %f", DeltaTime);
 	const int Speed = 100;
 
 	int PredictedDeltaX = 0;
@@ -104,7 +105,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
 	//SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
 
-	const std::vector<BoxColliderComponent*> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();
+	const std::vector<BoxColliderComponent*> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();//todo get only boxes with given channel
 	BoxColliderComponent* MyCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 
 	//first update only collider for testing

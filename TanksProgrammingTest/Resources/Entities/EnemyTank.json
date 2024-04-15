@@ -1,0 +1,27 @@
+{
+	"Name" : "EnemyTank",
+	"Components" : 
+	[
+		{
+			"Type" : "TextureComponent",
+			"Texture" : "BlueTankFront.png",
+			"Width" : 44,
+			"Height" : 36,
+			"PositionX" : 300,
+			"PositionY" : 480
+		},
+		{
+			"Type" : "EnemyTankMovementComponent"
+		},
+		{
+			"Type" : "ProjectileSpawnerComponent"
+		},
+		{
+			"Type" : "BoxColliderComponent",
+			"OffsetMinX" : 5,
+			"OffsetMinY" : 3,
+			"OffsetMaxX" : -5,
+			"OffsetMaxY" : -3
+		}
+	]
+}

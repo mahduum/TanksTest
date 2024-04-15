@@ -15,7 +15,8 @@
             "Speed" : 500
         },
         {
-			"Type" : "BoxColliderComponent",
+			"Type" : "BoxSweepColliderComponent",
+            "RequiredComponents" : [{"Type" : "ProjectileCollisionHandlerComponent"}],
 			"OffsetMinX" : 2,
 			"OffsetMinY" : 2,
 			"OffsetMaxX" : -2,

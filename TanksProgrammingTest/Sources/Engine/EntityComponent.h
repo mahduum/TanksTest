@@ -15,6 +15,7 @@ public:
 	virtual EntityComponent* Clone() const = 0;
 
 	virtual void LoadFromConfig(nlohmann::json Config);
+	virtual void OnLoaded();
 	virtual void Initialize();
 	virtual void Update(float DeltaTime);
 	virtual void Draw();
@@ -23,6 +24,9 @@ public:
 
 	void SetOwner(Entity* Owner) { m_Owner = Owner; }
 	Entity* GetOwner() { return m_Owner; }
+
+protected:
+	std::vector<EntityComponent*> m_RequiredComponents;
 
 private:
 	Entity* m_Owner;

@@ -21,6 +21,12 @@
 				"Type" : "StoneWall",
 				"Width" : 35,
 				"Height" : 35
+			},
+			"#" :
+			{
+				"Type" : "EnemyTank",
+				"Width" : 44,
+				"Height" : 36
 			}
 		},
 		"Content" :

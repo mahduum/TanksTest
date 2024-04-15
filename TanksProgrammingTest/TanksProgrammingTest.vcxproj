@@ -19,6 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Game\EnemyTankMovementComponent.cpp" />
+    <ClCompile Include="Sources\Game\ColliderComponent.cpp" />
+    <ClCompile Include="Sources\Game\ICollisionHandlerComponent.cpp" />
+    <ClCompile Include="Sources\Game\ProjectileCollisionHandlerComponent.cpp" />
+    <ClCompile Include="Sources\Game\DefaultCollisionHandlerComponent.cpp" />
+    <ClCompile Include="Sources\Game\BoxSweepColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileSpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileMovementComponent.cpp" />
     <ClCompile Include="Sources\Engine\CollisionUtils.cpp" />
@@ -36,6 +42,12 @@
     <ClCompile Include="Sources\Engine\TestClass1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Game\EnemyTankMovementComponent.h" />
+    <ClInclude Include="Sources\Game\ColliderComponent.h" />
+    <ClInclude Include="Sources\Game\ICollisionHandlerComponent.h" />
+    <ClInclude Include="Sources\Game\ProjectileCollisionHandlerComponent.h" />
+    <ClInclude Include="Sources\Game\DefaultCollisionHandlerComponent.h" />
+    <ClInclude Include="Sources\Game\BoxSweepColliderComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileMovementComponent.h" />
     <ClInclude Include="Sources\Engine\CollisionUtils.h" />
