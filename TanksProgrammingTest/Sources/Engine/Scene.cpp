@@ -37,24 +37,27 @@ void Scene::LoadFromConfig(nlohmann::json Config)
 			if (NewEntity->GetName() == "Player")
 			{
 				SDL_Log("Setting player as flow field target");
-				auto [x, y] = NewEntity->GetPositionXY();
-				m_FlowFieldTargetX = x;
-				m_FlowFieldTargetX = y;
+				//auto [x, y] = NewEntity->GetPositionXY();
+				//m_FlowFieldTargetX = x;
+				//m_FlowFieldTargetX = y;
+				//SetTargetAndCalculateFlowField(m_FlowFieldTargetX, m_FlowFieldTargetY);
 			}
 
 			AddEntity(NewEntity);
 		}
 	}
 
-	nlohmann::json::const_iterator SecenLayoutIt = Config.find("SceneLayout");
-	if (SecenLayoutIt != Config.end())
+	nlohmann::json::const_iterator SceneLayoutIt = Config.find("SceneLayout");
+	if (SceneLayoutIt != Config.end())
 	{
-		LoadSceneFromLayout((*SecenLayoutIt)["Content"], (*SecenLayoutIt)["Legend"]);
+		LoadSceneFromLayout((*SceneLayoutIt)["Content"], (*SceneLayoutIt)["Legend"], (*SceneLayoutIt)["Parameters"]);
 	}
 }
 
 void Scene::Initialize()
 {
+	//SetTargetAndCalculateFlowField(m_FlowFieldTargetX, m_FlowFieldTargetY);
+
 	for (Entity* Entity : m_Entities)
 	{
 		Entity->Initialize();
@@ -97,11 +100,9 @@ void Scene::AddEntity(Entity* Entity)
 	{
 		m_Entities.push_back(Entity);
 		m_ValidEntitiesEnd = m_Entities.end();
-		SDL_Log("Adding new entity with push back: %s", Entity->GetName().data());
 	}
 	else
 	{
-		SDL_Log("Adding new entity with replace: %s", Entity->GetName().data());
 		delete *m_ValidEntitiesEnd;
 		*m_ValidEntitiesEnd = Entity;
 		++m_ValidEntitiesEnd;
@@ -120,10 +121,13 @@ void Scene::RemoveEntity(Entity* Entity)//todo add removed entities to pool for 
 	}
 }
 
-void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend)
+void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, nlohmann::json Parameters)
 {
 	int Row = 0;
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
+
+	m_CellSizeX = Parameters.value("CellWidth", 35);
+	m_CellSizeY = Parameters.value("CellHeight", 35);
 
 	auto&& Items = Content.items();
 	m_FlowFieldRows = static_cast<int>(Content.size());
@@ -139,7 +143,7 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend)
 		for (char Character : Line)
 		{
 			size_t Index = Row * m_FlowFieldColumns + Column;
-			SDL_Log("Current index: %d", Index);
+
 			if (Character != ' ')
 			{
 				const char Key[] = { Character, '\0' };
@@ -154,7 +158,7 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend)
 				TextureComponentPtr->SetScale(Width, Height);
 
 				NewEntity->SetPosition(Column * Width, Row * Height);
-				NewEntity->SetRotation(FacingDirection::UP);
+				NewEntity->SetFacingDirection(FacingDirection::UP);
 
 				AddEntity(NewEntity);
 
@@ -256,14 +260,17 @@ void Scene::CalculateFlowDirections()
 	}
 }
 
-void Scene::SetTargetAndCalculateFlowField(int x, int y)
+void Scene::SetTargetAndCalculateFlowField(int sceneX, int sceneY)
 {
-	if (m_FlowFieldTargetX != x || m_FlowFieldTargetY != y) {
+	auto [x, y] = GetCellCoordsFromScenePosition(sceneX, sceneY);
+
+	if (m_FlowFieldTargetX != x || m_FlowFieldTargetY != y)
+	{
 		m_FlowFieldTargetX = x;
 		m_FlowFieldTargetY = y;
 
 		//Ensure the target is in bounds.
-		int IndexTarget = m_FlowFieldTargetX + m_FlowFieldTargetY * m_FlowFieldRows;  // NOLINT(bugprone-narrowing-conversions)
+		int IndexTarget = m_FlowFieldTargetX + m_FlowFieldTargetY * m_FlowFieldColumns;  // NOLINT(bugprone-narrowing-conversions)
 		if (IndexTarget > -1 && IndexTarget < m_FlowFieldCells.size() &&
 			m_FlowFieldTargetX > -1 && m_FlowFieldTargetX < m_FlowFieldColumns &&
 			m_FlowFieldTargetY > -1 && m_FlowFieldTargetY < m_FlowFieldRows)
@@ -282,4 +289,39 @@ void Scene::SetTargetAndCalculateFlowField(int x, int y)
 			CalculateFlowDirections();
 		}
 	}
+}
+
+std::tuple<int, int> Scene::GetFlowDirectionAtLocation(int sceneX, int sceneY) const
+{
+	int CellIndex = GetCellIndexFromScenePosition(sceneX, sceneY);
+
+	if (CellIndex > -1 && CellIndex < m_FlowFieldCells.size() &&
+		m_FlowFieldTargetX > -1 && m_FlowFieldTargetX < m_FlowFieldColumns &&
+		m_FlowFieldTargetY > -1 && m_FlowFieldTargetY < m_FlowFieldRows)
+	{
+		//todo return next coords
+		const auto& CellData = m_FlowFieldCells.at(CellIndex);
+		std::tuple<int, int> FlowDirection = { CellData.m_FlowDirectionX, CellData.m_FlowDirectionY };
+		//neighbour pointed to pos:
+		//int NeighbourIndex = (Column + CellData.m_FlowDirectionX) + (Row + CellData.m_FlowDirectionY) * m_FlowFieldCells.size();
+		//todo get neighbour pos: ...
+		return FlowDirection;
+	}
+	else
+	{
+		SDL_LogError(0, "Requested coordinates (%d, %d) are outside flow field!", sceneX, sceneY);
+	}
+
+	return { 0, 0 };
+}
+
+int Scene::GetCellIndexFromScenePosition(int sceneX, int sceneY) const
+{
+	auto [Column, Row] = GetCellCoordsFromScenePosition(sceneX, sceneY);
+	return Column + Row * m_FlowFieldColumns;
+}
+
+std::tuple<int, int> Scene::GetCellCoordsFromScenePosition(int sceneX, int sceneY) const
+{
+	return { sceneX / m_CellSizeX, sceneY / m_CellSizeY };
 }

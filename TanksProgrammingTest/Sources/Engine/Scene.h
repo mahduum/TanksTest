@@ -39,7 +39,7 @@ public:
 	}
 
 private:
-	void LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend);
+	void LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, nlohmann::json Parameters);
 
 	std::vector<Entity*> m_Entities;
 	std::vector<::Entity*>::iterator m_ValidEntitiesEnd;
@@ -57,15 +57,23 @@ private:
 		unsigned char m_FlowDistance = m_FlowDistanceMax;
 	};
 
+	int m_FlowFieldTargetX = -1;
+	int m_FlowFieldTargetY = -1;
+
 	std::vector<FlowFieldCell> m_FlowFieldCells;
+	int m_CellSizeX;
+	int m_CellSizeY;
 	int m_FlowFieldRows;
 	int m_FlowFieldColumns;
-	int m_FlowFieldTargetX;
-	int m_FlowFieldTargetY;
-
-public:
 
 	void CalculateDistances();
 	void CalculateFlowDirections();
-	void SetTargetAndCalculateFlowField(int x, int y);
+
+public:
+
+	void SetTargetAndCalculateFlowField(int x, int y);//todo private run on timer?
+
+	std::tuple<int, int> GetFlowDirectionAtLocation(int sceneX, int sceneY) const;
+	int GetCellIndexFromScenePosition(int sceneX, int sceneY) const;
+	std::tuple<int, int> GetCellCoordsFromScenePosition(int sceneX, int sceneY) const;
 };

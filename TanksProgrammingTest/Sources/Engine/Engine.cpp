@@ -123,7 +123,6 @@ void Engine::CreateActiveSceneFromTemplate(std::string Name)
 		Scene* SceneFromTemplate = new Scene();
 		SceneFromTemplate->LoadFromConfig(SceneConfig);
 		SceneFromTemplate->Initialize();
-
 		m_ActiveScene = SceneFromTemplate;
 	}
 }

@@ -63,7 +63,8 @@ public:
 
 	void SetPosition(Vector2 position);
 	void SetPosition(int x, int y);
-	void SetRotation(FacingDirection direction);
+	void SetFacingDirection(FacingDirection direction);
+	void SetFacingDirection(Vector2 direction);
 	void SetTranslation(int x, int y);
 
 	auto GetPositionXY() const -> std::tuple<int, int>;

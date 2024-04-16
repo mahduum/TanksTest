@@ -86,13 +86,13 @@ void PlayerInputComponent::Update(float DeltaTime)
 	if (PredictedDeltaX != 0 && std::abs(BacktraceCollisionDelta.x) < std::abs(PredictedDeltaX))
 	{
 		//moved horizontally set rotation in x
-		GetOwner()->SetRotation(PredictedDeltaX > 0 ? FacingDirection::RIGHT : FacingDirection::LEFT);
+		GetOwner()->SetFacingDirection(PredictedDeltaX > 0 ? FacingDirection::RIGHT : FacingDirection::LEFT);
 		GetOwner()->SetComponentsTransformDirty();//will update in entity update
 	}
 	else if (std::abs(BacktraceCollisionDelta.y) < std::abs(PredictedDeltaY))
 	{
 		//moved vertically set rotation in y
-		GetOwner()->SetRotation(PredictedDeltaY > 0 ? FacingDirection::DOWN : FacingDirection::UP);
+		GetOwner()->SetFacingDirection(PredictedDeltaY > 0 ? FacingDirection::DOWN : FacingDirection::UP);
 		GetOwner()->SetComponentsTransformDirty();//will update in entity update
 	}
 	else

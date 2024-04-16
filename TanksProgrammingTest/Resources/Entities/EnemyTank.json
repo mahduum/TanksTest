@@ -1,5 +1,6 @@
 {
 	"Name" : "EnemyTank",
+	"CanBeSteppedOn" : true,
 	"Components" : 
 	[
 		{
@@ -11,7 +12,8 @@
 			"PositionY" : 480
 		},
 		{
-			"Type" : "EnemyTankMovementComponent"
+			"Type" : "EnemyTankMovementComponent",
+			"Speed" : 30
 		},
 		{
 			"Type" : "ProjectileSpawnerComponent"

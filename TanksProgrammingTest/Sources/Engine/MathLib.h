@@ -151,6 +151,12 @@ public:
 		y = inValue.y;
 	}
 
+	bool operator==(const Vector2& other) const
+	{
+		return MathLib::NearZero(MathLib::Abs(x - other.x)) &&
+			MathLib::NearZero(MathLib::Abs(y - other.y));
+	}
+
 	// Vector addition (a + b)
 	friend Vector2 operator+(const Vector2& a, const Vector2& b)
 	{

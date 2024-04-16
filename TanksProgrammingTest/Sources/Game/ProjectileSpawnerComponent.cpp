@@ -64,7 +64,7 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 	}
 
 	Projectile->GetComponent<TextureComponent>()->SetPosition(SpawnPoint.x, SpawnPoint.y);
-	Projectile->SetRotation(Facing);
+	Projectile->SetFacingDirection(Facing);
 	Projectile->Initialize();
 	SDL_Log("Projectile rotation set to: %f, %f", Projectile->GetForwardVector().x, Projectile->GetForwardVector().y);
 	Engine::Get()->GetActiveScene()->AddEntity(Projectile);

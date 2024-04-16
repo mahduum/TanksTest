@@ -2,6 +2,7 @@
 #include "EntityComponent.h"
 #include "Engine.h"
 #include "ResourceManager.h"
+#include "Scene.h"
 #include "TextureComponent.h"
 #include "../Game/ICollisionHandlerComponent.h"
 
@@ -55,6 +56,15 @@ void Entity::Update(float DeltaTime)
 	}
 
 	UpdateComponentsTransform();
+
+	if (m_Name == "Player")
+	{
+		auto ActiveScene = Engine::Get()->GetActiveScene();
+		if (ActiveScene)
+		{
+			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(m_Position.x), static_cast<int>(m_Position.y));
+		}
+	}
 }
 
 void Entity::Draw()
@@ -118,7 +128,7 @@ void Entity::SetPosition(int x, int y)
 	m_Position.Set(static_cast<float>(x), static_cast<float>(y));
 }
 
-void Entity::SetRotation(FacingDirection direction)
+void Entity::SetFacingDirection(FacingDirection direction)
 {
 	//todo if there is time use showing different textures in
 	switch (direction)//todo make this a matrix
@@ -146,6 +156,18 @@ void Entity::SetRotation(FacingDirection direction)
 	}
 
 	m_FacingDirection = direction;
+}
+
+void Entity::SetFacingDirection(Vector2 direction)
+{
+	if (direction == Vector2::Up)
+		SetFacingDirection(FacingDirection::UP);
+	else if (direction == Vector2::Down)
+		SetFacingDirection(FacingDirection::DOWN);
+	else if (direction == Vector2::Right)
+		SetFacingDirection(FacingDirection::RIGHT);
+	else
+		SetFacingDirection(FacingDirection::LEFT);
 }
 
 void Entity::SetTranslation(int x, int y)
