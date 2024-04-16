@@ -8,6 +8,8 @@
 void Entity::LoadFromConfig(nlohmann::json Config)
 {
 	m_Name = Config.value("Name", "");
+	m_TransformType = StringToTransformType(Config.value("TransformType", ""));
+	m_CanBeSteppedOn = Config.value("CanBeSteppedOn", false);
 
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 	
@@ -71,19 +73,20 @@ void Entity::UnInitialize()
 	}
 }
 
-void Entity::AddComponent(EntityComponent* Component)
+void Entity::AddComponent(EntityComponent* Component)//todo add fix
 {
 	m_Components.push_back(Component);
 }
 
-void Entity::RemoveComponent(EntityComponent* Component)
+void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
 {
 	auto RetIt = std::remove(m_Components.begin(), m_Components.end(), Component);
 }
 
 void Entity::OnCollision(CollisionInfo collisionInfo)
 {
-	if(auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())
+	//to do call on each handler, there may be more than one
+	if(auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())//todo get components of type
 	{
 		CollisionHandler->OnCollision(collisionInfo);
 	}

@@ -6,20 +6,21 @@
 #include "Entity.h"
 #include "../Game/BoxColliderComponent.h"
 
-void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)
+void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)//todo all the boxes with all others, instead use the same but for one collider that sweeps other boxes
 {
 	std::sort(m_Boxes.begin(), m_Boxes.end(),
-		[](const BoxColliderComponent* a, const BoxColliderComponent* b) {
+		[](const BoxColliderComponent* a, const BoxColliderComponent* b)
+		{
 			return a->GetBox().m_Min.x <
 				b->GetBox().m_Min.x;
 		});
 
-	for (size_t i = 0; i < m_Boxes.size(); i++)
+	for (size_t i = 0; i < m_Boxes.size(); i++)//todo sweep only dynamic boxes (MUST DO COLLISIONS WITH DYNAMIC SEPARATELY TO AVOID REPETITIONS)
 	{
 		// Get max.x for current box
 		BoxColliderComponent* a = m_Boxes[i];
 		float max = a->GetBox().m_Max.x;
-		for (size_t j = i + 1; j < m_Boxes.size(); j++)
+		for (size_t j = i + 1; j < m_Boxes.size(); j++)//todo with all other boxes (dynamic and static) (i+1, so we avoid double events)
 		{
 			BoxColliderComponent* b = m_Boxes[j];
 			// If AABB[j] min is past the max bounds of AABB[i],
@@ -29,7 +30,8 @@ void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)
 			{
 				break;
 			}
-			else if (Intersect(a->GetBox(), b->GetBox()))//todo or use try get delta
+
+			if (Intersect(a->GetBox(), b->GetBox()))//todo or use try get delta
 			{
 				f(a->GetOwner(), b->GetOwner());//todo let decide to the given component what to do with it
 			}

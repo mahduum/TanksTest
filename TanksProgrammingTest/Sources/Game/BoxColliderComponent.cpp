@@ -42,7 +42,7 @@ void BoxColliderComponent::Initialize()
 
     OnUpdateTransform();
 
-    Engine::Get()->GetCollisionWorld()->AddBox(this);
+    Engine::Get()->GetCollisionWorld()->AddBox(this);//TODO ADD BASED ON TYPE
 }
 
 void BoxColliderComponent::Update(float DeltaTime)

@@ -8,7 +8,7 @@
 #include <memory.h>
 #include <limits>
 
-enum class FacingDirection
+enum class FacingDirection : unsigned int
 {
 	RIGHT,
 	LEFT,

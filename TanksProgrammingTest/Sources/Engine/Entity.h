@@ -8,6 +8,22 @@
 
 class EntityComponent;
 
+enum class TransformType : unsigned int
+{
+	Static,
+	Dynamic
+};
+
+inline TransformType StringToTransformType(const std::string&& EnumName)
+{
+	if(EnumName == "Static")
+		return TransformType::Static;
+	if(EnumName == "Dynamic")
+		return TransformType::Dynamic;
+
+	return TransformType::Static;
+}
+
 class Entity
 {
 
@@ -18,10 +34,13 @@ public:
 	void Draw();
 	void UnInitialize();
 
+	TransformType GetTransformType() const { return m_TransformType; }
+	bool CanBeSteppedOn() const { return m_CanBeSteppedOn; }
+
 	void AddComponent(EntityComponent* Component);
 	void RemoveComponent(EntityComponent* Component);
 
-	std::string GetName() const { return { m_Name.c_str(), m_Name.size() }; }
+	std::string_view GetName() const { return { m_Name.c_str(), m_Name.size() }; }
 
 	template <typename ComponentType>
 	ComponentType* GetComponent()
@@ -67,6 +86,10 @@ private:
 	Vector2 m_RightDirection;
 	float m_RotationDegrees = 0;
 	FacingDirection m_FacingDirection = FacingDirection::UP;
+
+	//fixed config values
+	TransformType m_TransformType = TransformType::Static;
+	bool m_CanBeSteppedOn = false;
 
 	bool m_UpdateComponentsTransform = true;
 };

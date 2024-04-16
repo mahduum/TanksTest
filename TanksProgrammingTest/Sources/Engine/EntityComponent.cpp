@@ -22,10 +22,10 @@ void EntityComponent::LoadFromConfig(nlohmann::json Config)
 		{
 			nlohmann::json ComponentConfig = ComponentItem.value();
 			std::string Type = ComponentConfig["Type"];
-			const EntityComponent* ComponentPrototype = ResourceManagerPtr->GetComponentPrototypeByName(Type);
+			const EntityComponent* ComponentPrototype = ResourceManagerPtr->GetComponentPrototypeByName(Type);//todo only load prototypes but spawn them in Initialize
 			EntityComponent* RequiredComponent = ComponentPrototype->Clone();
-			RequiredComponent->SetOwner(GetOwner());
 			RequiredComponent->LoadFromConfig(ComponentConfig);
+			RequiredComponent->SetOwner(GetOwner());
 			RequiredComponent->Initialize();
 			GetOwner()->AddComponent(RequiredComponent);//todo mark this component as being depended on, use its type as a key, so if its dependant is removed we check if anything other depends on it before we remove it too
 			SDL_Log("Adding requirement component of type: %s", typeid(*RequiredComponent).name());
@@ -41,6 +41,9 @@ void EntityComponent::OnLoaded()
 
 void EntityComponent::Initialize()
 {
+	//todo if there is already a required component then unload the prototype, else instantiate it, use post initialize, so we know what components there are
+	//all components that have been defined in json are by this time created, so if there are any required components still needed they can be created and
+	//initialiased in PostInitialize but when any component is attempted to be added twice from config definition will spit an error. Only default components allowed
 }
 
 void EntityComponent::Update(float DeltaTime)

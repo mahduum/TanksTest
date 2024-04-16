@@ -44,4 +44,28 @@ private:
 	std::vector<Entity*> m_Entities;
 	std::vector<::Entity*>::iterator m_ValidEntitiesEnd;
 	std::string m_Name;
+
+private:
+	/*Flow field section.*/
+	static constexpr unsigned char m_FlowDistanceMax = 255;
+
+	struct FlowFieldCell
+	{
+		bool m_CanBeSteppedOn = false;
+		int m_FlowDirectionX = 0;
+		int m_FlowDirectionY = 0;
+		unsigned char m_FlowDistance = m_FlowDistanceMax;
+	};
+
+	std::vector<FlowFieldCell> m_FlowFieldCells;
+	int m_FlowFieldRows;
+	int m_FlowFieldColumns;
+	int m_FlowFieldTargetX;
+	int m_FlowFieldTargetY;
+
+public:
+
+	void CalculateDistances();
+	void CalculateFlowDirections();
+	void SetTargetAndCalculateFlowField(int x, int y);
 };

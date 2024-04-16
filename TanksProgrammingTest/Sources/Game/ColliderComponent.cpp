@@ -13,14 +13,14 @@ ColliderComponent::ColliderComponent() : ColliderComponent(nullptr)
 {
 }
 
-void ColliderComponent::OnLoaded()
+void ColliderComponent::OnLoaded()//todo move it to base class and make generic the required component
 {
 	EntityComponent::OnLoaded();
 	if(!m_RequiredComponents.empty())
 	{
 		for (auto it = m_RequiredComponents.begin(); it != m_RequiredComponents.end(); ++it)
 		{
-			if(dynamic_cast<DefaultCollisionHandlerComponent*>(*it))
+			if (dynamic_cast<DefaultCollisionHandlerComponent*>(*it))
 			{
 				break;
 			}
@@ -37,5 +37,4 @@ void ColliderComponent::OnLoaded()
 			}
 		}
 	}
-		
 }
