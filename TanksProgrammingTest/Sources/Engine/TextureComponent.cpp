@@ -57,10 +57,6 @@ void TextureComponent::Draw()
 
 	if(GetOwner()->GetComponent<PlayerInputComponent>() || GetOwner()->GetName() == "EnemyTank")
 	{
-		if(GetOwner()->GetName() == "Enemy")
-		{
-			SDL_Log("Rotating enemy by: %f", GetOwner()->GetRotationDegrees());
-		}
 		const SDL_Point Center{ m_Rectangle.w/2, m_Rectangle.h/2 };
 		SDL_Rect Rect{ m_Rectangle.x, m_Rectangle.y, m_Rectangle.h, m_Rectangle.w };
 		SDL_RenderCopyEx(Engine::Get()->GetRenderer(), Texture, nullptr, &m_Rectangle, GetOwner()->GetRotationDegrees(), &Center, SDL_FLIP_NONE);
@@ -71,7 +67,7 @@ void TextureComponent::Draw()
 	}
 }
 
-void TextureComponent::OnUpdateTransform()
+void TextureComponent::OnUpdateSceneTransform()
 {
 	auto [x, y] = GetOwner()->GetPositionXY();
 	SetPosition(x, y);

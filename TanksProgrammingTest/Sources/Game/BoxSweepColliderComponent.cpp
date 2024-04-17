@@ -10,9 +10,9 @@ BoxSweepColliderComponent::BoxSweepColliderComponent() : BoxSweepColliderCompone
 {
 }
 
-void BoxSweepColliderComponent::OnUpdateTransform()
+void BoxSweepColliderComponent::OnUpdateSceneTransform()
 {
-	BoxColliderComponent::OnUpdateTransform();
+	BoxColliderComponent::OnUpdateSceneTransform();
 	m_SweepBox = GetSweepBox();
 }
 

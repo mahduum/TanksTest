@@ -19,7 +19,7 @@ public:
 	virtual void Initialize() override;
 	virtual void Update(float DeltaTime) override;
 	virtual void UnInitialize() override;
-	virtual void OnUpdateTransform() override;
+	virtual void OnUpdateSceneTransform() override;
 
 	bool IntersectsWith(const BoxColliderComponent& other) const;
 	bool TryGetCollisionDelta(const BoxColliderComponent& other, Vector2& collisionDelta) const;

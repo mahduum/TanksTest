@@ -126,7 +126,7 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, n
 	int Row = 0;
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 
-	m_CellSizeX = Parameters.value("CellWidth", 35);
+	m_CellSizeX = Parameters.value("CellWidth", 30);
 	m_CellSizeY = Parameters.value("CellHeight", 35);
 
 	auto&& Items = Content.items();
@@ -139,10 +139,10 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, n
 	{
 		int Column = 0;
 		const std::string& Line = Item.value();
-		
 		for (char Character : Line)
 		{
 			size_t Index = Row * m_FlowFieldColumns + Column;
+			auto [x, y] = GetCellCoordsFromLinearIndex(Index);
 
 			if (Character != ' ')
 			{
@@ -161,11 +161,14 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, n
 				NewEntity->SetFacingDirection(FacingDirection::UP);
 
 				AddEntity(NewEntity);
-
+				//must-use collider for placement of tanks, tanks setting will determine the position, not the setting in the map, map overrides per instance setting
 				m_FlowFieldCells.at(Index).m_CanBeSteppedOn = NewEntity->CanBeSteppedOn();
+				if (Character == '#')
+					SDL_Log("Placing %s at coords x: %d, y: %d amd index: %d, scene pos x: %d, y: %d", NewEntity->GetName().data(), x, y, Index, Column * Width, Row * Height);
 			}
 			else
 			{
+				//SDL_Log("Placing %s at coords x: %d, y: %d amd index: %d", "Empty", x, y, Index);
 				m_FlowFieldCells.at(Index).m_CanBeSteppedOn = true;
 			}
 			++Column;
@@ -181,39 +184,38 @@ void Scene::CalculateDistances()
 	int IndexTarget = m_FlowFieldTargetX + m_FlowFieldTargetY * m_FlowFieldColumns;
 
 	//Create a queue that will contain the indices to be checked.
-	std::queue<int> IndicesToCheck;
+	std::queue<int> IndicesToEvaluate;
 	//Set the target tile's flow value to 0 and add it to the queue.
 	m_FlowFieldCells[IndexTarget].m_FlowDistance = 0;
-	IndicesToCheck.push(IndexTarget);
+	IndicesToEvaluate.push(IndexTarget);
 
 	constexpr int m_NeighboursOffsets[][2] = { { -1, 0}, {1, 0}, {0, -1}, {0, 1} };
 
 	//Loop through the queue and assign distance to each tile.
-	while (IndicesToCheck.empty() == false)
+	while (IndicesToEvaluate.empty() == false)
 	{
-		int IndexCurrent = IndicesToCheck.front();
-		IndicesToCheck.pop();
+		int IndexCurrent = IndicesToEvaluate.front();
+		IndicesToEvaluate.pop();
 
 		//Check each of the neighbors;
 		for (const auto m_NeighboursOffset : m_NeighboursOffsets)
 		{
 			int NeighborX = m_NeighboursOffset[0] + IndexCurrent % m_FlowFieldColumns;//add offset in x to current index
 			int NeighborY = m_NeighboursOffset[1] + IndexCurrent / m_FlowFieldColumns;//add offset in y to current index
-			int IndexNeighbor = NeighborX + NeighborY * m_FlowFieldColumns;//compose linear index
+			int NeighbourIndex = NeighborX + NeighborY * m_FlowFieldColumns;//compose linear index
 
 			//Ensure that the neighbor exists and isn't a wall.
-			if (IndexNeighbor > -1 && IndexNeighbor < m_FlowFieldCells.size() &&
+			if (NeighbourIndex > -1 && NeighbourIndex < m_FlowFieldCells.size() &&
 				NeighborX > -1 && NeighborX < m_FlowFieldColumns &&
 				NeighborY > -1 && NeighborY < m_FlowFieldRows &&
-				m_FlowFieldCells[IndexNeighbor].m_CanBeSteppedOn)
+				m_FlowFieldCells[NeighbourIndex].m_CanBeSteppedOn)
 			{
-
 				//Check if the tile has been assigned a distance yet or not.
-				if (m_FlowFieldCells[IndexNeighbor].m_FlowDistance == m_FlowDistanceMax)
+				if (m_FlowFieldCells[NeighbourIndex].m_FlowDistance == m_FlowDistanceMax)
 				{
 					//If not the set it's distance and add it to the queue.
-					m_FlowFieldCells[IndexNeighbor].m_FlowDistance = m_FlowFieldCells[IndexCurrent].m_FlowDistance + 1;
-					IndicesToCheck.push(IndexNeighbor);
+					m_FlowFieldCells[NeighbourIndex].m_FlowDistance = m_FlowFieldCells[IndexCurrent].m_FlowDistance + 1;
+					IndicesToEvaluate.push(NeighbourIndex);
 				}
 			}
 		}
@@ -291,8 +293,9 @@ void Scene::SetTargetAndCalculateFlowField(int sceneX, int sceneY)
 	}
 }
 
-std::tuple<int, int> Scene::GetFlowDirectionAtLocation(int sceneX, int sceneY) const
+void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection) const
 {
+	//SDL_Log("Scene position x: %d, y: %d", sceneX, sceneY);
 	int CellIndex = GetCellIndexFromScenePosition(sceneX, sceneY);
 
 	if (CellIndex > -1 && CellIndex < m_FlowFieldCells.size() &&
@@ -302,26 +305,50 @@ std::tuple<int, int> Scene::GetFlowDirectionAtLocation(int sceneX, int sceneY) c
 		//todo return next coords
 		const auto& CellData = m_FlowFieldCells.at(CellIndex);
 		std::tuple<int, int> FlowDirection = { CellData.m_FlowDirectionX, CellData.m_FlowDirectionY };
-		//neighbour pointed to pos:
-		//int NeighbourIndex = (Column + CellData.m_FlowDirectionX) + (Row + CellData.m_FlowDirectionY) * m_FlowFieldCells.size();
-		//todo get neighbour pos: ...
-		return FlowDirection;
+
+		auto [CurrentCellX, CurrentCellY] = GetCellCoordsFromLinearIndex(CellIndex);
+		auto [GoToNeighbourSceneX, GoToNeighbourSceneY] = GetScenePositionFromCellCoords(CurrentCellX + CellData.m_FlowDirectionX, CurrentCellY + CellData.m_FlowDirectionY);
+
+		nextNodeSceneLocation.Set(GoToNeighbourSceneX, GoToNeighbourSceneY);
+		flowDirection.Set(CellData.m_FlowDirectionX, CellData.m_FlowDirectionY);
 	}
 	else
 	{
 		SDL_LogError(0, "Requested coordinates (%d, %d) are outside flow field!", sceneX, sceneY);
 	}
-
-	return { 0, 0 };
 }
 
 int Scene::GetCellIndexFromScenePosition(int sceneX, int sceneY) const
 {
-	auto [Column, Row] = GetCellCoordsFromScenePosition(sceneX, sceneY);
+	auto [Column, Row] = GetCellCoordsFromScenePosition(sceneX, sceneY);//column and row in grid space
+	//auto LinearIndex = Row * m_c
+	auto [VerifyX, VerifyY] = GetCellCoordsFromLinearIndex(Column + Row * m_FlowFieldColumns);
+
+	if(Column != VerifyX)
+	{
+		SDL_Log("Column is not verified, was: %d, is: %d,from scene space: %d, flow field columns: %d", Column, VerifyX, sceneX, m_FlowFieldColumns);
+	}
+
+	if (Row != VerifyY)
+	{
+		SDL_Log("Row is not verified, was: %d, is: %d, from scene space: %d", Row, VerifyY, sceneX);
+	}
+
 	return Column + Row * m_FlowFieldColumns;
+}
+
+std::tuple<int, int> Scene::GetScenePositionFromCellCoords(int cellX, int cellY) const
+{
+	return { cellX * m_CellSizeX, cellY * m_CellSizeY };
 }
 
 std::tuple<int, int> Scene::GetCellCoordsFromScenePosition(int sceneX, int sceneY) const
 {
-	return { sceneX / m_CellSizeX, sceneY / m_CellSizeY };
+	return { (sceneX / m_CellSizeX), (sceneY / m_CellSizeY) };//todo if max pos is, get max pos of collider
+}
+
+std::tuple<int, int> Scene::GetCellCoordsFromLinearIndex(int index) const
+{
+	return { index % m_FlowFieldColumns, index / m_FlowFieldColumns };
+
 }

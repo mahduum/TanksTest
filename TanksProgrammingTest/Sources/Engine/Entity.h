@@ -59,7 +59,7 @@ public:
 
 	void OnCollision(CollisionInfo collisionInfo);
 
-	void UpdateComponentsTransform();
+	void UpdateSceneTransform();
 
 	void SetPosition(Vector2 position);
 	void SetPosition(int x, int y);
@@ -82,7 +82,7 @@ private:
 	std::list<EntityComponent*> m_Components;//todo make it unordered set
 	std::string m_Name;
 	
-	Vector2 m_Position;
+	Vector2 m_ScenePosition;
 	Vector2 m_ForwardDirection;
 	Vector2 m_RightDirection;
 	float m_RotationDegrees = 0;
@@ -92,5 +92,5 @@ private:
 	TransformType m_TransformType = TransformType::Static;
 	bool m_CanBeSteppedOn = false;
 
-	bool m_UpdateComponentsTransform = true;
+	bool m_UpdateSceneTransform = true;
 };

@@ -8,7 +8,7 @@ public:
 	BoxSweepColliderComponent(Entity* Owner);
 	BoxSweepColliderComponent();
 
-	virtual void OnUpdateTransform() override;
+	virtual void OnUpdateSceneTransform() override;
 	virtual const AABB& GetBox() const override;
 
 private:

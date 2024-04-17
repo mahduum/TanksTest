@@ -46,7 +46,7 @@ void Entity::Update(float DeltaTime)
 	//todo: make update groups, first transform group then representation group
 	//Transform group: first update predicted transforms with input groups, updated colliders transforms, correct transforms and colliders.
 	//Update representation groups transforms -> that way we are sure that representation has correct transform to update to
-	UpdateComponentsTransform();
+	UpdateSceneTransform();
 
 	for (EntityComponent* Component : m_Components)
 	{
@@ -55,14 +55,14 @@ void Entity::Update(float DeltaTime)
 		//
 	}
 
-	UpdateComponentsTransform();
+	UpdateSceneTransform();
 
 	if (m_Name == "Player")
 	{
 		auto ActiveScene = Engine::Get()->GetActiveScene();
 		if (ActiveScene)
 		{
-			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(m_Position.x), static_cast<int>(m_Position.y));
+			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(m_ScenePosition.x), static_cast<int>(m_ScenePosition.y));
 		}
 	}
 }
@@ -106,26 +106,26 @@ void Entity::OnCollision(CollisionInfo collisionInfo)
 	//get implementor it is assumed to come with base
 }
 
-void Entity::UpdateComponentsTransform()
+void Entity::UpdateSceneTransform()
 {
-	if (m_UpdateComponentsTransform == false) return;
+	if (m_UpdateSceneTransform == false) return;
 
-	m_UpdateComponentsTransform = false;
+	m_UpdateSceneTransform = false;
 
 	for (auto Comp : m_Components)
 	{
-		Comp->OnUpdateTransform();
+		Comp->OnUpdateSceneTransform();
 	}
 }
 
 void Entity::SetPosition(Vector2 position)
 {
-	m_Position.Set(position);
+	m_ScenePosition.Set(position);
 }
 
 void Entity::SetPosition(int x, int y)
 {
-	m_Position.Set(static_cast<float>(x), static_cast<float>(y));
+	m_ScenePosition.Set(static_cast<float>(x), static_cast<float>(y));
 }
 
 void Entity::SetFacingDirection(FacingDirection direction)
@@ -172,18 +172,18 @@ void Entity::SetFacingDirection(Vector2 direction)
 
 void Entity::SetTranslation(int x, int y)
 {
-	m_Position.x += x;
-	m_Position.y += y;
+	m_ScenePosition.x += x;
+	m_ScenePosition.y += y;
 }
 
 auto Entity::GetPositionXY() const -> std::tuple<int, int>
 {
-	return std::make_tuple( static_cast<int>(m_Position.x), static_cast<int>(m_Position.y));
+	return std::make_tuple( static_cast<int>(m_ScenePosition.x), static_cast<int>(m_ScenePosition.y));
 }
 
 Vector2 Entity::GetPosition() const
 {
-	return m_Position;
+	return m_ScenePosition;
 }
 
 Vector2 Entity::GetForwardVector() const
@@ -208,5 +208,5 @@ float Entity::GetRotationDegrees() const
 
 void Entity::SetComponentsTransformDirty()
 {
-	m_UpdateComponentsTransform = true;
+	m_UpdateSceneTransform = true;
 }

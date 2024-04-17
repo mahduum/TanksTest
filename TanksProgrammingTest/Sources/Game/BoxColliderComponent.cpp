@@ -40,7 +40,7 @@ void BoxColliderComponent::Initialize()
     m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();//todo make it independent of texture later on
     //for now set from texture, later on set from player, read offset from json to
 
-    OnUpdateTransform();
+    OnUpdateSceneTransform();
 
     Engine::Get()->GetCollisionWorld()->AddBox(this);//TODO ADD BASED ON TYPE
 }
@@ -55,7 +55,7 @@ void BoxColliderComponent::UnInitialize()
     Engine::Get()->GetCollisionWorld()->RemoveBox(this);
 }
 
-void BoxColliderComponent::OnUpdateTransform()
+void BoxColliderComponent::OnUpdateSceneTransform()
 {
     auto TexRect = &m_TextureComponent->GetRectangle();
     auto [x, y] = GetOwner()->GetPositionXY();

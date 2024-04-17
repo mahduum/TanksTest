@@ -16,7 +16,7 @@ public:
 	virtual void Initialize() override;
 	virtual void UnInitialize() override;
 	virtual void Draw() override;
-	virtual void OnUpdateTransform() override;
+	virtual void OnUpdateSceneTransform() override;
 
 
 	void SetTextureFromAssetName(std::string Name);

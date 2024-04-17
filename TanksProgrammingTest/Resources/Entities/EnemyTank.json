@@ -13,7 +13,7 @@
 		},
 		{
 			"Type" : "EnemyTankMovementComponent",
-			"Speed" : 30
+			"Speed" : 60
 		},
 		{
 			"Type" : "ProjectileSpawnerComponent"

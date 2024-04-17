@@ -58,7 +58,7 @@ void EntityComponent::UnInitialize()
 {
 }
 
-void EntityComponent::OnUpdateTransform()
+void EntityComponent::OnUpdateSceneTransform()
 {
 	//todo maybe should be implemented as scene component if there is time 
 }

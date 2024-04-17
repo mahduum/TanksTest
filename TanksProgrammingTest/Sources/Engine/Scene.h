@@ -73,7 +73,9 @@ public:
 
 	void SetTargetAndCalculateFlowField(int x, int y);//todo private run on timer?
 
-	std::tuple<int, int> GetFlowDirectionAtLocation(int sceneX, int sceneY) const;
+	void GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection) const;
 	int GetCellIndexFromScenePosition(int sceneX, int sceneY) const;
+	std::tuple<int, int> GetScenePositionFromCellCoords(int cellX, int cellY) const;
 	std::tuple<int, int> GetCellCoordsFromScenePosition(int sceneX, int sceneY) const;
+	std::tuple<int, int> GetCellCoordsFromLinearIndex(int index) const;
 };

@@ -7,8 +7,8 @@
 			"Texture" : "RedTankFront.png",
 			"Width" : 44,
 			"Height" : 36,
-			"PositionX" : 600,
-			"PositionY" : 480
+			"PositionX" : 750,
+			"PositionY" : 390
 		},
 		{
 			"Type" : "PlayerInputComponent"

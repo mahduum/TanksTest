@@ -15,7 +15,7 @@ public:
 	void Update(float DeltaTime) override;
 	void Draw() override;
 	void UnInitialize() override;
-	void OnUpdateTransform() override;
+	void OnUpdateSceneTransform() override;
 
 	void Move(float DeltaTime);//update actor transform
 
