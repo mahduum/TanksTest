@@ -44,7 +44,6 @@ void TextureComponent::UnInitialize()
 		SDL_DestroyTexture(Texture);
 	}
 
-	//free(Surface);
 	if(Surface != nullptr)
 	{
 		SDL_FreeSurface(Surface);

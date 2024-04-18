@@ -19,12 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="Sources\Game\EnemyTankMovementComponent.cpp" />
     <ClCompile Include="Sources\Game\ColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\ICollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileCollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\DefaultCollisionHandlerComponent.cpp" />
-    <ClCompile Include="Sources\Game\BoxSweepColliderComponent.cpp" />
+    <ClCompile Include="Sources\Game\BoxTweenSweepColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileSpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileMovementComponent.cpp" />
     <ClCompile Include="Sources\Engine\CollisionUtils.cpp" />
@@ -39,15 +40,15 @@
     <ClCompile Include="Sources\Game\BoxColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\Main.cpp" />
     <ClCompile Include="Sources\Game\PlayerInputComponent.cpp" />
-    <ClCompile Include="Sources\Engine\TestClass1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="Sources\Game\EnemyTankMovementComponent.h" />
     <ClInclude Include="Sources\Game\ColliderComponent.h" />
     <ClInclude Include="Sources\Game\ICollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileCollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\DefaultCollisionHandlerComponent.h" />
-    <ClInclude Include="Sources\Game\BoxSweepColliderComponent.h" />
+    <ClInclude Include="Sources\Game\BoxTweenSweepColliderComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileMovementComponent.h" />
     <ClInclude Include="Sources\Engine\CollisionUtils.h" />
@@ -62,7 +63,6 @@
     <ClInclude Include="Sources\Engine\EngineUtils.h" />
     <ClInclude Include="Sources\Game\BoxColliderComponent.h" />
     <ClInclude Include="Sources\Game\PlayerInputComponent.h" />
-    <ClInclude Include="Sources\Engine\TestClass1.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="External\SDL2_image-2.0.5\lib\x64\SDL2_image.dll" />
@@ -185,7 +185,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

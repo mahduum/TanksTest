@@ -5,7 +5,7 @@
 
 #include "Entity.h"
 
-BoxColliderComponent::BoxColliderComponent(): BoxColliderComponent(nullptr)
+BoxColliderComponent:: BoxColliderComponent(): BoxColliderComponent(nullptr)
 {
 }
 
@@ -21,7 +21,7 @@ BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
 
 void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 {
-    EntityComponent::LoadFromConfig(Config);
+    ColliderComponent::LoadFromConfig(Config);
 
     m_BoxOffsetMin.x = Config.value("OffsetMinX", 0);
     m_BoxOffsetMin.y = Config.value("OffsetMinY", 0);
@@ -37,6 +37,7 @@ void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 void BoxColliderComponent::Initialize()
 {
     //todo should be added as required
+
     auto TexOpt = GetOwner()->GetComponent<TextureComponent>();//todo make it independent of texture later on
     if(TexOpt.has_value() == false)
     {
@@ -44,24 +45,38 @@ void BoxColliderComponent::Initialize()
         return;
     }
 
-    //for now set from texture, later on set from player, read offset from json to
-    m_TextureComponent = TexOpt.value();//todo
+    m_TextureComponent = TexOpt.value();
 
     OnUpdateSceneTransform();
 
-    //Engine::Get()->GetCollisionWorld()->AddBox(std::make_shared<BoxColliderComponent>(*this));
-    m_SelfShared = std::make_shared<BoxColliderComponent>(*this);
-    Engine::Get()->GetCollisionWorld()->AddBox(m_SelfShared);
-}
+    //SDL_Log("Adding box of type %d, count before: %d", GetCollisionObjectType(), Engine::Get()->GetCollisionWorld()->GetBoxesCount());
 
-void BoxColliderComponent::Update(float DeltaTime)
-{
-    EntityComponent::Update(DeltaTime);
+    if(GetCollisionObjectType() == CollisionObjectType::Player)
+    {
+        SDL_Log("Adding player box, count before: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
+    }
+
+    m_SelfShared = std::shared_ptr<BoxColliderComponent>(this);
+    Engine::Get()->GetCollisionWorld()->AddBox(m_SelfShared);
+
+    if ((GetCollisionObjectType() & CollisionObjectType::Projectile) == CollisionObjectType::Projectile)
+    {
+        SDL_Log("Added projectile box, count after: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
+    }
 }
 
 void BoxColliderComponent::UnInitialize()
 {
-    Engine::Get()->GetCollisionWorld()->RemoveBox(m_SelfShared);
+    if ((GetCollisionObjectType() & CollisionObjectType::Projectile) == CollisionObjectType::Projectile)
+    {
+        SDL_Log("Removing projectile box, count after: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
+    }
+
+	Engine::Get()->GetCollisionWorld()->RemoveBox(m_SelfShared);
+    if ((GetCollisionObjectType() & CollisionObjectType::Projectile) == CollisionObjectType::Projectile)
+    {
+        SDL_Log("Removed projectile box, count after: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
+    }
 }
 
 void BoxColliderComponent::OnUpdateSceneTransform()
@@ -74,6 +89,7 @@ void BoxColliderComponent::OnUpdateSceneTransform()
 
     auto TexRect = &m_TextureComponent->GetRectangle();
     auto [x, y] = GetOwner()->GetPositionXY();
+
     SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);
     SetBoxMax(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);//todo update also scale from entity
 }
@@ -110,11 +126,11 @@ void BoxColliderComponent::SetScaleOffset(const Vector2 offset)
 
 void BoxColliderComponent::SetBoxWithOffset(const Vector2 boxMinPosition, const Vector2 boxMaxPosition, const Vector2 boxMinOffset, const Vector2 boxMaxOffset)//todo or use actor position
 {
-    m_Box.m_Min = boxMinPosition + boxMinOffset;
-    m_Box.m_Max = boxMaxPosition + boxMaxOffset;
+    m_Box.m_Min.Set(boxMinPosition + boxMinOffset);
+    m_Box.m_Max.Set(boxMaxPosition + boxMaxOffset);
 }
 
-AABB BoxColliderComponent::GetSweepBox() const
+AABB BoxColliderComponent::GetTweenSweepBox() const
 {
     AABB SweepBox(m_Box.m_Min, m_Box.m_Max);
     SweepBox.UpdateMinMax(m_PreviousFrameBox.m_Min);

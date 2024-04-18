@@ -28,6 +28,9 @@ inline TransformType StringToTransformType(const std::string&& EnumName)
 	return TransformType::Static;
 }
 
+template<typename T>
+concept ComponentType = std::is_base_of_v<EntityComponent, T>;
+
 class Entity
 {
 
@@ -37,6 +40,7 @@ public:
 		m_ComponentsMap = std::unordered_map<std::type_index, int>();
 		m_Components = std::vector<std::shared_ptr<EntityComponent>>();
 	}
+
 	void LoadFromConfig(nlohmann::json Config);
 	void Initialize();
 	void Update(float DeltaTime);
@@ -51,23 +55,18 @@ public:
 	void AddComponent(EntityComponent* Component);
 	void RemoveComponent(EntityComponent* Component);
 
-	template<typename ComponentType>
-	void AddComponent(std::shared_ptr<EntityComponent> Component)
+	template<ComponentType T>
+	void AddComponent(std::shared_ptr<T> Component)
 	{
-		static_assert(std::is_base_of_v<EntityComponent, ComponentType>, "ComponentType must be a subtype of EntityComponent");
-		SDL_Log("Adding type id: %s, map size: %d", Component->GetTypeIndex().name(), m_ComponentsMap.size());
 		m_Components.emplace_back(Component);
 		m_ComponentsMap.insert({ Component->GetTypeIndex(), m_Components.size() - 1 });
 	}
 
-	template<typename ComponentType>
-	void RemoveComponent()//the type is enough?
+	template<ComponentType T>
+	void RemoveComponent()//the type is enough?//todo finish remove
 	{
-		static_assert(std::is_base_of_v<EntityComponent, ComponentType>, "ComponentType must be a subtype of EntityComponent");
-		//SDL_Log("Removing type id: %s", typeid(ComponentType).name());
-
-		m_ComponentsMap[typeid(ComponentType)] = m_Components.size() - 1;
-		std::type_index TypeIndex = typeid(ComponentType);
+		m_ComponentsMap[typeid(T)] = m_Components.size() - 1;
+		std::type_index TypeIndex = typeid(T);
 		auto It = m_ComponentsMap.find(TypeIndex);
 		if(It != m_ComponentsMap.end())
 		{
@@ -76,40 +75,19 @@ public:
 		}
 	}
 
-	template<typename ComponentType>
-	std::optional<std::shared_ptr<ComponentType>> GetComponent()
+	template<ComponentType T>
+	std::optional<std::shared_ptr<T>> GetComponent()
 	{
-		static_assert(std::is_base_of_v<EntityComponent, ComponentType>, "ComponentType must be a subtype of EntityComponent");
-		std::type_index index = typeid(ComponentType);
-		SDL_Log("Getting type id: %s, map size: %d", index.name(), m_ComponentsMap.size());
+		std::type_index index = typeid(T);
 
-		auto it = m_ComponentsMap.find(typeid(ComponentType));
+		auto it = m_ComponentsMap.find(typeid(T));
 		if(it != m_ComponentsMap.end())
 		{
-			return std::static_pointer_cast<ComponentType>(m_Components.at(it->second));
+			return std::static_pointer_cast<T>(m_Components.at(it->second));
 		}
 
 		return std::nullopt;
 	}
-
-
-	/*template <typename ComponentType>
-	ComponentType* GetComponent()
-	{
-		auto Component = GetComponentNew<ComponentType>().value();
-		ComponentType* Ptr = Component.get();
-		return Ptr;
-		static_assert(std::is_base_of_v<EntityComponent, ComponentType>, "ComponentType must be a subtype of BoxCollisionComponent");
-
-		for (EntityComponent* Component : m_Components)
-		{
-			if (ComponentType* TypedComponent = dynamic_cast<ComponentType*>(Component))
-			{
-				return TypedComponent;
-			}
-		}
-		return nullptr;
-	}*/
 
 	void OnCollision(CollisionInfo collisionInfo);
 

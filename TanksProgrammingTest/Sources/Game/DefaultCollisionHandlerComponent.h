@@ -10,7 +10,7 @@ public:
 
 	virtual void OnCollision(CollisionInfo collisionInfo) override;
 
-	virtual EntityComponent* Clone() const override { return new DefaultCollisionHandlerComponent(*this); }
+	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<DefaultCollisionHandlerComponent>(*this); }
 
 
 	//virtual void Initialize() override;

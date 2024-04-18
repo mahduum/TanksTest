@@ -11,7 +11,7 @@ public:
 	ProjectileSpawnerComponent(Entity* Owner);
 	ProjectileSpawnerComponent();
 
-	virtual EntityComponent* Clone() const override { return new ProjectileSpawnerComponent(*this); }
+	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<ProjectileSpawnerComponent>(*this); }
 
 	void LoadFromConfig(nlohmann::json Config) override;//offsets for spawn points
 	void Initialize() override;

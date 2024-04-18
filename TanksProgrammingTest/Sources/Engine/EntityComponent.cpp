@@ -23,7 +23,7 @@ void EntityComponent::LoadFromConfig(nlohmann::json Config)
 			nlohmann::json ComponentConfig = ComponentItem.value();
 			std::string Type = ComponentConfig["Type"];
 			const EntityComponent* ComponentPrototype = ResourceManagerPtr->GetComponentPrototypeByName(Type);//todo only load prototypes but spawn them in Initialize
-			EntityComponent* RequiredComponent = ComponentPrototype->Clone();
+			auto RequiredComponent = ComponentPrototype->Clone();
 			RequiredComponent->LoadFromConfig(ComponentConfig);
 			RequiredComponent->SetOwner(GetOwner());
 			RequiredComponent->Initialize();

@@ -8,7 +8,7 @@ public:
 	ProjectileCollisionHandlerComponent(Entity* Owner);
 	ProjectileCollisionHandlerComponent();
 
-	virtual EntityComponent* Clone() const override { return new ProjectileCollisionHandlerComponent(*this); }
+	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<ProjectileCollisionHandlerComponent>(*this); }
 
 	virtual void OnCollision(CollisionInfo collisionInfo) override;
 };

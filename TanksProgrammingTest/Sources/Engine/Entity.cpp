@@ -23,7 +23,7 @@ void Entity::LoadFromConfig(nlohmann::json Config)
 			nlohmann::json ComponentConfig = ComponentItem.value();
 			std::string Type = ComponentConfig["Type"];
 			const EntityComponent* ComponentPrototype = ResourceManagerPtr->GetComponentPrototypeByName(Type);
-			EntityComponent* NewComponent = ComponentPrototype->Clone();
+			auto NewComponent = ComponentPrototype->Clone();
 			NewComponent->SetOwner(this);
 			NewComponent->LoadFromConfig(ComponentConfig);
 			AddComponent(NewComponent);
@@ -35,7 +35,7 @@ void Entity::Initialize()
 {
 	for (auto Component : m_Components)
 	{
-		Component->Initialize();
+ 		Component->Initialize();
 	}
 
 	auto TexOpt = GetComponent<::TextureComponent>();
@@ -62,12 +62,14 @@ void Entity::Update(float DeltaTime)
 
 	UpdateSceneTransform();
 
-	if (m_Name == "Player")
+	if (m_Name == "Player")//todo a nicer way???
 	{
 		auto ActiveScene = Engine::Get()->GetActiveScene();
-		if (ActiveScene)
+		auto BoxColliderOpt = GetComponent<BoxColliderComponent>();
+		if (ActiveScene && BoxColliderOpt.has_value())
 		{
-			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(m_ScenePosition.x), static_cast<int>(m_ScenePosition.y));
+			auto PositionWithVisualOffset = BoxColliderOpt.value()->GetBox().m_Min;
+			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(PositionWithVisualOffset.x), static_cast<int>(PositionWithVisualOffset.y));
 		}
 	}
 }
@@ -102,7 +104,6 @@ void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
 
 void Entity::OnCollision(CollisionInfo collisionInfo)
 {
-	//return;
 	auto CollisionHandlerOption = GetComponent<ICollisionHandlerComponent>();
 
 	if(CollisionHandlerOption.has_value())//todo get components of type

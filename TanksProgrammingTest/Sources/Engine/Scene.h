@@ -19,24 +19,8 @@ public:
 	void Draw();
 	void UnInitialize();
 
-	void AddEntity(Entity* Entity);
-	void RemoveEntity(Entity* Entity);
-
-	template <typename ComponentType>
-	std::vector<ComponentType*> GetComponents()
-	{
-		std::vector<ComponentType*> Components;
-
-		for (Entity* Entity : m_Entities)
-		{
-			if(ComponentType* Component = Entity->GetComponent<ComponentType>())
-			{
-				Components.emplace_back(Component);
-			}
-		}
-
-		return Components;
-	}
+	void AddEntity(Entity* Entity);//todo with shared???
+	void RemoveEntity(Entity* Entity);//todo with shared
 
 private:
 	void LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, nlohmann::json Parameters);
@@ -71,7 +55,8 @@ private:
 
 public:
 
-	void SetTargetAndCalculateFlowField(int x, int y);//todo private run on timer?
+	void SetTargetAndCalculateFlowField(int x, int y);
+	Vector2 GetTargetCellScenePosition() const;
 
 	void GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection) const;
 	int GetCellIndexFromScenePosition(int sceneX, int sceneY) const;

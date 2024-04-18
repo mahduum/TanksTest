@@ -1,6 +1,7 @@
 #include "ProjectileSpawnerComponent.h"
 
 #include "Entity.h"
+#include "ProjectileCollisionHandlerComponent.h"
 #include "ResourceManager.h"
 #include "Scene.h"
 #include "TextureComponent.h"
@@ -66,7 +67,7 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 	Projectile->GetComponent<TextureComponent>().value()->SetPosition(SpawnPoint.x, SpawnPoint.y);
 	Projectile->SetFacingDirection(Facing);
 	Projectile->Initialize();
-	SDL_Log("Projectile rotation set to: %f, %f", Projectile->GetForwardVector().x, Projectile->GetForwardVector().y);
+
 	Engine::Get()->GetActiveScene()->AddEntity(Projectile);
 }
 

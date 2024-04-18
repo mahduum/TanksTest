@@ -3,7 +3,7 @@
 #include "TextureComponent.h"
 #include "PlayerInputComponent.h"
 #include "BoxColliderComponent.h"
-#include "BoxSweepColliderComponent.h"
+#include "BoxTweenSweepColliderComponent.h"
 #include "DefaultCollisionHandlerComponent.h"
 #include "EnemyTankMovementComponent.h"
 #include "ProjectileCollisionHandlerComponent.h"
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	ResourceManagerPtr->RegisterComponent("ProjectileCollisionHandlerComponent", new ProjectileCollisionHandlerComponent());
 	//ResourceManagerPtr->RegisterComponent("ColliderComponent", new ColliderComponent());
 	ResourceManagerPtr->RegisterComponent("BoxColliderComponent", new BoxColliderComponent());
-	ResourceManagerPtr->RegisterComponent("BoxSweepColliderComponent", new BoxSweepColliderComponent());
+	ResourceManagerPtr->RegisterComponent("BoxTweenSweepColliderComponent", new BoxTweenSweepColliderComponent());
 	ResourceManagerPtr->RegisterComponent("ProjectileMovementComponent", new ProjectileMovementComponent());
 	ResourceManagerPtr->RegisterComponent("ProjectileSpawnerComponent", new ProjectileSpawnerComponent());
 	ResourceManagerPtr->RegisterComponent("EnemyTankMovementComponent", new EnemyTankMovementComponent());

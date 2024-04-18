@@ -1,7 +1,6 @@
 #include "CollisionWorld.h"
 
 #include <algorithm>
-
 #include "CollisionUtils.h"
 #include "Entity.h"
 #include "../Game/BoxColliderComponent.h"
@@ -32,10 +31,66 @@ void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)
 
 			if (Intersect(a->GetBox(), b->GetBox()))//todo or use try get delta
 			{
+				if(a->GetOwner() == nullptr || b->GetOwner() == nullptr)
+				{
+					SDL_Log("Found null pointers in colliders!");
+
+					return;
+				}
+					//SDL_Log("Collision between: %s and %s", a->GetOwner()->GetName().data(), b->GetOwner()->GetName().data());
 				f(a->GetOwner(), b->GetOwner());//todo let decide to the given component what to do with it
 			}
 		}
 	}
+}
+
+//add filter with tag/channel
+bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections, CollisionObjectType IncludedObjectTypes)
+{
+	AABB ExtendedBox(FromBox.m_Min, FromBox.m_Max);
+	ExtendedBox.UpdateMinMax(FromBox.m_Min + ExtentsOffset);
+	ExtendedBox.UpdateMinMax(FromBox.m_Max + ExtentsOffset);
+
+	std::ranges::sort(m_Boxes,
+	                  [](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
+	                  {
+		                  return a->GetBox().m_Min.x < b->GetBox().m_Min.x;
+	                  });
+
+	auto range = std::ranges::views::filter(m_Boxes,
+		[IncludedObjectTypes, &ExtendedBox](const std::shared_ptr<BoxColliderComponent>& BoxColliderComponent)
+		{
+			return (BoxColliderComponent->GetCollisionObjectType() & IncludedObjectTypes) == BoxColliderComponent->GetCollisionObjectType() &&
+				BoxColliderComponent->GetBox().m_Min.x < ExtendedBox.m_Max.x &&
+				Intersect(ExtendedBox, BoxColliderComponent->GetBox());
+		});
+
+	for (const auto& collider : range)
+	{
+		OutIntersections.emplace_back(collider);
+	}
+
+	std::ranges::sort(OutIntersections,
+		[&FromPosition](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
+		{
+			return (FromPosition - a->GetOwner()->GetPosition()).LengthSq() < (FromPosition - b->GetOwner()->GetPosition()).LengthSq();
+		});
+
+	return OutIntersections.begin() != OutIntersections.end();
+}
+
+
+
+bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionObjectType IncludedObjectTypes)
+{
+	std::vector<std::shared_ptr<BoxColliderComponent>> OutIntersections;
+	if(MultiBoxCast(FromPosition, FromBox, ExtentsOffset, OutIntersections, IncludedObjectTypes))
+	{
+		Intersection = OutIntersections.front();
+		return true;
+	}
+	
+	return false;
 }
 
 void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent>& box)

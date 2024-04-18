@@ -5,12 +5,20 @@
 #include "Entity.h"
 #include "ResourceManager.h"
 
-ColliderComponent::ColliderComponent(Entity* Owner) : EntityComponent(Owner)
+ColliderComponent::ColliderComponent(Entity* Owner) :
+	EntityComponent(Owner),
+	m_CollisionObjectType(CollisionObjectType::All)
 {
 }
 
 ColliderComponent::ColliderComponent() : ColliderComponent(nullptr)
 {
+}
+
+void ColliderComponent::LoadFromConfig(nlohmann::json Config)
+{
+	EntityComponent::LoadFromConfig(Config);
+	m_CollisionObjectType = StringToCollisionObjectType(Config.value("CollisionObjectType", "All"));
 }
 
 void ColliderComponent::OnLoaded()//todo move it to base class and make generic the required component
@@ -25,11 +33,11 @@ void ColliderComponent::OnLoaded()//todo move it to base class and make generic 
 				break;
 			}
 
-			if(it == std::prev(m_RequiredComponents.end()))
+			if(it == std::prev(m_RequiredComponents.end()))//todo not necessary, we might not need to respond to collisions?
 			{
 				ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 				const EntityComponent* ComponentPrototype = ResourceManagerPtr->GetComponentPrototypeByName("DefaultCollisionHandlerComponent");
-				EntityComponent* RequiredComponent = ComponentPrototype->Clone();
+				auto RequiredComponent = ComponentPrototype->Clone();
 				RequiredComponent->SetOwner(GetOwner());
 				GetOwner()->AddComponent(RequiredComponent);
 				RequiredComponent->Initialize();

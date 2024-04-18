@@ -8,7 +8,7 @@ public:
 
 	ProjectileMovementComponent(Entity* Owner);
 
-	virtual EntityComponent* Clone() const override { return new ProjectileMovementComponent(*this); }
+	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<ProjectileMovementComponent>(*this); }
 
 	void LoadFromConfig(nlohmann::json Config) override;
 	void Initialize() override;

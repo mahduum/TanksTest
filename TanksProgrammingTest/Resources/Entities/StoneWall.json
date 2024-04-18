@@ -11,7 +11,8 @@
 			"PositionY" : 0
 		},
 		{
-			"Type" : "BoxColliderComponent"
+			"Type" : "BoxColliderComponent",
+            "CollisionObjectType" : "WorldStatic"
 		}
 	]
 }

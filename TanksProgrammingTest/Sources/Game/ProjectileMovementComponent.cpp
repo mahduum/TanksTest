@@ -1,6 +1,7 @@
 #include "ProjectileMovementComponent.h"
 
 #include "BoxColliderComponent.h"
+#include "BoxTweenSweepColliderComponent.h"
 #include "Entity.h"
 
 ProjectileMovementComponent::ProjectileMovementComponent() : EntityComponent(nullptr), m_Speed(0)
@@ -52,7 +53,13 @@ void ProjectileMovementComponent::Move(float DeltaTime)
 	GetOwner()->SetTranslation(x, y);//bool if force update components? Or fix collisions is in box collider already?
 	//move only collider so collisions can be verified:
 	//todo verifiy if exists!!! or add as requirement
-	GetOwner()->GetComponent<BoxColliderComponent>().value()->OnUpdateSceneTransform();//TODO: maybe do this all in update physics? Have call only colliders?
+
+	auto BoxOpt = GetOwner()->GetComponent<BoxTweenSweepColliderComponent>();
+	if(BoxOpt.has_value() == false)
+	{
+		return;
+	}
+	BoxOpt.value()->OnUpdateSceneTransform();//TODO: maybe do this all in update physics? Have call only colliders?
 	//todo cd... first update intentions that will be invisible, then correct transforms, and only then update what is visible on screen?
 	//todo cd... so we update collisions an masse and call collision events (now we can check precise collision info on already known collisions)
 	//todo cd... engine renders after all updates have happened, so we can have movement be happening in a different loop

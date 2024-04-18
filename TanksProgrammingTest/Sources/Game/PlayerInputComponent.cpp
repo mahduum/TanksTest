@@ -104,7 +104,6 @@ void PlayerInputComponent::Update(float DeltaTime)
 void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
 	//SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
-
 	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();//todo get only boxes with given channel
 	auto MyCollider = GetOwner()->GetComponent<BoxColliderComponent>().value();//todo fix collisions assume there is a box
 
@@ -118,7 +117,6 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 
 		if (OtherCollider != MyCollider && MyCollider->TryGetCollisionDelta(*OtherCollider, TempCollisionDelta))
 		{
-			SDL_Log("Found collision with delta x: %f, y: %f", TempCollisionDelta.x, TempCollisionDelta.y);
 			if(MathLib::Abs(TempCollisionDelta.x) > MathLib::Abs(CollisionDelta.x))
 			{
 				CollisionDelta.x = TempCollisionDelta.x;
@@ -169,13 +167,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 		return;
 	}
 
-	//SrcRectangle.x -= static_cast<int>(CollisionDelta.x);
-	//SrcRectangle.y -= static_cast<int>(CollisionDelta.y);
-
 	GetOwner()->SetTranslation(-static_cast<int>(CollisionDelta.x), -static_cast<int>(CollisionDelta.y));
-
-	//todo only here update everything with position:
-	//...
 
 	MyCollider->OnUpdateSceneTransform();//todo and other comps
 }

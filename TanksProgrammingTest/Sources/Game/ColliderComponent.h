@@ -1,4 +1,5 @@
 #pragma once
+#include "CollisionWorld.h"
 #include "EntityComponent.h"
 
 //enum class ColliderType : unsigned int
@@ -15,12 +16,13 @@ protected:
 	ColliderComponent(Entity* Owner);
 	ColliderComponent();
 
-	//ColliderType m_Type;//todo set from config
+	CollisionObjectType m_CollisionObjectType;//todo set from config
 
 public:
 
+	void LoadFromConfig(nlohmann::json Config) override;
 	virtual void OnLoaded() override;
-	//ColliderType GetType() const { return m_Type; }
+	CollisionObjectType GetCollisionObjectType() const { return m_CollisionObjectType; }
 };
 
 

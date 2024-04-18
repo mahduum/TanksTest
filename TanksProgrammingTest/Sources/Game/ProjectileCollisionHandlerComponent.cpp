@@ -14,7 +14,7 @@ ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent() : Pro
 
 void ProjectileCollisionHandlerComponent::OnCollision(CollisionInfo collisionInfo)
 {
-	SDL_Log("Projectile collision handler received collision with entity: %s", collisionInfo.m_OhterEntity->GetName().data());
+	//SDL_Log("Projectile collision handler received collision with entity: %s", collisionInfo.m_OtherEntity->GetName().data());
 	Engine::Get()->GetActiveScene()->RemoveEntity(GetOwner());
 	//GetOwner()->UnInitialize();
 	//delete GetOwner();

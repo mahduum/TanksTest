@@ -10,7 +10,7 @@ public:
 	TextureComponent(Entity* Owner);
 	TextureComponent();
 
-	virtual EntityComponent* Clone() const override { return new TextureComponent(*this); }
+	virtual std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<TextureComponent>(*this); }
 
 	virtual void LoadFromConfig(nlohmann::json Config) override;
 	virtual void Initialize() override;

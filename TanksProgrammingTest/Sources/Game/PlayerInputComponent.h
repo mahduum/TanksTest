@@ -13,7 +13,7 @@ public:
 	PlayerInputComponent(Entity* Owner);
 	PlayerInputComponent();
 
-	virtual EntityComponent* Clone() const override { return new PlayerInputComponent(*this); }
+	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<PlayerInputComponent>(*this); }
 
 	virtual void Initialize() override;
 	virtual void Update(float DeltaTime) override;

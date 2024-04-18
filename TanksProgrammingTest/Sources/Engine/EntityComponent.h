@@ -13,7 +13,7 @@ public:
 	EntityComponent() = delete;
 	EntityComponent(Entity* Owner);
 	
-	virtual EntityComponent* Clone() const = 0;
+	virtual std::shared_ptr<EntityComponent> Clone() const = 0;
 
 	virtual void LoadFromConfig(nlohmann::json Config);
 	virtual void OnLoaded();
@@ -24,8 +24,8 @@ public:
 	virtual void OnUpdateSceneTransform();
 
 	void SetOwner(Entity* Owner) { m_Owner = Owner; }
-	Entity* GetOwner() { return m_Owner; }
-	std::type_index GetTypeIndex() const { return typeid(*this); }
+	Entity* GetOwner() { return m_Owner; }//todo make it shared
+	virtual std::type_index GetTypeIndex() const { return typeid(*this); }
 
 protected:
 	std::vector<EntityComponent*> m_RequiredComponents;

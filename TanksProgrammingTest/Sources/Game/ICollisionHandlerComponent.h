@@ -9,6 +9,7 @@ public:
 	ICollisionHandlerComponent(Entity* Owner);
 	ICollisionHandlerComponent();
 
-	virtual void OnCollision(CollisionInfo collisionInfo) = 0;//todo give it pointer to collider
+	virtual std::type_index GetTypeIndex() const override { return typeid(ICollisionHandlerComponent); }
+	virtual void OnCollision(CollisionInfo collisionInfo) = 0;
 };
 

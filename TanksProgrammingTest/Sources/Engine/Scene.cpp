@@ -37,7 +37,7 @@ void Scene::LoadFromConfig(nlohmann::json Config)
 			if (NewEntity->GetName() == "Player")
 			{
 				SDL_Log("Setting player as flow field target");
-				//auto [x, y] = NewEntity->GetPositionXY();
+				auto [x, y] = NewEntity->GetPositionXY();
 				//m_FlowFieldTargetX = x;
 				//m_FlowFieldTargetX = y;
 				//SetTargetAndCalculateFlowField(m_FlowFieldTargetX, m_FlowFieldTargetY);
@@ -56,8 +56,6 @@ void Scene::LoadFromConfig(nlohmann::json Config)
 
 void Scene::Initialize()
 {
-	//SetTargetAndCalculateFlowField(m_FlowFieldTargetX, m_FlowFieldTargetY);
-
 	for (Entity* Entity : m_Entities)
 	{
 		Entity->Initialize();
@@ -76,9 +74,6 @@ void Scene::Draw()
 {
 	for (auto It = m_Entities.begin(); It != m_ValidEntitiesEnd; ++It)
 	{
-		if ((*It)->GetName() == "Projectile")
-			SDL_Log("Drawing entity from scene by name: %s", (*It)->GetName().data());
-
 		(*It)->Draw();
 	}
 }
@@ -98,18 +93,17 @@ void Scene::AddEntity(Entity* Entity)
 {
 	if(m_Entities.end() == m_ValidEntitiesEnd)
 	{
-		m_Entities.push_back(Entity);
+		m_Entities.emplace_back(Entity);
 		m_ValidEntitiesEnd = m_Entities.end();
 	}
 	else
 	{
-		delete *m_ValidEntitiesEnd;
 		*m_ValidEntitiesEnd = Entity;
 		++m_ValidEntitiesEnd;
 	}
 }
 
-void Scene::RemoveEntity(Entity* Entity)//todo add removed entities to pool for reuse
+void Scene::RemoveEntity(Entity* Entity)
 {
 	std::vector<::Entity*>::iterator RetIt = std::remove(
 		m_Entities.begin(), m_Entities.end(), Entity);
@@ -294,6 +288,12 @@ void Scene::SetTargetAndCalculateFlowField(int sceneX, int sceneY)
 			CalculateFlowDirections();
 		}
 	}
+}
+
+Vector2 Scene::GetTargetCellScenePosition() const
+{
+	auto [x, y] = GetScenePositionFromCellCoords(m_FlowFieldTargetX, m_FlowFieldTargetY);
+	return Vector2 { static_cast<float>(x), static_cast<float>(y) };
 }
 
 void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection) const
