@@ -4,7 +4,9 @@
 #include "ResourceManager.h"
 #include "Scene.h"
 #include "TextureComponent.h"
+#include "../Game/BoxColliderComponent.h"
 #include "../Game/ICollisionHandlerComponent.h"
+#include "../Game/ProjectileCollisionHandlerComponent.h"
 
 void Entity::LoadFromConfig(nlohmann::json Config)
 {
@@ -31,14 +33,17 @@ void Entity::LoadFromConfig(nlohmann::json Config)
 
 void Entity::Initialize()
 {
-	for (EntityComponent* Component : m_Components)
+	for (auto Component : m_Components)
 	{
 		Component->Initialize();
 	}
 
-	auto TextureRect = GetComponent<::TextureComponent>()->GetRectangle();
-
-	SetPosition(TextureRect.x, TextureRect.y);
+	auto TexOpt = GetComponent<::TextureComponent>();
+	if(TexOpt.has_value())
+	{
+		auto TextureRect = TexOpt.value()->GetRectangle();
+		SetPosition(TextureRect.x, TextureRect.y);
+	}
 }
 
 void Entity::Update(float DeltaTime)
@@ -48,7 +53,7 @@ void Entity::Update(float DeltaTime)
 	//Update representation groups transforms -> that way we are sure that representation has correct transform to update to
 	UpdateSceneTransform();
 
-	for (EntityComponent* Component : m_Components)
+	for (auto Component : m_Components)
 	{
 		Component->Update(DeltaTime);
 		//for example, we are updating movement on projectile in update, and movement input too, then on movement we move only the collider
@@ -69,7 +74,7 @@ void Entity::Update(float DeltaTime)
 
 void Entity::Draw()
 {
-	for (EntityComponent* Component : m_Components)
+	for (auto Component : m_Components)
 	{
 		Component->Draw();
 	}
@@ -77,7 +82,7 @@ void Entity::Draw()
 
 void Entity::UnInitialize()
 {
-	for (EntityComponent* Component : m_Components)
+	for (auto Component : m_Components)
 	{
 		Component->UnInitialize();
 	}
@@ -85,20 +90,24 @@ void Entity::UnInitialize()
 
 void Entity::AddComponent(EntityComponent* Component)//todo add fix
 {
-	m_Components.push_back(Component);
+	AddComponent<EntityComponent>(std::shared_ptr<EntityComponent>{ Component });
 }
 
 void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
 {
-	auto RetIt = std::remove(m_Components.begin(), m_Components.end(), Component);
+	//RemoveComponent<decltype(Component)>();
+	//auto RetIt = std::remove(m_Components.begin(), m_Components.end(), Component);
+	//todo add new remove
 }
 
 void Entity::OnCollision(CollisionInfo collisionInfo)
 {
-	//to do call on each handler, there may be more than one
-	if(auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())//todo get components of type
+	//return;
+	auto CollisionHandlerOption = GetComponent<ICollisionHandlerComponent>();
+
+	if(CollisionHandlerOption.has_value())//todo get components of type
 	{
-		CollisionHandler->OnCollision(collisionInfo);
+		CollisionHandlerOption.value()->OnCollision(collisionInfo);
 	}
 	//todo how to call collision implementation??? it may have a marker component but how we know? this component would need to have
 	//an inheritance and each entity

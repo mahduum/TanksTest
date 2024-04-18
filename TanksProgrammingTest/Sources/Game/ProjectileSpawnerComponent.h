@@ -26,6 +26,6 @@ private:
 	void GetRightSpawnPoint(Vector2& OutSpawnPoint) const;
 	void GetLeftSpawnPoint(Vector2& OutSpawnPoint) const;
 
-	TextureComponent* m_TextureComponent;
+	std::shared_ptr<TextureComponent> m_TextureComponent;
 };
 

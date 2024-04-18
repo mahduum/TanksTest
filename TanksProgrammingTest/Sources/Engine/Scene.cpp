@@ -150,12 +150,15 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, n
 				nlohmann::json EntitySpecs = Legend[Key];
 
 				Entity* NewEntity = ResourceManagerPtr->CreateEntityFromDataTemplate(EntitySpecs["Type"]);
-
-				TextureComponent* TextureComponentPtr = NewEntity->GetComponent<TextureComponent>();
 				int Width = EntitySpecs["Width"];
 				int Height = EntitySpecs["Height"];
-				TextureComponentPtr->SetPosition(Column * Width, Row * Height);
-				TextureComponentPtr->SetScale(Width, Height);
+
+				auto TexCompOpt = NewEntity->GetComponent<TextureComponent>();
+				if(TexCompOpt.has_value())
+				{
+					TexCompOpt.value()->SetPosition(Column * Width, Row * Height);
+					TexCompOpt.value()->SetScale(Width, Height);
+				}
 
 				NewEntity->SetPosition(Column * Width, Row * Height);
 				NewEntity->SetFacingDirection(FacingDirection::UP);

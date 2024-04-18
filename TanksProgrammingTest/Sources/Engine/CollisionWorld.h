@@ -1,8 +1,10 @@
 #pragma once
 #include <functional>
+#include <memory>
 
 #include "MathLib.h"
 
+class BoxColliderComponent;
 //struct Vector2
 //{
 //	int x;
@@ -36,21 +38,23 @@ public:
 	void TestSweepAndPrune(std::function<void(class Entity*, class Entity*)>& f);
 
 	// Add/remove box components from world
-	void AddBox(class BoxColliderComponent* box);
-	void RemoveBox(class BoxColliderComponent* box);
+	void AddBox(const std::shared_ptr<BoxColliderComponent>& box);
+	void RemoveBox(const std::shared_ptr<BoxColliderComponent>& box);
+
+	size_t GetBoxesCount() const { return m_Boxes.size(); }
 
 	static void OnEntitiesCollision(class Entity* a, class Entity* b);
 
 	std::function<void(class Entity*, class Entity*)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
 
 
-	const std::vector<BoxColliderComponent*>& GetBoxes() const
+	const std::vector<std::shared_ptr<BoxColliderComponent>>& GetBoxes() const
 	{
 		return m_Boxes;
 	}
 
 private:
 
-	std::vector<BoxColliderComponent*> m_Boxes;
+	std::vector<std::shared_ptr<BoxColliderComponent>> m_Boxes;
 };
 

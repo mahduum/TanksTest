@@ -10,7 +10,7 @@ public:
 	EnemyTankMovementComponent();
 
 	virtual EntityComponent* Clone() const override { return new EnemyTankMovementComponent(*this); }
-	void LoadFromConfig(nlohmann::json Config) override;
+	virtual void LoadFromConfig(nlohmann::json Config) override;
 	virtual void Initialize() override;
 	virtual void Update(float DeltaTime) override;
 

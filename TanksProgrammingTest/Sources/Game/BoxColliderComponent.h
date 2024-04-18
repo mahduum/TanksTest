@@ -20,13 +20,13 @@ public:
 	virtual void Update(float DeltaTime) override;
 	virtual void UnInitialize() override;
 	virtual void OnUpdateSceneTransform() override;
+	const virtual AABB& GetBox() const { return m_Box; }//todo make it virtual
 
 	bool IntersectsWith(const BoxColliderComponent& other) const;
 	bool TryGetCollisionDelta(const BoxColliderComponent& other, Vector2& collisionDelta) const;
 	void SetPosition(const Vector2 position);
 	void SetScaleOffset(const Vector2 offset);
 	void SetBoxWithOffset(const Vector2 boxMinPosition, const Vector2 boxMaxPosition, const Vector2 boxMinOffset, const Vector2 boxMaxOffset);
-	const virtual AABB& GetBox() const { return m_Box; }//todo make it virtual
 	AABB GetSweepBox() const;//todo make it virtual
 
 private:
@@ -36,11 +36,13 @@ private:
 
 	SDL_Rect* GetRectangle() const;
 
-	TextureComponent* m_TextureComponent;
+	std::shared_ptr<TextureComponent> m_TextureComponent;
 	AABB m_Box;//reduce the box and shift offset
 	AABB m_PreviousFrameBox;
 
 	Vector2 m_BoxOffsetMin;
 	Vector2 m_BoxOffsetMax;
+
+	std::shared_ptr<BoxColliderComponent> m_SelfShared;//todo add to all???
 };
 

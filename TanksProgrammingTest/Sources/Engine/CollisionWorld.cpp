@@ -9,20 +9,19 @@
 void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)//todo all the boxes with all others, instead use the same but for one collider that sweeps other boxes
 {
 	std::sort(m_Boxes.begin(), m_Boxes.end(),
-		[](const BoxColliderComponent* a, const BoxColliderComponent* b)
+		[](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
 		{
-			return a->GetBox().m_Min.x <
-				b->GetBox().m_Min.x;
+			return a->GetBox().m_Min.x < b->GetBox().m_Min.x;
 		});
 
 	for (size_t i = 0; i < m_Boxes.size(); i++)//todo sweep only dynamic boxes (MUST DO COLLISIONS WITH DYNAMIC SEPARATELY TO AVOID REPETITIONS)
 	{
 		// Get max.x for current box
-		BoxColliderComponent* a = m_Boxes[i];
+		auto a = m_Boxes[i];
 		float max = a->GetBox().m_Max.x;
 		for (size_t j = i + 1; j < m_Boxes.size(); j++)//todo with all other boxes (dynamic and static) (i+1, so we avoid double events)
 		{
-			BoxColliderComponent* b = m_Boxes[j];
+			auto b = m_Boxes[j];
 			// If AABB[j] min is past the max bounds of AABB[i],
 			// then there aren't any other possible intersections
 			// against AABB[i]
@@ -39,17 +38,17 @@ void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)
 	}
 }
 
-void CollisionWorld::AddBox(BoxColliderComponent* box)
+void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent>& box)
 {
 	m_Boxes.emplace_back(box);
 }
 
-void CollisionWorld::RemoveBox(BoxColliderComponent* box)
+void CollisionWorld::RemoveBox(const std::shared_ptr<BoxColliderComponent>& box)
 {
-	if (auto iter = std::find(m_Boxes.begin(), m_Boxes.end(), box); iter != m_Boxes.end())
+	if (const auto it = std::find(m_Boxes.begin(), m_Boxes.end(), box); it != m_Boxes.end())
 	{
 		// Swap to end of vector and pop off (avoid erase copies)
-		std::iter_swap(iter, m_Boxes.end() - 1);
+		std::iter_swap(it, m_Boxes.end() - 1);
 		m_Boxes.pop_back();
 	}
 }

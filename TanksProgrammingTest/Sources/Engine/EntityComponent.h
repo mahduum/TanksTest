@@ -1,5 +1,6 @@
 #pragma once
 
+#include <typeindex>
 #include <nlohmann/json.hpp>
 
 class Entity;
@@ -24,6 +25,7 @@ public:
 
 	void SetOwner(Entity* Owner) { m_Owner = Owner; }
 	Entity* GetOwner() { return m_Owner; }
+	std::type_index GetTypeIndex() const { return typeid(*this); }
 
 protected:
 	std::vector<EntityComponent*> m_RequiredComponents;

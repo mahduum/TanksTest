@@ -23,6 +23,6 @@ public:
 	void Shoot() const;
 
 private:
-	TextureComponent* m_TextureComponent;
-	ProjectileSpawnerComponent* m_ProjectileSpawnerComponent;
+	std::shared_ptr<TextureComponent> m_TextureComponent;
+	std::shared_ptr<ProjectileSpawnerComponent> m_ProjectileSpawnerComponent;
 };

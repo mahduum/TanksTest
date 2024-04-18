@@ -22,8 +22,8 @@ PlayerInputComponent::PlayerInputComponent()
 
 void PlayerInputComponent::Initialize()
 {
-	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();
-	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<ProjectileSpawnerComponent>();
+	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>().value();
+	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<ProjectileSpawnerComponent>().value();
 }
 
 void PlayerInputComponent::Update(float DeltaTime)
@@ -105,14 +105,14 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
 	//SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
 
-	const std::vector<BoxColliderComponent*> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();//todo get only boxes with given channel
-	BoxColliderComponent* MyCollider = GetOwner()->GetComponent<BoxColliderComponent>();
+	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();//todo get only boxes with given channel
+	auto MyCollider = GetOwner()->GetComponent<BoxColliderComponent>().value();//todo fix collisions assume there is a box
 
 	//first update only collider for testing
 	MyCollider->OnUpdateSceneTransform();//todo with line segment first cache the previous position then the next one and combine boxes prev-predicted to do sweep
 												//for diagonal shots can do rotated box collision check
 
-	for (BoxColliderComponent* OtherCollider : Colliders)
+	for (auto OtherCollider : Colliders)
 	{
 		Vector2 TempCollisionDelta(0, 0);
 

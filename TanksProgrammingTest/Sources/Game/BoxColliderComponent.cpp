@@ -17,7 +17,6 @@ BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
 	m_BoxOffsetMin(Vector2::Zero),
 	m_BoxOffsetMax(Vector2::Zero)
 {
-
 }
 
 void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
@@ -37,12 +36,22 @@ void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 
 void BoxColliderComponent::Initialize()
 {
-    m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();//todo make it independent of texture later on
+    //todo should be added as required
+    auto TexOpt = GetOwner()->GetComponent<TextureComponent>();//todo make it independent of texture later on
+    if(TexOpt.has_value() == false)
+    {
+        SDL_LogError(0, "Box collider requires texture information!!!");
+        return;
+    }
+
     //for now set from texture, later on set from player, read offset from json to
+    m_TextureComponent = TexOpt.value();//todo
 
     OnUpdateSceneTransform();
 
-    Engine::Get()->GetCollisionWorld()->AddBox(this);//TODO ADD BASED ON TYPE
+    //Engine::Get()->GetCollisionWorld()->AddBox(std::make_shared<BoxColliderComponent>(*this));
+    m_SelfShared = std::make_shared<BoxColliderComponent>(*this);
+    Engine::Get()->GetCollisionWorld()->AddBox(m_SelfShared);
 }
 
 void BoxColliderComponent::Update(float DeltaTime)
@@ -52,11 +61,17 @@ void BoxColliderComponent::Update(float DeltaTime)
 
 void BoxColliderComponent::UnInitialize()
 {
-    Engine::Get()->GetCollisionWorld()->RemoveBox(this);
+    Engine::Get()->GetCollisionWorld()->RemoveBox(m_SelfShared);
 }
 
 void BoxColliderComponent::OnUpdateSceneTransform()
 {
+    if (m_TextureComponent == nullptr)
+    {
+        SDL_LogError(0, "Box collider requires texture information!!!");
+        return;
+    }
+
     auto TexRect = &m_TextureComponent->GetRectangle();
     auto [x, y] = GetOwner()->GetPositionXY();
     SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);

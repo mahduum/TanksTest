@@ -12,6 +12,7 @@ public:
 
 	virtual EntityComponent* Clone() const override { return new DefaultCollisionHandlerComponent(*this); }
 
+
 	//virtual void Initialize() override;
 };
 

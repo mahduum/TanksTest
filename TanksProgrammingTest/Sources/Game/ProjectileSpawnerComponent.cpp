@@ -20,7 +20,7 @@ void ProjectileSpawnerComponent::LoadFromConfig(nlohmann::json Config)
 
 void ProjectileSpawnerComponent::Initialize()
 {
-	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();
+	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>().value();
 	SDL_Log("Initializing projectile spawner...");
 }
 
@@ -63,7 +63,7 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 			break;
 	}
 
-	Projectile->GetComponent<TextureComponent>()->SetPosition(SpawnPoint.x, SpawnPoint.y);
+	Projectile->GetComponent<TextureComponent>().value()->SetPosition(SpawnPoint.x, SpawnPoint.y);
 	Projectile->SetFacingDirection(Facing);
 	Projectile->Initialize();
 	SDL_Log("Projectile rotation set to: %f, %f", Projectile->GetForwardVector().x, Projectile->GetForwardVector().y);
