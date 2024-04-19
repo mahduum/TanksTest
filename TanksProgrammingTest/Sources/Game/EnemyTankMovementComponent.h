@@ -10,7 +10,7 @@ struct TargetInfo
 	bool m_TargetInSight = false;
 	std::optional<int> m_TargetDistance;
 	Vector2 m_AttackDirection;
-	CollisionObjectType m_TargetType = CollisionObjectType::None;
+	CollisionFlags m_TargetType = CollisionFlags::None;
 };
 
 class EnemyTankMovementComponent : public EntityComponent

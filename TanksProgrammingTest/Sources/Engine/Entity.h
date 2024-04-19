@@ -89,7 +89,7 @@ public:
 		return std::nullopt;
 	}
 
-	void OnCollision(const CollisionInfo& collisionInfo);
+	void OnCollision(const CollisionInfo& CollisionInfo);
 
 	void UpdateSceneTransform();
 

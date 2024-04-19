@@ -24,5 +24,7 @@ protected:
 	bool m_CanSpawn;
 	float m_SpawnRateSeconds;
 	float m_TimeSinceLastSpawn;
+
+	std::string m_NameToSpawn;
 };
 

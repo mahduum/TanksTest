@@ -2,6 +2,7 @@
 
 #include "EntityComponent.h"
 
+class PlayerProjectileSpawnerComponent;
 class ProjectileSpawnerComponent;
 class Vector2;
 class TextureComponent;
@@ -24,5 +25,5 @@ public:
 
 private:
 	std::shared_ptr<TextureComponent> m_TextureComponent;
-	std::shared_ptr<ProjectileSpawnerComponent> m_ProjectileSpawnerComponent;
+	std::shared_ptr<PlayerProjectileSpawnerComponent> m_ProjectileSpawnerComponent;
 };

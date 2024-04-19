@@ -12,8 +12,6 @@ EntityComponent::EntityComponent(Entity* Owner)
 
 void EntityComponent::LoadFromConfig(nlohmann::json Config)
 {
-	//load required components
-	//if list is empty load default if there is a default one defined
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 
 	if (Config.find("RequiredComponents") != Config.end())
@@ -41,9 +39,6 @@ void EntityComponent::OnLoaded()
 
 void EntityComponent::Initialize()
 {
-	//todo if there is already a required component then unload the prototype, else instantiate it, use post initialize, so we know what components there are
-	//all components that have been defined in json are by this time created, so if there are any required components still needed they can be created and
-	//initialiased in PostInitialize but when any component is attempted to be added twice from config definition will spit an error. Only default components allowed
 }
 
 void EntityComponent::Update(float DeltaTime)

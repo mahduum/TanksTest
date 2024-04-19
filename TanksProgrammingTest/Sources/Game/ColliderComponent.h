@@ -16,13 +16,13 @@ protected:
 	ColliderComponent(Entity* Owner);
 	ColliderComponent();
 
-	CollisionObjectType m_CollisionObjectType;//todo set from config
+	CollisionFlags m_CollisionObjectType;
 
 public:
 
 	void LoadFromConfig(nlohmann::json Config) override;
 	virtual void OnLoaded() override;
-	CollisionObjectType GetCollisionObjectType() const { return m_CollisionObjectType; }
+	CollisionFlags GetCollisionObjectType() const { return m_CollisionObjectType; }
 };
 
 

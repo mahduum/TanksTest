@@ -31,63 +31,32 @@ void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 
 void BoxColliderComponent::Initialize()
 {
-    //todo should be added as required
-
-    auto TexOpt = GetOwner()->GetComponent<TextureComponent>();//todo make it independent of texture later on
+    auto TexOpt = GetOwner()->GetComponent<TextureComponent>();
     if(TexOpt.has_value() == false)
     {
         SDL_LogError(0, "Box collider requires texture information!!!");
         return;
     }
 
-    //m_TextureComponent = TexOpt.value();
-
     OnUpdateSceneTransform();
-
-    //SDL_Log("Adding box of type %d, count before: %d", GetCollisionObjectType(), Engine::Get()->GetCollisionWorld()->GetBoxesCount());
-
-    if(GetCollisionObjectType() == CollisionObjectType::Player)
-    {
-        SDL_Log("Adding player box, count before: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
-    }
 
     m_SelfShared = std::shared_ptr<BoxColliderComponent>(this);
     Engine::Get()->GetCollisionWorld()->AddBox(m_SelfShared);
-
-    if ((GetCollisionObjectType() & CollisionObjectType::Projectile) == CollisionObjectType::Projectile)
-    {
-        SDL_Log("Added projectile box, count after: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
-    }
 }
 
 void BoxColliderComponent::UnInitialize()
 {
-    if ((GetCollisionObjectType() & CollisionObjectType::Projectile) == CollisionObjectType::Projectile)
-    {
-        SDL_Log("Removing projectile box, count after: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
-    }
-
 	Engine::Get()->GetCollisionWorld()->RemoveBox(m_SelfShared);
-    if ((GetCollisionObjectType() & CollisionObjectType::Projectile) == CollisionObjectType::Projectile)
-    {
-        SDL_Log("Removed projectile box, count after: %d", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
-    }
 }
 
 void BoxColliderComponent::OnUpdateSceneTransform()
 {
-    /*if (m_TextureComponent == nullptr)
-    {
-        SDL_LogError(0, "Box collider requires texture information!!!");
-        return;
-    }*/
-
     auto TexRect = GetRectangle();
     //auto TexRect = &m_TextureComponent->GetRectangle();
     auto [x, y] = GetOwner()->GetPositionXY();
 
     SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);
-    SetBoxMax(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);//todo update also scale from entity
+    SetBoxMax(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);
 }
 
 SDL_Rect* BoxColliderComponent::GetRectangle()
@@ -95,7 +64,7 @@ SDL_Rect* BoxColliderComponent::GetRectangle()
     return &GetOwner()->GetComponent<TextureComponent>().value()->GetRectangle();
 }
 
-bool BoxColliderComponent::IntersectsWith(const BoxColliderComponent& other) const//todo return delta
+bool BoxColliderComponent::IntersectsWith(const BoxColliderComponent& other) const
 {
     return Intersect(m_Box, other.m_Box);
 }

@@ -7,9 +7,10 @@
 #include "CollisionUtils.h"
 #include "MathLib.h"
 
+class ColliderComponent;
 class Entity;
 
-enum class CollisionObjectType : unsigned int
+enum class CollisionFlags : unsigned int
 {
 	None = 0,
 	Player = 1 << 0,
@@ -17,80 +18,81 @@ enum class CollisionObjectType : unsigned int
 	Projectile = 1 << 2,
 	WorldStatic = 1 << 3,
 	WorldDynamic = 1 << 4,
-	All = ~static_cast<unsigned int>(0)
+	All = ~0u,
 };
 
-inline CollisionObjectType operator|(CollisionObjectType lhs, CollisionObjectType rhs)
+inline CollisionFlags operator|(CollisionFlags lhs, CollisionFlags rhs)
 {
-	return static_cast<CollisionObjectType>(
+	return static_cast<CollisionFlags>(
 		static_cast<unsigned int>(lhs) | static_cast<unsigned int>(rhs)
 		);
 }
 
-inline CollisionObjectType operator&(CollisionObjectType lhs, CollisionObjectType rhs)
+inline CollisionFlags operator&(CollisionFlags lhs, CollisionFlags rhs)
 {
-	return static_cast<CollisionObjectType>(
+	return static_cast<CollisionFlags>(
 		static_cast<unsigned int>(lhs) & static_cast<unsigned int>(rhs)
 		);
 }
 
-inline CollisionObjectType operator^(CollisionObjectType lhs, CollisionObjectType rhs)
+inline CollisionFlags operator^(CollisionFlags lhs, CollisionFlags rhs)
 {
-	return static_cast<CollisionObjectType>(
+	return static_cast<CollisionFlags>(
 		static_cast<unsigned int>(lhs) ^ static_cast<unsigned int>(rhs)
 		);
 }
 
-inline CollisionObjectType operator~(CollisionObjectType obj) {
-	return static_cast<CollisionObjectType>(~static_cast<unsigned int>(obj));
+inline CollisionFlags operator~(CollisionFlags obj) {
+	return static_cast<CollisionFlags>(~static_cast<unsigned int>(obj));
 }
 
-inline CollisionObjectType& operator|=(CollisionObjectType& lhs, CollisionObjectType rhs)
+inline CollisionFlags& operator|=(CollisionFlags& lhs, CollisionFlags rhs)
 {
 	lhs = lhs | rhs;
 	return lhs;
 }
 
-inline CollisionObjectType& operator&=(CollisionObjectType& lhs, CollisionObjectType rhs)
+inline CollisionFlags& operator&=(CollisionFlags& lhs, CollisionFlags rhs)
 {
 	lhs = lhs & rhs;
 	return lhs;
 }
 
-inline CollisionObjectType& operator^=(CollisionObjectType& lhs, CollisionObjectType rhs)
+inline CollisionFlags& operator^=(CollisionFlags& lhs, CollisionFlags rhs)
 {
 	lhs = lhs ^ rhs;
 	return lhs;
 }
 
-inline bool operator==(CollisionObjectType lhs, CollisionObjectType rhs)
+inline bool operator==(CollisionFlags lhs, CollisionFlags rhs)
 {
 	return static_cast<unsigned int>(lhs) == static_cast<unsigned int>(rhs);
 }
 
 
-inline CollisionObjectType StringToCollisionObjectType(const std::string&& EnumName)
+inline CollisionFlags StringToCollisionObjectType(const std::string& EnumName)
 {
 	if (EnumName == "Player")
-		return CollisionObjectType::Player;
+		return CollisionFlags::Player;
 	if (EnumName == "Enemy")
-		return CollisionObjectType::Enemy;
+		return CollisionFlags::Enemy;
 	if (EnumName == "Projectile")
-		return CollisionObjectType::Projectile;
+		return CollisionFlags::Projectile;
 	if (EnumName == "WorldStatic")
-		return CollisionObjectType::WorldStatic;
+		return CollisionFlags::WorldStatic;
 	if (EnumName == "WorldDynamic")
-		return CollisionObjectType::WorldDynamic;
+		return CollisionFlags::WorldDynamic;
 	if (EnumName == "All")
-		return CollisionObjectType::All;
+		return CollisionFlags::All;
 
-	return CollisionObjectType::None;
+	return CollisionFlags::None;
 }
 
 class BoxColliderComponent;
 struct CollisionInfo
 {
-	class std::shared_ptr<Entity> m_OtherEntity;//todo shared
+
+	std::shared_ptr<ColliderComponent> m_OtherCollider;
 };
 
 class CollisionWorld
@@ -99,29 +101,22 @@ public:
 
 	CollisionWorld() = default;
 
-	// Test a line segment against boxes
-	// Returns true if it collides against a box
-	//todo bool SegmentCast(const LineSegment& l, CollisionInfo& outColl);
-
-	// Tests collisions using naive pairwise
-	void TestPairwise(std::function<void(class Entity*, class Actor*)> f);
-	// Test collisions using sweep and prune
-	void TestSweepAndPrune(std::function<void(class Entity*, class Entity*)>& f);
+	void TestSweepAndPrune(const std::function<void(class std::shared_ptr <ColliderComponent>, class std::shared_ptr <ColliderComponent>)>& f);
 	bool MultiBoxCast(
 		const Vector2& FromPosition,
 		const AABB& FromBox, const Vector2& Direction, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections,
-		CollisionObjectType IncludedObjectTypes = CollisionObjectType::All);
-	bool SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& Direction, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionObjectType IncludedObjectTypes) ;
+		CollisionFlags IncludedObjectTypes);
+	bool SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& Direction, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All) ;
 
 	// Add/remove box components from world
-	void AddBox(const std::shared_ptr<BoxColliderComponent> box);
-	void RemoveBox(const std::shared_ptr<BoxColliderComponent> box);
+	void AddBox(const std::shared_ptr<BoxColliderComponent>& box);
+	void RemoveBox(const std::shared_ptr<BoxColliderComponent>& box);
 
-	size_t GetBoxesCount() const { return m_StaticBoxes.size(); }
+	size_t GetBoxesCount() const { return m_StaticBoxes.size() + m_DynamicBoxes.size(); }
 
-	static void OnEntitiesCollision(class Entity* a, class Entity* b);
+	static void OnEntitiesCollision(class std::shared_ptr<ColliderComponent> A, class std::shared_ptr<ColliderComponent>);
 
-	std::function<void(class Entity*, class Entity*)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
+	std::function<void(class std::shared_ptr <ColliderComponent>, class std::shared_ptr <ColliderComponent>)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
 
 
 	const std::vector<std::shared_ptr<BoxColliderComponent>>& GetStaticBoxes() const

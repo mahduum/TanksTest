@@ -6,7 +6,7 @@
 #include "Entity.h"
 #include "../Game/BoxColliderComponent.h"
 
-void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)
+void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::shared_ptr <ColliderComponent>, class std::shared_ptr <ColliderComponent>)>& f)
 {
 	std::sort(m_StaticBoxes.begin(), m_StaticBoxes.end(),
 		[](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
@@ -40,8 +40,8 @@ void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)
 
 					return;
 				}
-					//SDL_Log("Collision between: %s and %s", a->GetOwner()->GetName().data(), b->GetOwner()->GetName().data());
-				f(a->GetOwner(), b->GetOwner());
+					//SDL_Log("Mixed Collision between: %s type %d and %s type %d, count: %d", a->GetOwner()->GetName().data(), a->GetOwner()->GetTransformType(), b->GetOwner()->GetName().data(), b->GetOwner()->GetTransformType(), GetBoxesCount());
+				f(a, b);
 			}
 		}
 	}
@@ -67,15 +67,16 @@ void CollisionWorld::TestSweepAndPrune(std::function<void(Entity*, Entity*)>& f)
 
 					return;
 				}
-				//SDL_Log("Collision between: %s and %s", a->GetOwner()->GetName().data(), b->GetOwner()->GetName().data());
-				f(a->GetOwner(), b->GetOwner());
+
+				//SDL_Log("Dynamic Collision between: %s type %d and %s type %d, count: %d", a->GetOwner()->GetName().data(), a->GetOwner()->GetTransformType(), b->GetOwner()->GetName().data(), b->GetOwner()->GetTransformType(), GetBoxesCount());
+				f(a, b);
 			}
 		}
 	}
 }
 
 //add filter with tag/channel
-bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections, CollisionObjectType IncludedObjectTypes)
+bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections, CollisionFlags IncludedObjectTypes)
 {
 	AABB ExtendedBox(FromBox.m_Min, FromBox.m_Max);
 	ExtendedBox.UpdateMinMax(FromBox.m_Min + ExtentsOffset);
@@ -130,7 +131,7 @@ bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromB
 
 
 
-bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionObjectType IncludedObjectTypes)
+bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes)
 {
 	std::vector<std::shared_ptr<BoxColliderComponent>> OutIntersections;
 	if(MultiBoxCast(FromPosition, FromBox, ExtentsOffset, OutIntersections, IncludedObjectTypes))
@@ -142,7 +143,7 @@ bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& From
 	return false;
 }
 
-void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent> box)
+void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent>& box)
 {
 	if (box->GetOwner()->GetTransformType() == TransformType::Static)
 	{
@@ -154,7 +155,7 @@ void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent> box)
 	}
 }
 
-void CollisionWorld::RemoveBox(const std::shared_ptr<BoxColliderComponent> box)
+void CollisionWorld::RemoveBox(const std::shared_ptr<BoxColliderComponent>& box)
 {
 	if (box->GetOwner()->GetTransformType() == TransformType::Static)
 	{
@@ -168,22 +169,23 @@ void CollisionWorld::RemoveBox(const std::shared_ptr<BoxColliderComponent> box)
 	{
 		if (const auto it = std::find(m_DynamicBoxes.begin(), m_DynamicBoxes.end(), box); it != m_DynamicBoxes.end())
 		{
-			std::iter_swap(it, m_StaticBoxes.end() - 1);
+			std::iter_swap(it, m_DynamicBoxes.end() - 1);
 			m_DynamicBoxes.pop_back();
 		}
 	}
 }
 
-void CollisionWorld::OnEntitiesCollision(Entity* a, Entity* b)
+void CollisionWorld::OnEntitiesCollision(class std::shared_ptr<ColliderComponent> A, class std::shared_ptr<ColliderComponent> B)
 {
-	CollisionInfo aCollisionInfo
+	CollisionInfo CollisionInfoA
 	{
-		std::make_shared<Entity>(*b)
+		B
 	};
-	CollisionInfo bCollisionInfo
+	CollisionInfo CollisionInfoB
 	{
-		std::make_shared<Entity>(*a)
+		B
 	};
-	a->OnCollision(aCollisionInfo);
-	b->OnCollision(bCollisionInfo);
+
+	A->GetOwner()->OnCollision(CollisionInfoA);
+	B->GetOwner()->OnCollision(CollisionInfoB);
 }

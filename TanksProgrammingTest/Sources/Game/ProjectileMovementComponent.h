@@ -1,6 +1,7 @@
 #pragma once
 #include "EntityComponent.h"
-#include "Engine.h"
+#include "MathLib.h"
+
 class ProjectileMovementComponent : public EntityComponent
 {
 public:

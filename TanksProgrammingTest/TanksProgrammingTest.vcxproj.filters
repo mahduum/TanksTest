@@ -81,13 +81,16 @@
     <ClCompile Include="Sources\Game\EnemyTankMovementComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MovementComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Game\EntitySpawnerComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Game\EnemyTankSpawnerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Game\EnemyProjectileSpawnerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Game\PlayerProjectileSpawnerComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,13 +155,16 @@
     <ClInclude Include="Sources\Game\EnemyTankMovementComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MovementComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Game\EntitySpawnerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Game\EnemyTankSpawnerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Game\EnemyProjectileSpawnerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Game\PlayerProjectileSpawnerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

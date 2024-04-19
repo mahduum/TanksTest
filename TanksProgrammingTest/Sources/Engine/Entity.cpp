@@ -17,7 +17,7 @@ void Entity::LoadFromConfig(nlohmann::json Config)
 	
 	if (Config.find("Components") != Config.end())
 	{
-		for (auto ComponentItem : Config["Components"].items())
+		for (const auto& ComponentItem : Config["Components"].items())
 		{
 			nlohmann::json ComponentConfig = ComponentItem.value();
 			std::string Type = ComponentConfig["Type"];
@@ -32,7 +32,7 @@ void Entity::LoadFromConfig(nlohmann::json Config)
 
 void Entity::Initialize()
 {
-	for (auto Component : m_Components)
+	for (const auto& Component : m_Components)
 	{
  		Component->Initialize();
 	}
@@ -47,21 +47,16 @@ void Entity::Initialize()
 
 void Entity::Update(float DeltaTime)
 {
-	//todo: make update groups, first transform group then representation group
-	//Transform group: first update predicted transforms with input groups, updated colliders transforms, correct transforms and colliders.
-	//Update representation groups transforms -> that way we are sure that representation has correct transform to update to
 	UpdateSceneTransform();
 
-	for (auto Component : m_Components)
+	for (const auto& Component : m_Components)
 	{
 		Component->Update(DeltaTime);
-		//for example, we are updating movement on projectile in update, and movement input too, then on movement we move only the collider
-		//
 	}
 
 	UpdateSceneTransform();
 
-	if (m_Name == "Player")//todo a nicer way???
+	if (m_Name == "Player")//Could be done in nicer way, but I run out of time :)
 	{
 		auto ActiveScene = Engine::Get()->GetActiveScene();
 		auto BoxColliderOpt = GetComponent<BoxColliderComponent>();
@@ -75,7 +70,7 @@ void Entity::Update(float DeltaTime)
 
 void Entity::Draw()
 {
-	for (auto Component : m_Components)
+	for (const auto& Component : m_Components)
 	{
 		Component->Draw();
 	}
@@ -83,7 +78,7 @@ void Entity::Draw()
 
 void Entity::UnInitialize()
 {
-	for (auto Component : m_Components)
+	for (const auto& Component : m_Components)
 	{
 		Component->UnInitialize();
 	}
@@ -101,18 +96,14 @@ void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
 	//todo add new remove
 }
 
-void Entity::OnCollision(const CollisionInfo& collisionInfo)
+void Entity::OnCollision(const CollisionInfo& CollisionInfo)
 {
 	auto CollisionHandlerOption = GetComponent<ICollisionHandlerComponent>();
 
-	if(CollisionHandlerOption.has_value())//todo get components of type
+	if(CollisionHandlerOption.has_value())
 	{
-		CollisionHandlerOption.value()->OnCollision(collisionInfo);
+		CollisionHandlerOption.value()->OnCollision(CollisionInfo);
 	}
-	//todo how to call collision implementation??? it may have a marker component but how we know? this component would need to have
-	//an inheritance and each entity
-	//handle on Abstract collision handler, call on collider class and let it handle it by internally calling the implementor?
-	//get implementor it is assumed to come with base
 }
 
 void Entity::UpdateSceneTransform()
@@ -121,7 +112,7 @@ void Entity::UpdateSceneTransform()
 
 	m_UpdateSceneTransform = false;
 
-	for (auto Comp : m_Components)
+	for (const auto& Comp : m_Components)
 	{
 		Comp->OnUpdateSceneTransform();
 	}

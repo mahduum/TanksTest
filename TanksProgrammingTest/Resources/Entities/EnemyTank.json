@@ -1,6 +1,7 @@
 {
 	"Name" : "EnemyTank",
 	"CanBeSteppedOn" : true,
+	"TransformType" : "Dynamic",
 	"Components" : 
 	[
 		{
@@ -16,7 +17,7 @@
 			"Speed" : 60
 		},
 		{
-			"Type" : "ProjectileSpawnerComponent",
+			"Type" : "EnemyProjectileSpawnerComponent",
 			"SpawnRateSeconds" : 1
 		},
 		{

@@ -1,6 +1,7 @@
 #include "EnemyTankMovementComponent.h"
 
 #include "BoxColliderComponent.h"
+#include "EnemyProjectileSpawnerComponent.h"
 #include "Engine.h"
 #include "ProjectileSpawnerComponent.h"
 #include "Scene.h"
@@ -39,7 +40,7 @@ void EnemyTankMovementComponent::Update(float DeltaTime)
 		GetOwner()->SetFacingDirection(OutInfo.m_AttackDirection);
 	}
 
-	auto ProjectileSpawnerOpt = GetOwner()->GetComponent<ProjectileSpawnerComponent>();
+	auto ProjectileSpawnerOpt = GetOwner()->GetComponent<EnemyProjectileSpawnerComponent>();//todo refactor to use as interface the abstract class above
 	if (ProjectileSpawnerOpt.has_value())
 	{
 		ProjectileSpawnerOpt.value()->SetActive(OutInfo.m_TargetInSight);
@@ -133,8 +134,8 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& In
 			GetOwner()->GetPosition(),
 			FromBox, ExtentsOffset,
 			OutIntersection,
-			CollisionObjectType::Player | CollisionObjectType::WorldStatic) &&
-			OutIntersection->GetCollisionObjectType() == CollisionObjectType::Player)
+			CollisionFlags::Player | CollisionFlags::WorldStatic) &&
+			OutIntersection->GetCollisionObjectType() == CollisionFlags::Player)
 		{
 			auto colliderPos = OutIntersection->GetBox().m_Min;
 			auto enemyColliderPos = BoxOpt.value()->GetBox().m_Min;

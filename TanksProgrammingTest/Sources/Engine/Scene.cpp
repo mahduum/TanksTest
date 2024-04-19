@@ -84,7 +84,7 @@ void Scene::UnInitialize()
 {
 	for (auto It = m_Entities.begin(); It != m_ValidEntitiesEnd; ++It)
 	{
-		if ((*It)->GetName() == "Projectile")
+		if ((*It)->GetName() == "PlayerProjectile" || (*It)->GetName() == "EnemyProjectile")
 			SDL_Log("Uninitializing entity from scene by name: %s", (*It)->GetName().data());
 
 		(*It)->UnInitialize();
@@ -170,14 +170,10 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, n
 				NewEntity->SetFacingDirection(FacingDirection::UP);
 
 				AddEntity(NewEntity);
-				//must-use collider for placement of tanks, tanks setting will determine the position, not the setting in the map, map overrides per instance setting
 				m_FlowFieldCells.at(Index).m_CanBeSteppedOn = NewEntity->CanBeSteppedOn();
-				if (Character == '#')
-					SDL_Log("Placing %s at coords x: %d, y: %d amd index: %d, scene pos x: %d, y: %d", NewEntity->GetName().data(), x, y, Index, Column * Width, Row * Height);
 			}
 			else
 			{
-				//SDL_Log("Placing %s at coords x: %d, y: %d amd index: %d", "Empty", x, y, Index);
 				m_FlowFieldCells.at(Index).m_CanBeSteppedOn = true;
 			}
 			++Column;

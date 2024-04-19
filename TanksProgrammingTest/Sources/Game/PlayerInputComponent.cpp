@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "Engine.h"
 #include "MathLib.h"
-#include "ProjectileSpawnerComponent.h"
+#include "PlayerProjectileSpawnerComponent.h"
 
 
 PlayerInputComponent::PlayerInputComponent(Entity* Owner)
@@ -23,7 +23,7 @@ PlayerInputComponent::PlayerInputComponent()
 void PlayerInputComponent::Initialize()
 {
 	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>().value();
-	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<ProjectileSpawnerComponent>().value();
+	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<PlayerProjectileSpawnerComponent>().value();//todo refactor to use as interface the abstract class above
 }
 
 void PlayerInputComponent::Update(float DeltaTime)

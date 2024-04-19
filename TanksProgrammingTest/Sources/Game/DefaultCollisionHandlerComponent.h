@@ -8,7 +8,7 @@ public:
 	DefaultCollisionHandlerComponent(Entity* Owner);
 	DefaultCollisionHandlerComponent();
 
-	virtual void OnCollision(const CollisionInfo& collisionInfo) override;
+	virtual void OnCollisionImpl(const CollisionInfo& collisionInfo) override;
 
 	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<DefaultCollisionHandlerComponent>(*this); }
 

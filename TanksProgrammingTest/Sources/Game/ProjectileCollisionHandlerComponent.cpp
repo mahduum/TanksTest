@@ -1,6 +1,8 @@
 #include "ProjectileCollisionHandlerComponent.h"
 
 #include <SDL_log.h>
+
+#include "ColliderComponent.h"
 #include "Entity.h"
 #include "Scene.h"
 #include "TextureComponent.h"
@@ -13,10 +15,8 @@ ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent() : Pro
 {
 }
 
-void ProjectileCollisionHandlerComponent::OnCollision(const CollisionInfo& collisionInfo)
+void ProjectileCollisionHandlerComponent::OnCollisionImpl(const CollisionInfo& CollisionInfo)
 {
-	//SDL_Log("Projectile collision handler received collision with entity: %s", collisionInfo.m_OtherEntity->GetName().data());
+	SDL_Log("Removing projectile..., collided with: %s", CollisionInfo.m_OtherCollider->GetOwner()->GetName().data());
 	Engine::Get()->GetActiveScene()->RemoveEntity(GetOwner());
-	//GetOwner()->UnInitialize();
-	//delete GetOwner();
 }

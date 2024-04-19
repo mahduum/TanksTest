@@ -9,7 +9,17 @@ public:
 	ICollisionHandlerComponent(Entity* Owner);
 	ICollisionHandlerComponent();
 
+	virtual void LoadFromConfig(nlohmann::json Config) override;
+
 	virtual std::type_index GetTypeIndex() const override { return typeid(ICollisionHandlerComponent); }
-	virtual void OnCollision(const CollisionInfo& collisionInfo) = 0;
+	virtual void OnCollisionImpl(const CollisionInfo& collisionInfo) = 0;
+
+	void OnCollision(const CollisionInfo& CollisionInfo);
+
+	CollisionFlags GetCollisionResponse() const { return m_CollisionResponse; }
+
+private:
+
+	CollisionFlags m_CollisionResponse;
 };
 

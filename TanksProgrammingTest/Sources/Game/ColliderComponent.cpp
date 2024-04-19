@@ -7,7 +7,7 @@
 
 ColliderComponent::ColliderComponent(Entity* Owner) :
 	EntityComponent(Owner),
-	m_CollisionObjectType(CollisionObjectType::All)
+	m_CollisionObjectType(CollisionFlags::All)
 {
 }
 
@@ -21,7 +21,7 @@ void ColliderComponent::LoadFromConfig(nlohmann::json Config)
 	m_CollisionObjectType = StringToCollisionObjectType(Config.value("CollisionObjectType", "All"));
 }
 
-void ColliderComponent::OnLoaded()//todo move it to base class and make generic the required component
+void ColliderComponent::OnLoaded()
 {
 	EntityComponent::OnLoaded();
 	if(!m_RequiredComponents.empty())
@@ -33,7 +33,7 @@ void ColliderComponent::OnLoaded()//todo move it to base class and make generic 
 				break;
 			}
 
-			if(it == std::prev(m_RequiredComponents.end()))//todo not necessary, we might not need to respond to collisions?
+			if(it == std::prev(m_RequiredComponents.end()))
 			{
 				ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 				const EntityComponent* ComponentPrototype = ResourceManagerPtr->GetComponentPrototypeByName("DefaultCollisionHandlerComponent");
@@ -41,7 +41,6 @@ void ColliderComponent::OnLoaded()//todo move it to base class and make generic 
 				RequiredComponent->SetOwner(GetOwner());
 				GetOwner()->AddComponent(RequiredComponent);
 				RequiredComponent->Initialize();
-				SDL_Log("Adding requirement component of type: %s", typeid(*RequiredComponent).name());
 			}
 		}
 	}

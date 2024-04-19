@@ -11,11 +11,8 @@ public:
 	ProjectileSpawnerComponent(Entity* Owner);
 	ProjectileSpawnerComponent();
 
-	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<ProjectileSpawnerComponent>(*this); }
-
 	virtual void DoSpawn() override;
 	virtual void SetSpawnPoint(Vector2& OutSpawnPoint) override;
-	virtual std::string GetNameToSpawn() const override { return "Projectile"; }
 	
 private:
 	void SpawnProjectile();
