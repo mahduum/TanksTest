@@ -32,7 +32,7 @@ void EnemyTankMovementComponent::Initialize()
 void EnemyTankMovementComponent::Update(float DeltaTime)
 {
 	EntityComponent::Update(DeltaTime);
-	//todo check if player is in line of sight, if not check left and right, if ok, rotate and start shooting, else set new node location, make event whenever player location changes
+	
 	TargetInfo OutInfo;
 
 	if (TryGetTargetInfo(OutInfo))
@@ -74,7 +74,7 @@ void EnemyTankMovementComponent::Move(float DeltaTime)
 
 	GetOwner()->SetComponentsTransformDirty();
 
-	//todo check collisions from enemies in on collision handler
+	//todo add check collisions from enemies in on collision handler
 }
 
 void EnemyTankMovementComponent::SetNextNodeLocation()
@@ -83,8 +83,8 @@ void EnemyTankMovementComponent::SetNextNodeLocation()
 
 	Vector2 NewNextNodeLocation{ m_NextNodeLocation.x, m_NextNodeLocation.y };
 	Vector2 NewFacingDirection{ 0, 0 };
-	//todo set from collider
-	auto [x, y] = m_NextNodeLocation;//GetOwner()->GetPositionXY();
+
+	auto [x, y] = m_NextNodeLocation;
 	Engine::Get()->GetActiveScene()->GetNextNavNodeLocationFromLocation(m_NextNodeLocation.x, m_NextNodeLocation.y, NewNextNodeLocation, NewFacingDirection);
 	m_CurrentNodeLocation = m_NextNodeLocation;
 	m_NextNodeLocation = NewNextNodeLocation;
@@ -126,7 +126,8 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& In
 		FromBox.m_Min.Set(FromBox.m_Min.x + QuarterExtentX, FromBox.m_Min.y + QuarterExtentY);
 		FromBox.m_Max.Set(FromBox.m_Max.x - QuarterExtentX, FromBox.m_Max.y - QuarterExtentY);
 
-		Vector2 ExtentsOffset{ Direction * 330 };//todo detection distance and add min distance
+		constexpr float ScanDistanceMultiplier = 330;
+		Vector2 ExtentsOffset{ Direction * ScanDistanceMultiplier };
 
 		std::shared_ptr<BoxColliderComponent> OutIntersection;
 
