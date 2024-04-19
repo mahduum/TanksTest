@@ -175,5 +175,5 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 void PlayerInputComponent::Shoot() const
 {
 	SDL_Log("Spawning projectile...");
-	m_ProjectileSpawnerComponent->SpawnProjectile();
+	m_ProjectileSpawnerComponent->DoSpawn();
 }

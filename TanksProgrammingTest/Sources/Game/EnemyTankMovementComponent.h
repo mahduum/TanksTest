@@ -1,17 +1,16 @@
 #pragma once
 #include <optional>
-#include <SDL_timer.h>
-#include <unordered_set>
-#include <atomic>
 
+#include "CollisionWorld.h"
 #include "EntityComponent.h"
 #include "MathLib.h"
 
 struct TargetInfo
 {
-	bool m_TargetInSight;
+	bool m_TargetInSight = false;
 	std::optional<int> m_TargetDistance;
 	Vector2 m_AttackDirection;
+	CollisionObjectType m_TargetType = CollisionObjectType::None;
 };
 
 class EnemyTankMovementComponent : public EntityComponent
@@ -37,7 +36,5 @@ private:
 	float m_NextNodeAlpha;
 	Vector2 m_CurrentNodeLocation;
 	Vector2 m_NextNodeLocation;
-
-	SDL_TimerID m_CoolDownTimerID;
 };
 

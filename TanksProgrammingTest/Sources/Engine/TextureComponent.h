@@ -28,6 +28,9 @@ private:
 	std::string TexturePath;
 	SDL_Rect m_Rectangle;
 
+	int m_OffsetX;
+	int m_OffsetY;
+
 	SDL_Surface* Surface;//todo: must be a pointer? make better pointer
 	SDL_Texture* Texture;//todo: must be a pointer? make better pointer
 };

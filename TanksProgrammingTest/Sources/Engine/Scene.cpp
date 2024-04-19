@@ -6,6 +6,8 @@
 #include <fstream>
 #include <queue>
 
+#include "../Game/EnemyTankMovementComponent.h"
+
 Scene::Scene()
 {
 	m_ValidEntitiesEnd = m_Entities.end();
@@ -91,6 +93,11 @@ void Scene::UnInitialize()
 
 void Scene::AddEntity(Entity* Entity)
 {
+	if(Entity->GetComponent<EnemyTankMovementComponent>().has_value())
+	{
+		++m_EnemyEntitiesCount;
+	}
+
 	if(m_Entities.end() == m_ValidEntitiesEnd)
 	{
 		m_Entities.emplace_back(Entity);
@@ -105,6 +112,11 @@ void Scene::AddEntity(Entity* Entity)
 
 void Scene::RemoveEntity(Entity* Entity)
 {
+	if (Entity->GetComponent<EnemyTankMovementComponent>().has_value())
+	{
+		--m_EnemyEntitiesCount;
+	}
+
 	std::vector<::Entity*>::iterator RetIt = std::remove(
 		m_Entities.begin(), m_Entities.end(), Entity);
 	if(RetIt != m_Entities.end())

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Game\EnemyTankSpawnerComponent.cpp" />
+    <ClCompile Include="Sources\Game\EntitySpawnerComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="Sources\Game\EnemyTankMovementComponent.cpp" />
     <ClCompile Include="Sources\Game\ColliderComponent.cpp" />
@@ -42,6 +44,8 @@
     <ClCompile Include="Sources\Game\PlayerInputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Game\EnemyTankSpawnerComponent.h" />
+    <ClInclude Include="Sources\Game\EntitySpawnerComponent.h" />
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="Sources\Game\EnemyTankMovementComponent.h" />
     <ClInclude Include="Sources\Game\ColliderComponent.h" />

@@ -6,6 +6,7 @@
 #include "BoxTweenSweepColliderComponent.h"
 #include "DefaultCollisionHandlerComponent.h"
 #include "EnemyTankMovementComponent.h"
+#include "EnemyTankSpawnerComponent.h"
 #include "ProjectileCollisionHandlerComponent.h"
 #include "ProjectileMovementComponent.h"
 #include "ProjectileSpawnerComponent.h"
@@ -19,12 +20,12 @@ int main(int argc, char* argv[])
 	ResourceManagerPtr->RegisterComponent("TextureComponent", new TextureComponent());
 	ResourceManagerPtr->RegisterComponent("DefaultCollisionHandlerComponent", new DefaultCollisionHandlerComponent());
 	ResourceManagerPtr->RegisterComponent("ProjectileCollisionHandlerComponent", new ProjectileCollisionHandlerComponent());
-	//ResourceManagerPtr->RegisterComponent("ColliderComponent", new ColliderComponent());
 	ResourceManagerPtr->RegisterComponent("BoxColliderComponent", new BoxColliderComponent());
 	ResourceManagerPtr->RegisterComponent("BoxTweenSweepColliderComponent", new BoxTweenSweepColliderComponent());
 	ResourceManagerPtr->RegisterComponent("ProjectileMovementComponent", new ProjectileMovementComponent());
 	ResourceManagerPtr->RegisterComponent("ProjectileSpawnerComponent", new ProjectileSpawnerComponent());
 	ResourceManagerPtr->RegisterComponent("EnemyTankMovementComponent", new EnemyTankMovementComponent());
+	ResourceManagerPtr->RegisterComponent("EnemyTankSpawnerComponent", new EnemyTankSpawnerComponent());
 
 	Engine::Get()->CreateActiveSceneFromTemplate("MainScene");
 

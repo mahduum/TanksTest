@@ -6,7 +6,7 @@
 #include "Scene.h"
 
 EnemyTankMovementComponent::EnemyTankMovementComponent(Entity* Owner) :
-	EntityComponent(Owner), m_Speed(0), m_NextNodeAlpha(0), m_CoolDownTimerID(0)
+	EntityComponent(Owner), m_Speed(0), m_NextNodeAlpha(0)
 {
 }
 
@@ -31,12 +31,6 @@ void EnemyTankMovementComponent::Initialize()
 void EnemyTankMovementComponent::Update(float DeltaTime)
 {
 	EntityComponent::Update(DeltaTime);
-
-	if(m_CoolDownTimerID != 0)
-	{
-		return;
-	}
-
 	//todo check if player is in line of sight, if not check left and right, if ok, rotate and start shooting, else set new node location, make event whenever player location changes
 	TargetInfo OutInfo;
 
@@ -45,28 +39,17 @@ void EnemyTankMovementComponent::Update(float DeltaTime)
 		GetOwner()->SetFacingDirection(OutInfo.m_AttackDirection);
 	}
 
+	auto ProjectileSpawnerOpt = GetOwner()->GetComponent<ProjectileSpawnerComponent>();
+	if (ProjectileSpawnerOpt.has_value())
+	{
+		ProjectileSpawnerOpt.value()->SetActive(OutInfo.m_TargetInSight);
+	}
+
 	constexpr int MinApproachDistanceInLOS = 300;
 	if (OutInfo.m_TargetInSight && OutInfo.m_TargetDistance.has_value() &&
-		MinApproachDistanceInLOS > OutInfo.m_TargetDistance.value())//todo value from config
+		MinApproachDistanceInLOS > OutInfo.m_TargetDistance.value())
 	{
-		auto callback = [](Uint32 interval, void* param) -> Uint32
-			{
-				static int counter;
-				++counter %= 4;
-
-				auto comp = static_cast<EnemyTankMovementComponent*>(param);
-
-				if (counter >= 3)
-				{
-					SDL_RemoveTimer(comp->m_CoolDownTimerID);
-					comp->m_CoolDownTimerID = 0;
-					//comp->m_Sh
-				}
-
-				return interval;
-			};
-
-		m_CoolDownTimerID = SDL_AddTimer(1000, callback, this);
+		//todo set cooldown time
 		return;
 	}
 
@@ -89,9 +72,8 @@ void EnemyTankMovementComponent::Move(float DeltaTime)
 	auto [x, y] = GetOwner()->GetPositionXY();
 
 	GetOwner()->SetComponentsTransformDirty();
-	//todo stop when we are close
-	//on update transforms
-	//fix collisions
+
+	//todo check collisions from enemies in on collision handler
 }
 
 void EnemyTankMovementComponent::SetNextNodeLocation()
@@ -100,7 +82,7 @@ void EnemyTankMovementComponent::SetNextNodeLocation()
 
 	Vector2 NewNextNodeLocation{ m_NextNodeLocation.x, m_NextNodeLocation.y };
 	Vector2 NewFacingDirection{ 0, 0 };
-
+	//todo set from collider
 	auto [x, y] = m_NextNodeLocation;//GetOwner()->GetPositionXY();
 	Engine::Get()->GetActiveScene()->GetNextNavNodeLocationFromLocation(m_NextNodeLocation.x, m_NextNodeLocation.y, NewNextNodeLocation, NewFacingDirection);
 	m_CurrentNodeLocation = m_NextNodeLocation;
@@ -116,17 +98,17 @@ bool EnemyTankMovementComponent::TryGetTargetInfo(TargetInfo& Info)
 		return true;
 	}
 
-	/*if(ScanForPlayer(GetOwner()->GetRightVector()))
-	{
-		AttackDirection= GetOwner()->GetRightVector();
-		return true;
-	}
+	/*optional behaviour but needs to be improved*/
+	//if (ScanForPlayer(GetOwner()->GetRightVector(), Info))
+	//{
+	//	return true;
+	//}
 
-	if (ScanForPlayer(GetOwner()->GetRightVector() * -1.0f))
-	{
-		AttackDirection = GetOwner()->GetRightVector() * -1.0f;
-		return true;
-	}*/
+	//if (ScanForPlayer(GetOwner()->GetRightVector() * -1.0f, Info))
+	//{
+	//	return true;
+	//}
+
 	return false;
 }
 
@@ -147,8 +129,11 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& In
 
 		std::shared_ptr<BoxColliderComponent> OutIntersection;
 
-		//scan each direction
-		if (Engine::Get()->GetCollisionWorld()->SingleBoxCast(GetOwner()->GetPosition(), FromBox, ExtentsOffset, OutIntersection, CollisionObjectType::Player | CollisionObjectType::WorldStatic) &&
+		if (Engine::Get()->GetCollisionWorld()->SingleBoxCast(
+			GetOwner()->GetPosition(),
+			FromBox, ExtentsOffset,
+			OutIntersection,
+			CollisionObjectType::Player | CollisionObjectType::WorldStatic) &&
 			OutIntersection->GetCollisionObjectType() == CollisionObjectType::Player)
 		{
 			auto colliderPos = OutIntersection->GetBox().m_Min;
@@ -158,7 +143,6 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& In
 			Info.m_AttackDirection = Direction;
 			Info.m_TargetInSight = true;
 			Info.m_TargetDistance = dist;
-			SDL_Log("Enemy sees: %s, distance: %d", OutIntersection->GetOwner()->GetName().data(), Info.m_TargetDistance.value());
 
 			return true;
 		}

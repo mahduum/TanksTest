@@ -5,7 +5,7 @@
 
 TextureComponent::TextureComponent(Entity* Owner)
 	: EntityComponent(Owner)
-	, m_Rectangle{0,0,0,0}, Surface(nullptr), Texture(nullptr)
+	  , m_Rectangle{0, 0, 0, 0}, m_OffsetX(0), m_OffsetY(0), Surface(nullptr), Texture(nullptr)
 {
 }
 
@@ -28,6 +28,8 @@ void TextureComponent::LoadFromConfig(nlohmann::json Config)
 	m_Rectangle.x = Config.value("PositionX", 0);
 	m_Rectangle.y = Config.value("PositionY", 0);
 
+	m_OffsetX = Config.value("OffsetX", 0);
+	m_OffsetY = Config.value("OffsetY", 0);
 	//set position in owner
 }
 
@@ -69,7 +71,7 @@ void TextureComponent::Draw()
 void TextureComponent::OnUpdateSceneTransform()
 {
 	auto [x, y] = GetOwner()->GetPositionXY();
-	SetPosition(x, y);
+	SetPosition(x - m_OffsetX, y - m_OffsetY);
 }
 
 void TextureComponent::SetTextureFromAssetName(std::string Name)

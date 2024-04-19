@@ -6,7 +6,6 @@
 #include "TextureComponent.h"
 #include "../Game/BoxColliderComponent.h"
 #include "../Game/ICollisionHandlerComponent.h"
-#include "../Game/ProjectileCollisionHandlerComponent.h"
 
 void Entity::LoadFromConfig(nlohmann::json Config)
 {

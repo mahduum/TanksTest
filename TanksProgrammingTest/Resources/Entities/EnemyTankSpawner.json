@@ -1,0 +1,17 @@
+{
+    "Name" : "EnemyTankSpawner",
+    "CanBeSteppedOn" : true,
+	"Components" : 
+	[
+		{
+			"Type" : "TextureComponent",
+			"Width" : 30,
+			"Height" : 35
+		},
+		{
+			"Type" : "EnemyTankSpawnerComponent",
+            "SpawnRateSeconds" : 10,
+            "AutoSpawn" : true
+		}
+	]
+}

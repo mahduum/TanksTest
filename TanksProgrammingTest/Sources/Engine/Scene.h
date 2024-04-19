@@ -22,12 +22,17 @@ public:
 	void AddEntity(Entity* Entity);//todo with shared???
 	void RemoveEntity(Entity* Entity);//todo with shared
 
+	bool CanSpawnEnemy() const { return m_EnemyEntitiesCount < m_MaxEnemyEntitiesInScene; }
+
 private:
 	void LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, nlohmann::json Parameters);
 
 	std::vector<Entity*> m_Entities;
 	std::vector<::Entity*>::iterator m_ValidEntitiesEnd;
 	std::string m_Name;
+
+	int m_EnemyEntitiesCount = 0;
+	const int m_MaxEnemyEntitiesInScene = 6;
 
 private:
 	/*Flow field section.*/

@@ -61,27 +61,9 @@ inline CollisionObjectType& operator^=(CollisionObjectType& lhs, CollisionObject
 	return lhs;
 }
 
-inline bool operator==(CollisionObjectType& lhs, CollisionObjectType rhs)
+inline bool operator==(CollisionObjectType lhs, CollisionObjectType rhs)
 {
 	return static_cast<unsigned int>(lhs) == static_cast<unsigned int>(rhs);
-}
-
-inline void TestCollision(CollisionObjectType obj) {
-	if ((obj & CollisionObjectType::Player) != CollisionObjectType::None) {
-		//std::cout << "Collided with Player." << std::endl;
-	}
-	if ((obj & CollisionObjectType::Enemy) != CollisionObjectType::None) {
-		//std::cout << "Collided with Enemy." << std::endl;
-	}
-	if ((obj & CollisionObjectType::Projectile) != CollisionObjectType::None) {
-		//std::cout << "Collided with Projectile." << std::endl;
-	}
-	if ((obj & CollisionObjectType::WorldStatic) != CollisionObjectType::None) {
-		//std::cout << "Collided with WorldStatic." << std::endl;
-	}
-	if ((obj & CollisionObjectType::WorldDynamic) != CollisionObjectType::None) {
-		//std::cout << "Collided with WorldDynamic." << std::endl;
-	}
 }
 
 
@@ -97,29 +79,17 @@ inline CollisionObjectType StringToCollisionObjectType(const std::string&& EnumN
 		return CollisionObjectType::WorldStatic;
 	if (EnumName == "WorldDynamic")
 		return CollisionObjectType::WorldDynamic;
+	if (EnumName == "All")
+		return CollisionObjectType::All;
 
-	return CollisionObjectType::All;
+	return CollisionObjectType::None;
 }
 
 class BoxColliderComponent;
-//struct Vector2
-//{
-//	int x;
-//	int y;
-//};
 struct CollisionInfo
 {
 	class Entity* m_OtherEntity;//todo shared
-	// Point of collision
-	//Vector2 m_Point;
-	// Component collided with
-	//class BoxColliderComponent* m_OtherCollider;
-
-	//todo backtrace collision delta
-	// Owning actor of component
 };
-
-//todo add box cast
 
 class CollisionWorld
 {

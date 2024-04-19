@@ -6,7 +6,7 @@
 #include "Scene.h"
 #include "TextureComponent.h"
 
-ProjectileSpawnerComponent::ProjectileSpawnerComponent(Entity* Owner) : EntityComponent(Owner), m_TextureComponent(nullptr)
+ProjectileSpawnerComponent::ProjectileSpawnerComponent(Entity* Owner) : EntitySpawnerComponent(Owner)
 {
 }
 
@@ -14,58 +14,43 @@ ProjectileSpawnerComponent::ProjectileSpawnerComponent() : ProjectileSpawnerComp
 {
 }
 
-void ProjectileSpawnerComponent::LoadFromConfig(nlohmann::json Config)
+void ProjectileSpawnerComponent::DoSpawn()
 {
-	EntityComponent::LoadFromConfig(Config);
+	SpawnProjectile();
 }
 
-void ProjectileSpawnerComponent::Initialize()
+void ProjectileSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
 {
-	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>().value();
-	SDL_Log("Initializing projectile spawner...");
-}
-
-void ProjectileSpawnerComponent::Update(float DeltaTime)
-{
-	/*SDL_Log("IUpdating projectile spawner: %s", GetOwner()->GetName());
-	if(m_Spawn)
+	switch (GetOwner()->GetFacingDirection())
 	{
-		m_Spawn = false;
-		SpawnProjectile();
-	}*/
-}
-
-void ProjectileSpawnerComponent::UnInitialize()
-{
-	EntityComponent::UnInitialize();
+	case FacingDirection::UP:
+		GetTopSpawnPoint(OutSpawnPoint);
+		break;
+	case FacingDirection::DOWN:
+		GetBottomSpawnPoint(OutSpawnPoint);
+		break;
+	case FacingDirection::RIGHT:
+		GetRightSpawnPoint(OutSpawnPoint);
+		break;
+	case FacingDirection::LEFT:
+		GetLeftSpawnPoint(OutSpawnPoint);
+		break;
+	}
 }
 
 void ProjectileSpawnerComponent::SpawnProjectile()
 {
 	//todo keep a pool of them
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
-	Entity* Projectile = ResourceManagerPtr->CreateEntityFromDataTemplate("Projectile");//add name to config
+	Entity* Projectile = ResourceManagerPtr->CreateEntityFromDataTemplate(GetNameToSpawn());//add name to config
 
-	Vector2 SpawnPoint(0,0);
-	FacingDirection Facing = GetOwner()->GetFacingDirection();
-	switch (Facing)
-	{
-		case FacingDirection::UP:
-			GetTopSpawnPoint(SpawnPoint);
-			break;
-		case FacingDirection::DOWN:
-			GetBottomSpawnPoint(SpawnPoint);
-			break;
-		case FacingDirection::RIGHT:
-			GetRightSpawnPoint(SpawnPoint);
-			break;
-		case FacingDirection::LEFT:
-			GetLeftSpawnPoint(SpawnPoint);
-			break;
-	}
+	Vector2 OutSpawnPoint(0,0);
+	SetSpawnPoint(OutSpawnPoint);
 
-	Projectile->GetComponent<TextureComponent>().value()->SetPosition(SpawnPoint.x, SpawnPoint.y);
-	Projectile->SetFacingDirection(Facing);
+	Projectile->GetComponent<TextureComponent>().value()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
+	Projectile->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
+
+	Projectile->SetFacingDirection(GetOwner()->GetFacingDirection());
 	Projectile->Initialize();
 
 	Engine::Get()->GetActiveScene()->AddEntity(Projectile);
