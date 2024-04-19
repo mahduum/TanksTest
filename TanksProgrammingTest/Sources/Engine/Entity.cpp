@@ -101,7 +101,7 @@ void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
 	//todo add new remove
 }
 
-void Entity::OnCollision(CollisionInfo collisionInfo)
+void Entity::OnCollision(const CollisionInfo& collisionInfo)
 {
 	auto CollisionHandlerOption = GetComponent<ICollisionHandlerComponent>();
 

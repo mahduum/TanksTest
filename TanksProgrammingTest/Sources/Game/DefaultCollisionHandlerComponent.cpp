@@ -12,7 +12,7 @@ DefaultCollisionHandlerComponent::DefaultCollisionHandlerComponent() : DefaultCo
 {
 }
 
-void DefaultCollisionHandlerComponent::OnCollision(CollisionInfo collisionInfo)
+void DefaultCollisionHandlerComponent::OnCollision(const CollisionInfo& collisionInfo)
 {
 	SDL_Log("Default collision handler received collision with entity: %s", collisionInfo.m_OtherEntity->GetName().data());
 }

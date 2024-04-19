@@ -81,6 +81,7 @@ void PlayerInputComponent::Update(float DeltaTime)
 	
 	Vector2 BacktraceCollisionDelta(0, 0);
 
+	//todo use collision world
 	FixCollisionsAABB(BacktraceCollisionDelta);//if collision delta is the same as movement delta then now update
 
 	if (PredictedDeltaX != 0 && std::abs(BacktraceCollisionDelta.x) < std::abs(PredictedDeltaX))
@@ -104,7 +105,7 @@ void PlayerInputComponent::Update(float DeltaTime)
 void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
 	//SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
-	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetBoxes();//todo get only boxes with given channel
+	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();//todo get only boxes with given channel
 	auto MyCollider = GetOwner()->GetComponent<BoxColliderComponent>().value();//todo fix collisions assume there is a box
 
 	//first update only collider for testing

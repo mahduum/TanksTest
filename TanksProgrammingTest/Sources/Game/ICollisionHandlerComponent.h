@@ -10,6 +10,6 @@ public:
 	ICollisionHandlerComponent();
 
 	virtual std::type_index GetTypeIndex() const override { return typeid(ICollisionHandlerComponent); }
-	virtual void OnCollision(CollisionInfo collisionInfo) = 0;
+	virtual void OnCollision(const CollisionInfo& collisionInfo) = 0;
 };
 

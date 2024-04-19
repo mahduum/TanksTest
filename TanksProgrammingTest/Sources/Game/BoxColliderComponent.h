@@ -33,9 +33,9 @@ protected:
 	void SetBoxMin(Vector2 boxMin);
 	void SetBoxMax(Vector2 boxMax);
 
-	SDL_Rect* GetRectangle() const;
+	SDL_Rect* GetRectangle();
 
-	std::shared_ptr<TextureComponent> m_TextureComponent;
+	//std::shared_ptr<TextureComponent> m_TextureComponent;
 	AABB m_Box;
 	AABB m_PreviousFrameBox;
 

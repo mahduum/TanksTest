@@ -1,5 +1,6 @@
 {
     "Name" : "Projectile",
+    "TransformType" : "Dynamic",
     "Components" : 
     [
         {

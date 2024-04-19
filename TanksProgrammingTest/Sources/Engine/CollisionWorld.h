@@ -7,6 +7,8 @@
 #include "CollisionUtils.h"
 #include "MathLib.h"
 
+class Entity;
+
 enum class CollisionObjectType : unsigned int
 {
 	None = 0,
@@ -88,7 +90,7 @@ inline CollisionObjectType StringToCollisionObjectType(const std::string&& EnumN
 class BoxColliderComponent;
 struct CollisionInfo
 {
-	class Entity* m_OtherEntity;//todo shared
+	class std::shared_ptr<Entity> m_OtherEntity;//todo shared
 };
 
 class CollisionWorld
@@ -112,23 +114,24 @@ public:
 	bool SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& Direction, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionObjectType IncludedObjectTypes) ;
 
 	// Add/remove box components from world
-	void AddBox(const std::shared_ptr<BoxColliderComponent>& box);
-	void RemoveBox(const std::shared_ptr<BoxColliderComponent>& box);
+	void AddBox(const std::shared_ptr<BoxColliderComponent> box);
+	void RemoveBox(const std::shared_ptr<BoxColliderComponent> box);
 
-	size_t GetBoxesCount() const { return m_Boxes.size(); }
+	size_t GetBoxesCount() const { return m_StaticBoxes.size(); }
 
 	static void OnEntitiesCollision(class Entity* a, class Entity* b);
 
 	std::function<void(class Entity*, class Entity*)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
 
 
-	const std::vector<std::shared_ptr<BoxColliderComponent>>& GetBoxes() const
+	const std::vector<std::shared_ptr<BoxColliderComponent>>& GetStaticBoxes() const
 	{
-		return m_Boxes;
+		return m_StaticBoxes;
 	}
 
 private:
 
-	std::vector<std::shared_ptr<BoxColliderComponent>> m_Boxes;
+	std::vector<std::shared_ptr<BoxColliderComponent>> m_StaticBoxes;
+	std::vector<std::shared_ptr<BoxColliderComponent>> m_DynamicBoxes;
 };
 

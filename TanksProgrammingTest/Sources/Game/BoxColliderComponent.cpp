@@ -11,7 +11,7 @@ BoxColliderComponent:: BoxColliderComponent(): BoxColliderComponent(nullptr)
 
 BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
 	ColliderComponent(Owner),
-	m_TextureComponent(nullptr),
+	//m_TextureComponent(nullptr),
 	m_Box(Vector2::Zero, Vector2::Zero),
 	m_PreviousFrameBox(Vector2::Zero, Vector2::Zero),
 	m_BoxOffsetMin(Vector2::Zero),
@@ -40,7 +40,7 @@ void BoxColliderComponent::Initialize()
         return;
     }
 
-    m_TextureComponent = TexOpt.value();
+    //m_TextureComponent = TexOpt.value();
 
     OnUpdateSceneTransform();
 
@@ -76,22 +76,23 @@ void BoxColliderComponent::UnInitialize()
 
 void BoxColliderComponent::OnUpdateSceneTransform()
 {
-    if (m_TextureComponent == nullptr)
+    /*if (m_TextureComponent == nullptr)
     {
         SDL_LogError(0, "Box collider requires texture information!!!");
         return;
-    }
+    }*/
 
-    auto TexRect = &m_TextureComponent->GetRectangle();
+    auto TexRect = GetRectangle();
+    //auto TexRect = &m_TextureComponent->GetRectangle();
     auto [x, y] = GetOwner()->GetPositionXY();
 
     SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);
     SetBoxMax(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);//todo update also scale from entity
 }
 
-SDL_Rect* BoxColliderComponent::GetRectangle() const
+SDL_Rect* BoxColliderComponent::GetRectangle()
 {
-    return &m_TextureComponent->GetRectangle();
+    return &GetOwner()->GetComponent<TextureComponent>().value()->GetRectangle();
 }
 
 bool BoxColliderComponent::IntersectsWith(const BoxColliderComponent& other) const//todo return delta
