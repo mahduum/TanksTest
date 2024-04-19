@@ -13,7 +13,7 @@
         },
         {
             "Type" : "ProjectileMovementComponent",
-            "Speed" : 500
+            "Speed" : 200
         },
         {
 			"Type" : "BoxTweenSweepColliderComponent",

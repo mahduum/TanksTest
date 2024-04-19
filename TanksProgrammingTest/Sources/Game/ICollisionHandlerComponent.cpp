@@ -45,6 +45,5 @@ void ICollisionHandlerComponent::OnCollision(const CollisionInfo& CollisionInfo)
 	if((CollisionObjectType & m_CollisionResponse) == CollisionObjectType)
 	{
 		OnCollisionImpl(CollisionInfo);
-		return;
 	}
 }

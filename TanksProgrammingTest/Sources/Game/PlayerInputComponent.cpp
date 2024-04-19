@@ -70,8 +70,6 @@ void PlayerInputComponent::Update(float DeltaTime)
 		}
 	}
 
-	//TODO: All below goes into transform component, if this is a collision fixer
-
 	if(PredictedDeltaX == 0 && PredictedDeltaY == 0)
 	{
 		return;
@@ -81,7 +79,7 @@ void PlayerInputComponent::Update(float DeltaTime)
 	
 	Vector2 BacktraceCollisionDelta(0, 0);
 
-	//todo use collision world
+	//todo move to CollisionWorld.h
 	FixCollisionsAABB(BacktraceCollisionDelta);//if collision delta is the same as movement delta then now update
 
 	if (PredictedDeltaX != 0 && std::abs(BacktraceCollisionDelta.x) < std::abs(PredictedDeltaX))
@@ -104,13 +102,11 @@ void PlayerInputComponent::Update(float DeltaTime)
 
 void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
-	//SDL_Rect& SrcRectangle = m_TextureComponent->GetRectangle();
-	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();//todo get only boxes with given channel
-	auto MyCollider = GetOwner()->GetComponent<BoxColliderComponent>().value();//todo fix collisions assume there is a box
+	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();
+	auto MyCollider = GetOwner()->GetComponent<BoxColliderComponent>().value();
 
 	//first update only collider for testing
-	MyCollider->OnUpdateSceneTransform();//todo with line segment first cache the previous position then the next one and combine boxes prev-predicted to do sweep
-												//for diagonal shots can do rotated box collision check
+	MyCollider->OnUpdateSceneTransform();
 
 	for (auto OtherCollider : Colliders)
 	{
@@ -136,9 +132,6 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 
 	if (MathLib::NearZero(CollisionDelta.x))
 	{
-		//check screen
-		//window limits:
-
 		if (OwnersBox.m_Max.x > MaxWidth)
 		{
 			CollisionDelta.x = OwnersBox.m_Max.x - MaxWidth;
@@ -170,11 +163,10 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 
 	GetOwner()->SetTranslation(-static_cast<int>(CollisionDelta.x), -static_cast<int>(CollisionDelta.y));
 
-	MyCollider->OnUpdateSceneTransform();//todo and other comps
+	MyCollider->OnUpdateSceneTransform();
 }
 
 void PlayerInputComponent::Shoot() const
 {
-	SDL_Log("Spawning projectile...");
 	m_ProjectileSpawnerComponent->DoSpawn();
 }

@@ -27,7 +27,6 @@ void EntitySpawnerComponent::Initialize()
 {
 	EntityComponent::Initialize();
 	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>().value();
-	SDL_Log("Initializing spawner...");
 }
 
 void EntitySpawnerComponent::Update(float DeltaTime)
