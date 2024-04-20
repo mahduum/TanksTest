@@ -6,7 +6,7 @@
 #include "Entity.h"
 #include "../Game/BoxColliderComponent.h"
 
-void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::shared_ptr <ColliderComponent>, class std::shared_ptr <ColliderComponent>)>& f)
+void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::shared_ptr<ColliderComponent>&, class std::shared_ptr<ColliderComponent>&)>& f)
 {
 	std::sort(m_StaticBoxes.begin(), m_StaticBoxes.end(),
 		[](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
@@ -23,6 +23,9 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::share
 	for (size_t i = 0; i < m_DynamicBoxes.size(); i++)
 	{
 		auto a = m_DynamicBoxes[i];
+		auto aUseCount = a.use_count();
+		auto inA = std::static_pointer_cast<ColliderComponent>(a);
+		auto& inARef = inA;
 		float max = a->GetBox().m_Max.x;
 		for (size_t j = 0; j < m_StaticBoxes.size(); j++)
 		{
@@ -40,8 +43,11 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::share
 
 					return;
 				}
+
+				auto inB = std::static_pointer_cast<ColliderComponent>(b);
+				auto& inBRef = inB;
 					//SDL_Log("Mixed Collision between: %s type %d and %s type %d, count: %d", a->GetOwner()->GetName().data(), a->GetOwner()->GetTransformType(), b->GetOwner()->GetName().data(), b->GetOwner()->GetTransformType(), GetBoxesCount());
-				f(a, b);
+				f(inARef, inBRef);
 			}
 		}
 	}
@@ -49,6 +55,8 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::share
 	for (size_t i = 0; i < m_DynamicBoxes.size(); i++)
 	{
 		auto a = m_DynamicBoxes[i];
+		auto inA = std::static_pointer_cast<ColliderComponent>(a);
+		auto& inARef = inA;
 		float max = a->GetBox().m_Max.x;
 		for (size_t j = i + 1; j < m_DynamicBoxes.size(); j++)
 		{
@@ -67,12 +75,23 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::share
 
 					return;
 				}
-
+				auto inB = std::static_pointer_cast<ColliderComponent>(b);
+				auto& inBRef = inB;
 				//SDL_Log("Dynamic Collision between: %s type %d and %s type %d, count: %d", a->GetOwner()->GetName().data(), a->GetOwner()->GetTransformType(), b->GetOwner()->GetName().data(), b->GetOwner()->GetTransformType(), GetBoxesCount());
-				f(a, b);
+				f(inARef, inBRef);
 			}
 		}
 	}
+
+	std::erase_if(m_DynamicBoxes, [](std::shared_ptr<BoxColliderComponent> b)
+		{
+			if (b->GetOwner()->IsValid == false)
+			{
+				SDL_Log("Removed box!!!!!!!!!!!!!!!!!!!!!!");
+				return true;
+			}
+			return false;
+		});
 }
 
 //add filter with tag/channel
@@ -143,7 +162,7 @@ bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& From
 	return false;
 }
 
-void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent>& box)
+void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent> box)
 {
 	if (box->GetOwner()->GetTransformType() == TransformType::Static)
 	{
@@ -155,11 +174,17 @@ void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent>& box)
 	}
 }
 
-void CollisionWorld::RemoveBox(const std::shared_ptr<BoxColliderComponent>& box)
+void CollisionWorld::RemoveBox(BoxColliderComponent* box)
 {
+	return;
 	if (box->GetOwner()->GetTransformType() == TransformType::Static)
 	{
-		if (const auto it = std::find(m_StaticBoxes.begin(), m_StaticBoxes.end(), box); it != m_StaticBoxes.end())
+		if (const auto it =
+			std::find_if(m_StaticBoxes.begin(), m_StaticBoxes.end(),
+			[box](const std::shared_ptr<BoxColliderComponent>& elem)
+			{
+					return box == elem.get();
+			}); it != m_StaticBoxes.end())
 		{
 			std::iter_swap(it, m_StaticBoxes.end() - 1);
 			m_StaticBoxes.pop_back();
@@ -167,15 +192,31 @@ void CollisionWorld::RemoveBox(const std::shared_ptr<BoxColliderComponent>& box)
 	}
 	else
 	{
-		if (const auto it = std::find(m_DynamicBoxes.begin(), m_DynamicBoxes.end(), box); it != m_DynamicBoxes.end())
+		int count_before = m_DynamicBoxes.size();
+		std::erase_if(m_DynamicBoxes, [box](const std::shared_ptr<BoxColliderComponent>& b)
+		{
+			return b.get() == box;
+		});
+		/*if (const auto it =
+			std::find_if(m_DynamicBoxes.begin(), m_DynamicBoxes.end(),
+				[box, count_before](const std::shared_ptr<BoxColliderComponent>& elem)
+				{
+					if(box == elem.get())
+					{
+						SDL_Log("Direct remove box from boxes ptr: %d, owner ptr: %d, count before: %d", box, box->GetOwner(), count_before);
+						return true;
+					}
+					return false;
+				}); it != m_DynamicBoxes.end())
 		{
 			std::iter_swap(it, m_DynamicBoxes.end() - 1);
 			m_DynamicBoxes.pop_back();
-		}
+			SDL_Log("Direct remove box count after: %d", m_DynamicBoxes.size());
+		}*/
 	}
 }
 
-void CollisionWorld::OnEntitiesCollision(class std::shared_ptr<ColliderComponent> A, class std::shared_ptr<ColliderComponent> B)
+void CollisionWorld::OnEntitiesCollision(class std::shared_ptr<ColliderComponent>& A, class std::shared_ptr<ColliderComponent>& B)
 {
 	CollisionInfo CollisionInfoA
 	{

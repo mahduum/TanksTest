@@ -1,5 +1,6 @@
 #include "BoxColliderComponent.h"
 
+#include "BoxTweenSweepColliderComponent.h"
 #include "CollisionWorld.h"
 #include "TextureComponent.h"
 
@@ -40,13 +41,28 @@ void BoxColliderComponent::Initialize()
 
     OnUpdateSceneTransform();
 
-    m_SelfShared = std::shared_ptr<BoxColliderComponent>(this);
-    Engine::Get()->GetCollisionWorld()->AddBox(m_SelfShared);
+    //m_SelfShared = std::shared_ptr<BoxColliderComponent>(this);
+    //auto shared_made = std::make_shared<BoxColliderComponent>(*this);
+    //SDL_Log("Old this: %d, form made this: %d", m_SelfShared.get(), shared_made.get());
+    std::shared_ptr<BoxColliderComponent> copy;
+    auto BoxOpt = GetOwner()->GetComponent<BoxColliderComponent>();
+    auto BoxSweepOpt = GetOwner()->GetComponent<BoxTweenSweepColliderComponent>();
+    copy = BoxOpt.has_value() ? BoxOpt.value() : BoxSweepOpt.value();
+
+    Engine::Get()->GetCollisionWorld()->AddBox(copy);
+    //SDL_Log("Added box: %d, self shared: %d to collision with entity: %d, self shared: %d, self shared inside: %d, owner name: %s, use count: %d", this, m_SelfShared, GetOwner(), m_SelfShared->GetOwner(), m_SelfShared.get()->GetOwner(), GetOwner()->GetName().data(), m_SelfShared.use_count());
+    SDL_Log("Added box: %d, to collision with entity owner: %d, owner name: %s, box count: %d", this, GetOwner(), GetOwner()->GetName().data(), Engine::Get()->GetCollisionWorld()->GetBoxesCount());
 }
 
 void BoxColliderComponent::UnInitialize()
 {
-	Engine::Get()->GetCollisionWorld()->RemoveBox(m_SelfShared);
+    SDL_Log("Before remove box: %d.", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
+	//Engine::Get()->GetCollisionWorld()->RemoveBox(this);
+    SDL_Log("Removed box: %d, to collision with entity owner: %d, owner name: %s.", this, GetOwner(), GetOwner()->GetName().data());
+    SDL_Log("After remove box: %d.", Engine::Get()->GetCollisionWorld()->GetBoxesCount());
+
+
+	//SDL_Log("Uninitializing box: %d, self shared: %d, to entity: %d, self shared: %d, self shared inside: %d, owner name: %s, count: %d", this, m_SelfShared, GetOwner(), m_SelfShared->GetOwner(), m_SelfShared.get()->GetOwner(), GetOwner()->GetName().data(), m_SelfShared.use_count());
 }
 
 void BoxColliderComponent::OnUpdateSceneTransform()

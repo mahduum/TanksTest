@@ -6,6 +6,9 @@
 #include <fstream>
 #include <queue>
 
+#include "../Game/BoxColliderComponent.h"
+#include "../Game/BoxTweenSweepColliderComponent.h"	
+
 #include "../Game/EnemyTankMovementComponent.h"
 
 Scene::Scene()
@@ -93,6 +96,19 @@ void Scene::UnInitialize()
 
 void Scene::AddEntity(Entity* Entity)
 {
+	std::shared_ptr<BoxColliderComponent> box_Ptr;
+	if (Entity->GetComponent<BoxColliderComponent>().has_value())
+	{
+		box_Ptr = Entity->GetComponent<BoxColliderComponent>().value();
+	}
+
+	if (Entity->GetComponent<BoxTweenSweepColliderComponent>().has_value())
+	{
+		box_Ptr = Entity->GetComponent<BoxTweenSweepColliderComponent>().value();
+	}
+
+	SDL_Log("Adding entity: %d, box ptr: %d, box self shared: %d, tex ptr: %d", Entity, box_Ptr, box_Ptr.get(), Entity->GetComponent<TextureComponent>().value());
+
 	if(Entity->GetComponent<EnemyTankMovementComponent>().has_value())
 	{
 		++m_EnemyEntitiesCount;
@@ -116,15 +132,61 @@ void Scene::RemoveEntity(Entity* Entity)
 	{
 		--m_EnemyEntitiesCount;
 	}
-
-	std::vector<::Entity*>::iterator RetIt = std::remove(
-		m_Entities.begin(), m_Entities.end(), Entity);
-	if(RetIt != m_Entities.end())
+	std::shared_ptr<BoxColliderComponent> box_Ptr;
+	if (Entity->GetComponent<BoxColliderComponent>().has_value())
 	{
-		m_ValidEntitiesEnd = RetIt;
-		(*m_ValidEntitiesEnd)->UnInitialize();
-		SDL_Log("Removed entity from scene by name: %s", (*RetIt)->GetName().data());
+		box_Ptr = Entity->GetComponent<BoxColliderComponent>().value();
 	}
+
+	if (Entity->GetComponent<BoxTweenSweepColliderComponent>().has_value())
+	{
+		box_Ptr = Entity->GetComponent<BoxTweenSweepColliderComponent>().value();
+	}
+	SDL_Log("Removing entity: %d, box ptr: %d, box self shared: %d, tex ptr: %d, use count of box before: %d", Entity, box_Ptr, box_Ptr.get(), Entity->GetComponent<TextureComponent>().value(), box_Ptr.use_count());
+
+	//std::vector<::Entity*>::iterator RetIt = std::remove(
+	//	m_Entities.begin(), m_Entities.end(), Entity);
+	//if(RetIt != m_Entities.end())
+	//{
+	//	m_ValidEntitiesEnd = RetIt;
+	//	(*m_ValidEntitiesEnd)->UnInitialize();
+	//	m_Entities.erase(m_ValidEntitiesEnd);
+	//	SDL_Log("Removed entity: %d, from scene by name: %s, box use count: %d", Entity, (*RetIt)->GetName().data(), box_Ptr.use_count());
+	//	//box_Ptr.reset();
+	//	//SDL_Log("Removed entity from scene by name: %s, box use count: %d", (*RetIt)->GetName().data(), box_Ptr.use_count());
+	//}
+
+	std::vector<::Entity*>::iterator RetIt = std::find(
+		m_Entities.begin(), m_Entities.end(), Entity);
+	if (RetIt != m_Entities.end())
+	{
+		(*RetIt)->UnInitialize();
+		std::iter_swap(RetIt, m_Entities.end() - 1);
+		m_Entities.pop_back();
+		m_ValidEntitiesEnd = m_Entities.end();
+
+		SDL_Log("Removed entity: %d, from scene by name: %s, box use count: %d", Entity, (*RetIt)->GetName().data(), box_Ptr.use_count());
+		//box_Ptr.reset();
+		//SDL_Log("Removed entity from scene by name: %s, box use count: %d", (*RetIt)->GetName().data(), box_Ptr.use_count());
+	}
+}
+
+void Scene::RemoveInvalidated()
+{
+	m_Entities.erase(std::remove_if(m_Entities.begin(), m_ValidEntitiesEnd, [&](Entity* e)
+		{
+			if(e->IsValid == false)
+			{
+				//auto BoxOpt = e->GetComponent<BoxColliderComponent>();
+				//auto BoxSweepOpt = e->GetComponent<BoxTweenSweepColliderComponent>();
+				auto count = 999;/// (BoxOpt.has_value() ? BoxOpt.value() : BoxSweepOpt.value()).use_count();
+				SDL_Log("Use count of removed box: %d", count);
+				e->UnInitialize();
+				return true;
+			}
+			return false;
+		}), m_ValidEntitiesEnd);
+	m_ValidEntitiesEnd = m_Entities.end();
 }
 
 void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, nlohmann::json Parameters)

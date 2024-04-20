@@ -18,5 +18,6 @@ ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent() : Pro
 void ProjectileCollisionHandlerComponent::OnCollisionImpl(const CollisionInfo& CollisionInfo)
 {
 	SDL_Log("Removing projectile..., collided with: %s", CollisionInfo.m_OtherCollider->GetOwner()->GetName().data());
-	Engine::Get()->GetActiveScene()->RemoveEntity(GetOwner());
+	//Engine::Get()->GetActiveScene()->RemoveEntity(GetOwner());
+	GetOwner()->IsValid = false;
 }

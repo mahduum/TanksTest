@@ -21,6 +21,7 @@ public:
 
 	void AddEntity(Entity* Entity);//todo with shared???
 	void RemoveEntity(Entity* Entity);//todo with shared
+	void RemoveInvalidated();
 
 	bool CanSpawnEnemy() const { return m_EnemyEntitiesCount < m_MaxEnemyEntitiesInScene; }
 

@@ -28,6 +28,8 @@ public:
 	void SetBoxWithOffset(const Vector2 boxMinPosition, const Vector2 boxMaxPosition, const Vector2 boxMinOffset, const Vector2 boxMaxOffset);
 	AABB GetTweenSweepBox() const;//todo make it virtual
 
+	std::shared_ptr<BoxColliderComponent> m_SelfShared;//todo add to all???
+
 protected:
 
 	void SetBoxMin(Vector2 boxMin);
@@ -42,6 +44,5 @@ protected:
 	Vector2 m_BoxOffsetMin;
 	Vector2 m_BoxOffsetMax;
 
-	std::shared_ptr<BoxColliderComponent> m_SelfShared;//todo add to all???
 };
 

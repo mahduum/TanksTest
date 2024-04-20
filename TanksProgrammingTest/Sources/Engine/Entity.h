@@ -35,6 +35,7 @@ class Entity
 {
 
 public:
+	bool IsValid = true;
 	Entity()
 	{
 		m_ComponentsMap = std::unordered_map<std::type_index, int>();

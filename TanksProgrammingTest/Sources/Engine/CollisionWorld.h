@@ -101,7 +101,7 @@ public:
 
 	CollisionWorld() = default;
 
-	void TestSweepAndPrune(const std::function<void(class std::shared_ptr <ColliderComponent>, class std::shared_ptr <ColliderComponent>)>& f);
+	void TestSweepAndPrune(const std::function<void(class std::shared_ptr <ColliderComponent>&, class std::shared_ptr <ColliderComponent>&)>& f);
 	bool MultiBoxCast(
 		const Vector2& FromPosition,
 		const AABB& FromBox, const Vector2& Direction, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections,
@@ -109,14 +109,14 @@ public:
 	bool SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& Direction, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All) ;
 
 	// Add/remove box components from world
-	void AddBox(const std::shared_ptr<BoxColliderComponent>& box);
-	void RemoveBox(const std::shared_ptr<BoxColliderComponent>& box);
+	void AddBox(const std::shared_ptr<BoxColliderComponent> box);
+	void RemoveBox(BoxColliderComponent* box);
 
 	size_t GetBoxesCount() const { return m_StaticBoxes.size() + m_DynamicBoxes.size(); }
 
-	static void OnEntitiesCollision(class std::shared_ptr<ColliderComponent> A, class std::shared_ptr<ColliderComponent>);
+	static void OnEntitiesCollision(class std::shared_ptr<ColliderComponent>& A, class std::shared_ptr<ColliderComponent>&);
 
-	std::function<void(class std::shared_ptr <ColliderComponent>, class std::shared_ptr <ColliderComponent>)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
+	std::function<void(class std::shared_ptr <ColliderComponent>&, class std::shared_ptr <ColliderComponent>&)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
 
 
 	const std::vector<std::shared_ptr<BoxColliderComponent>>& GetStaticBoxes() const

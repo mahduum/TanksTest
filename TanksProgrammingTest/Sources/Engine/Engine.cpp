@@ -80,6 +80,7 @@ void Engine::MainLoop()
 			{
 				m_ActiveScene->Update(TimePerFramInSceonds);
 				m_CollisionWorld->TestSweepAndPrune(m_CollisionWorld->CollisionHandler);
+				m_ActiveScene->RemoveInvalidated();
 			}
 
 			LastTime += TimePerFrameInMs;
