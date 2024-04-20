@@ -15,9 +15,8 @@ ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent() : Pro
 {
 }
 
-void ProjectileCollisionHandlerComponent::OnCollisionImpl(const CollisionInfo& CollisionInfo)
+void ProjectileCollisionHandlerComponent::OnCollisionImpl(const std::shared_ptr<ColliderComponent>& CollisionInfo)
 {
-	SDL_Log("Removing projectile..., collided with: %s", CollisionInfo.m_OtherCollider->GetOwner()->GetName().data());
-	//Engine::Get()->GetActiveScene()->RemoveEntity(GetOwner());
-	GetOwner()->IsValid = false;
+	SDL_Log("Projectile killed");
+	GetOwner()->IsAlive = false;
 }

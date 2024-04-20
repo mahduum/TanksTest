@@ -87,31 +87,15 @@ void Scene::UnInitialize()
 {
 	for (auto It = m_Entities.begin(); It != m_ValidEntitiesEnd; ++It)
 	{
-		if ((*It)->GetName() == "PlayerProjectile" || (*It)->GetName() == "EnemyProjectile")
-			SDL_Log("Uninitializing entity from scene by name: %s", (*It)->GetName().data());
-
 		(*It)->UnInitialize();
 	}
 }
 
 void Scene::AddEntity(Entity* Entity)
 {
-	std::shared_ptr<BoxColliderComponent> box_Ptr;
-	if (Entity->GetComponent<BoxColliderComponent>().has_value())
-	{
-		box_Ptr = Entity->GetComponent<BoxColliderComponent>().value();
-	}
-
-	if (Entity->GetComponent<BoxTweenSweepColliderComponent>().has_value())
-	{
-		box_Ptr = Entity->GetComponent<BoxTweenSweepColliderComponent>().value();
-	}
-
-	SDL_Log("Adding entity: %d, box ptr: %d, box self shared: %d, tex ptr: %d", Entity, box_Ptr, box_Ptr.get(), Entity->GetComponent<TextureComponent>().value());
-
 	if(Entity->GetComponent<EnemyTankMovementComponent>().has_value())
 	{
-		++m_EnemyEntitiesCount;
+		++m_EnemyEntitiesCount;//todo
 	}
 
 	if(m_Entities.end() == m_ValidEntitiesEnd)
@@ -164,10 +148,6 @@ void Scene::RemoveEntity(Entity* Entity)
 		std::iter_swap(RetIt, m_Entities.end() - 1);
 		m_Entities.pop_back();
 		m_ValidEntitiesEnd = m_Entities.end();
-
-		SDL_Log("Removed entity: %d, from scene by name: %s, box use count: %d", Entity, (*RetIt)->GetName().data(), box_Ptr.use_count());
-		//box_Ptr.reset();
-		//SDL_Log("Removed entity from scene by name: %s, box use count: %d", (*RetIt)->GetName().data(), box_Ptr.use_count());
 	}
 }
 
@@ -175,12 +155,8 @@ void Scene::RemoveInvalidated()
 {
 	m_Entities.erase(std::remove_if(m_Entities.begin(), m_ValidEntitiesEnd, [&](Entity* e)
 		{
-			if(e->IsValid == false)
+			if(e->IsAlive == false)
 			{
-				//auto BoxOpt = e->GetComponent<BoxColliderComponent>();
-				//auto BoxSweepOpt = e->GetComponent<BoxTweenSweepColliderComponent>();
-				auto count = 999;/// (BoxOpt.has_value() ? BoxOpt.value() : BoxSweepOpt.value()).use_count();
-				SDL_Log("Use count of removed box: %d", count);
 				e->UnInitialize();
 				return true;
 			}

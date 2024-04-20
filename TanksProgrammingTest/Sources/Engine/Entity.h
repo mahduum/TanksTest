@@ -35,7 +35,7 @@ class Entity
 {
 
 public:
-	bool IsValid = true;
+	bool IsAlive = true;
 	Entity()
 	{
 		m_ComponentsMap = std::unordered_map<std::type_index, int>();
@@ -90,7 +90,7 @@ public:
 		return std::nullopt;
 	}
 
-	void OnCollision(const CollisionInfo& CollisionInfo);
+	void OnCollision(const std::shared_ptr<ColliderComponent>& CollisionInfo);
 
 	void UpdateSceneTransform();
 

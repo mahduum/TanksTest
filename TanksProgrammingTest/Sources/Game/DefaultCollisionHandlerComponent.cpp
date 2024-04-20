@@ -12,6 +12,6 @@ DefaultCollisionHandlerComponent::DefaultCollisionHandlerComponent() : DefaultCo
 {
 }
 
-void DefaultCollisionHandlerComponent::OnCollisionImpl(const CollisionInfo& collisionInfo)
+void DefaultCollisionHandlerComponent::OnCollisionImpl(const std::shared_ptr<ColliderComponent>& collisionInfo)
 {
 }

@@ -41,16 +41,8 @@ void TextureComponent::Initialize()
 
 void TextureComponent::UnInitialize()
 {
-	SDL_Log("Uninitializing texture to entity: %d", GetOwner());
-	if(Texture != nullptr)
-	{
-		SDL_DestroyTexture(Texture);
-	}
-
-	if(Surface != nullptr)
-	{
-		SDL_FreeSurface(Surface);
-	}
+	SDL_DestroyTexture(Texture);
+	SDL_FreeSurface(Surface);
 }
 
 void TextureComponent::Draw()

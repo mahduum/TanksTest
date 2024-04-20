@@ -21,14 +21,11 @@ void ProjectileMovementComponent::LoadFromConfig(nlohmann::json Config)
 
 void ProjectileMovementComponent::Initialize()
 {
-	//TODO: it sets this vector once but at the time it is not set yet, so it remains 0
 	m_Direction.Set(GetOwner()->GetForwardVector());
-	SDL_Log("Assigned direction: x: %f, y: %f", m_Direction.x, m_Direction.y);
 }
 
 void ProjectileMovementComponent::Update(float DeltaTime)
 {
-	//m_Direction.Set(GetOwner()->GetForwardVector());
 	Move(DeltaTime);
 }
 
