@@ -85,12 +85,7 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(class std::share
 
 	std::erase_if(m_DynamicBoxes, [](std::shared_ptr<BoxColliderComponent> b)
 		{
-			if (b->GetOwner()->IsValid == false)
-			{
-				SDL_Log("Removed box!!!!!!!!!!!!!!!!!!!!!!");
-				return true;
-			}
-			return false;
+			return b->GetOwner()->IsValid == false;//todo optimize
 		});
 }
 
