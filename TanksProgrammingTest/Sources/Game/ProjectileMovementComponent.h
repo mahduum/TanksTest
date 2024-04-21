@@ -22,6 +22,6 @@ public:
 
 private:
 	int m_Speed;
-	Vector2 m_Direction;
+	Vector2Int m_Direction;
 };
 

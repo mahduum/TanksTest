@@ -10,10 +10,10 @@ BoxColliderComponent:: BoxColliderComponent(): BoxColliderComponent(nullptr)
 
 BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
 	IBoxColliderComponent(Owner),
-	m_Box(Vector2::Zero, Vector2::Zero),
-	m_PreviousFrameBox(Vector2::Zero, Vector2::Zero),
-	m_BoxOffsetMin(Vector2::Zero),
-	m_BoxOffsetMax(Vector2::Zero)
+	m_Box(Vector2Int::Zero, Vector2Int::Zero),
+	m_PreviousFrameBox(Vector2Int::Zero, Vector2Int::Zero),
+	m_BoxOffsetMin(Vector2Int::Zero),
+	m_BoxOffsetMax(Vector2Int::Zero)
 {
 }
 
@@ -54,8 +54,8 @@ void BoxColliderComponent::OnUpdateSceneTransform()
 		const auto& TexRect = Texture->GetRectangle();
 		auto [x, y] = GetOwner()->GetPositionXY();
 
-		SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);
-		SetBoxMax(Vector2(x + TexRect.w, y + TexRect.h) + m_BoxOffsetMax);
+		SetBoxMin(Vector2Int(x, y) + m_BoxOffsetMin);
+		SetBoxMax(Vector2Int(x + TexRect.w, y + TexRect.h) + m_BoxOffsetMax);
 	}
 }
 
@@ -64,7 +64,7 @@ bool BoxColliderComponent::IntersectsWith(const BoxColliderComponent& other) con
     return Intersect(m_Box, other.m_Box);
 }
 
-void BoxColliderComponent::SetBoxWithOffset(const Vector2 boxMinPosition, const Vector2 boxMaxPosition, const Vector2 boxMinOffset, const Vector2 boxMaxOffset)
+void BoxColliderComponent::SetBoxWithOffset(const Vector2Int boxMinPosition, const Vector2Int boxMaxPosition, const Vector2Int boxMinOffset, const Vector2Int boxMaxOffset)
 {
     m_Box.m_Min.Set(boxMinPosition + boxMinOffset);
     m_Box.m_Max.Set(boxMaxPosition + boxMaxOffset);
@@ -78,19 +78,19 @@ AABB BoxColliderComponent::GetTweenSweepBox() const
     return SweepBox;
 }
 
-void BoxColliderComponent::SetBoxMin(Vector2 boxMin)
+void BoxColliderComponent::SetBoxMin(Vector2Int boxMin)
 {
     m_PreviousFrameBox.m_Min.Set(m_Box.m_Min);
     m_Box.m_Min.Set(boxMin);
 }
 
-void BoxColliderComponent::SetBoxMax(Vector2 boxMax)
+void BoxColliderComponent::SetBoxMax(Vector2Int boxMax)
 {
     m_PreviousFrameBox.m_Max.Set(m_Box.m_Max);
     m_Box.m_Max.Set(boxMax);
 }
 
-bool BoxColliderComponent::TryGetCollisionDelta(const IBoxColliderComponent& other, Vector2& collisionDelta) const
+bool BoxColliderComponent::TryGetCollisionDelta(const IBoxColliderComponent& other, Vector2Int& collisionDelta) const
 {
 	if (TryGetBoxCollisionDelta(GetBox(), other.GetBox(), collisionDelta))
 	{
@@ -100,7 +100,7 @@ bool BoxColliderComponent::TryGetCollisionDelta(const IBoxColliderComponent& oth
 	return false;
 }
 
-void BoxColliderComponent::BacktraceCollisionsDelta(Vector2& CollisionDelta)
+void BoxColliderComponent::BacktraceCollisionsDelta(Vector2Int& CollisionDelta)
 {
 	const std::vector<std::shared_ptr<IBoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();
 
@@ -108,7 +108,7 @@ void BoxColliderComponent::BacktraceCollisionsDelta(Vector2& CollisionDelta)
 
 	for (const auto& OtherCollider : Colliders)
 	{
-		Vector2 TempCollisionDelta(0, 0);
+		Vector2Int TempCollisionDelta(0, 0);
 
 		if (OtherCollider.get() != this && TryGetCollisionDelta(*OtherCollider, TempCollisionDelta))
 		{
@@ -128,7 +128,7 @@ void BoxColliderComponent::BacktraceCollisionsDelta(Vector2& CollisionDelta)
 
 	SDL_GetWindowSize(Engine::Get()->GetWindow(), &MaxWidth, &MaxHeight);
 
-	if (MathLib::NearZero(CollisionDelta.x))
+	if (CollisionDelta.x == 0)
 	{
 		if (GetBox().m_Max.x > MaxWidth)
 		{
@@ -141,7 +141,7 @@ void BoxColliderComponent::BacktraceCollisionsDelta(Vector2& CollisionDelta)
 		}
 	}
 
-	if (MathLib::NearZero(CollisionDelta.y))
+	if (CollisionDelta.y == 0)
 	{
 		if (GetBox().m_Max.y > MaxHeight)
 		{
@@ -154,12 +154,12 @@ void BoxColliderComponent::BacktraceCollisionsDelta(Vector2& CollisionDelta)
 		}
 	}
 
-	if (MathLib::NearZero(CollisionDelta.x) && MathLib::NearZero(CollisionDelta.y))
+	if (CollisionDelta.x == 0 && CollisionDelta.y == 0)
 	{
 		return;
 	}
 
-	GetOwner()->SetTranslation(-static_cast<int>(CollisionDelta.x), -static_cast<int>(CollisionDelta.y));
+	GetOwner()->SetTranslation(-CollisionDelta.x,CollisionDelta.y);
 
 	OnUpdateSceneTransform();
 }

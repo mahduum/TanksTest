@@ -3,11 +3,12 @@
 #include "Engine.h"
 #include "ResourceManager.h"
 #include "TextureComponent.h"
+#include "MathLib.h"
 #include <fstream>
 #include <queue>
-
-#include "../Game/BoxColliderComponent.h"
-#include "../Game/BoxTweenSweepColliderComponent.h"	
+//
+//#include "../Game/BoxColliderComponent.h"
+//#include "../Game/BoxTweenSweepColliderComponent.h"	
 
 #include "../Game/EnemyTankMovementComponent.h"
 
@@ -238,8 +239,6 @@ void Scene::CalculateDistances()
 
 void Scene::CalculateFlowDirections()
 {
-	//constexpr int m_NeighboursOffsets[][2] = { { -1, 0}, {1, 0}, {0, -1}, {0, 1} };
-
 	for (int CellIndex = 0; CellIndex < m_FlowFieldCells.size(); CellIndex++)
 	{
 		//Ensure that the tile has been assigned a distance value.
@@ -307,13 +306,13 @@ void Scene::SetTargetAndCalculateFlowField(int sceneX, int sceneY)
 	}
 }
 
-Vector2 Scene::GetTargetCellScenePosition() const
+Vector2Int Scene::GetTargetCellScenePosition() const
 {
 	auto [x, y] = GetScenePositionFromCellCoords(m_FlowFieldTargetX, m_FlowFieldTargetY);
-	return Vector2 { static_cast<float>(x), static_cast<float>(y) };
+	return Vector2Int { x, y };
 }
 
-void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection, const Entity* requester)//todo on uninitialize release block grid point
+void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2Int& nextNodeSceneLocation, Vector2Int& flowDirection, const Entity* requester) const//todo on uninitialize release block grid point
 {
 	int CellIndex = GetCellIndexFromScenePosition(sceneX, sceneY);
 
@@ -321,9 +320,7 @@ void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& 
 		m_FlowFieldTargetX > -1 && m_FlowFieldTargetX < m_FlowFieldColumns &&
 		m_FlowFieldTargetY > -1 && m_FlowFieldTargetY < m_FlowFieldRows)
 	{
-		//todo return next coords
 		auto& CellData = m_FlowFieldCells.at(CellIndex);
-		std::tuple<int, int> FlowDirection = { CellData.m_FlowDirectionX, CellData.m_FlowDirectionY };
 
 		auto [CurrentCellX, CurrentCellY] = GetCellCoordsFromLinearIndex(CellIndex);
 		auto [GoToNeighbourSceneX, GoToNeighbourSceneY] = GetScenePositionFromCellCoords(CurrentCellX + CellData.m_FlowDirectionX, CurrentCellY + CellData.m_FlowDirectionY);
@@ -331,32 +328,32 @@ void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& 
 		nextNodeSceneLocation.Set(GoToNeighbourSceneX, GoToNeighbourSceneY);
 		flowDirection.Set(CellData.m_FlowDirectionX, CellData.m_FlowDirectionY);
 
+		//todo
 		/*get requester key and set cell to be one max value, I enter the index of the cell I blocked when I leave, and when I enter I release the previous cell*/
-		if (requester != nullptr)
-		{
-			//constexpr int m_NeighboursOffsets[][2] = { { -1, 0}, {1, 0}, {0, -1}, {0, 1} };
+		//if (requester != nullptr)
+		//{
+		//	//todo make this cell we are going unwalkable to other units
+		//	//recalculate offsets
+		//	CellData.m_CanBeSteppedOn = false;//no is not walkable
 
-			//recalculate offsets
-			CellData.m_FlowDistance = m_FlowDistanceMax;//no is not walkable
-			std::queue<int> NeighboursToReevaluate;
+		//	std::queue<int> NeighboursToReevaluate;
 
-			//get cells around, find best one, set its own value to +1 and direction to this cell
-			for (auto NeighbourOffsets : m_NeighboursOffsets)
-			{
-				int NeighborX = NeighbourOffsets[0] + CellIndex % m_FlowFieldColumns;//add offset in x to current index
-				int NeighborY = NeighbourOffsets[1] + CellIndex / m_FlowFieldColumns;//add offset in y to current index
-				int NeighbourIndex = NeighborX + NeighborY * m_FlowFieldColumns;//compose linear index
-				//only if it finds value greater than its own, first try to find smaller value and point to it, if it cannot find smaller value, must rebuild two levels
-				NeighboursToReevaluate.push(NeighbourIndex);
-			}
+		//	//get cells around, find best one, set its own value to +1 and direction to this cell
+		//	for (auto NeighbourOffsets : m_NeighboursOffsets)
+		//	{
+		//		int NeighborX = NeighbourOffsets[0] + CellIndex % m_FlowFieldColumns;//add offset in x to current index
+		//		int NeighborY = NeighbourOffsets[1] + CellIndex / m_FlowFieldColumns;//add offset in y to current index
+		//		int NeighbourIndex = NeighborX + NeighborY * m_FlowFieldColumns;//compose linear index
+		//		//only if it finds value greater than its own, first try to find smaller value and point to it, if it cannot find smaller value, must rebuild two levels
+		//		NeighboursToReevaluate.push(NeighbourIndex);
+		//	}
 
-			while (NeighboursToReevaluate.empty() == false)
-			{
-				int IndexCurrent = NeighboursToReevaluate.front();
-				//IndicesToEvaluate.pop();
+		//	while (NeighboursToReevaluate.empty() == false)
+		//	{
+		//		int IndexCurrent = NeighboursToReevaluate.front();
 
-			}
-		}
+		//	}
+		//}
 	}
 	else
 	{
@@ -365,7 +362,7 @@ void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& 
 }
 
 //todo
-void Scene::ReCalculateDistancesInZone(int StartIndex, int Depth)
+void Scene::ReCalculateDistancesAndFlowDirectionsInZone(int StartIndex, int Depth)
 {
 	StartIndex = m_FlowFieldTargetX + m_FlowFieldTargetY * m_FlowFieldColumns;
 
@@ -374,8 +371,6 @@ void Scene::ReCalculateDistancesInZone(int StartIndex, int Depth)
 	//Set the target tile's flow value to 0 and add it to the queue.
 	m_FlowFieldCells[StartIndex].m_FlowDistance = 0;
 	IndicesToEvaluate.push(StartIndex);
-
-	//constexpr int m_NeighboursOffsets[][2] = { { -1, 0}, {1, 0}, {0, -1}, {0, 1} };
 
 	//Loop through the queue and assign distance to each tile.
 	while (IndicesToEvaluate.empty() == false)
@@ -439,33 +434,21 @@ void Scene::ReCalculateDistancesInZone(int StartIndex, int Depth)
 int Scene::GetCellIndexFromScenePosition(int sceneX, int sceneY) const
 {
 	auto [Column, Row] = GetCellCoordsFromScenePosition(sceneX, sceneY);//column and row in grid space
-	//auto LinearIndex = Row * m_c
-	auto [VerifyX, VerifyY] = GetCellCoordsFromLinearIndex(Column + Row * m_FlowFieldColumns);
-
-	if(Column != VerifyX)
-	{
-		SDL_Log("Column is not verified, was: %d, is: %d,from scene space: %d, flow field columns: %d", Column, VerifyX, sceneX, m_FlowFieldColumns);
-	}
-
-	if (Row != VerifyY)
-	{
-		SDL_Log("Row is not verified, was: %d, is: %d, from scene space: %d", Row, VerifyY, sceneX);
-	}
 
 	return Column + Row * m_FlowFieldColumns;
 }
 
-std::tuple<int, int> Scene::GetScenePositionFromCellCoords(int cellX, int cellY) const
+Vector2Int Scene::GetScenePositionFromCellCoords(int cellX, int cellY) const
 {
 	return { cellX * m_CellSizeX, cellY * m_CellSizeY };
 }
 
-std::tuple<int, int> Scene::GetCellCoordsFromScenePosition(int sceneX, int sceneY) const
+Vector2Int Scene::GetCellCoordsFromScenePosition(int sceneX, int sceneY) const
 {
-	return { (sceneX / m_CellSizeX), (sceneY / m_CellSizeY) };//todo if max pos is, get max pos of collider
+	return { (sceneX / m_CellSizeX), (sceneY / m_CellSizeY) };
 }
 
-std::tuple<int, int> Scene::GetCellCoordsFromLinearIndex(int index) const
+Vector2Int Scene::GetCellCoordsFromLinearIndex(int index) const
 {
 	return { index % m_FlowFieldColumns, index / m_FlowFieldColumns };
 

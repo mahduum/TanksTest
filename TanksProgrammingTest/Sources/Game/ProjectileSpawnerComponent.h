@@ -12,13 +12,13 @@ public:
 	ProjectileSpawnerComponent();
 
 	virtual void DoSpawn() override;
-	virtual void SetSpawnPoint(Vector2& OutSpawnPoint) override;
+	virtual void SetSpawnPoint(Vector2Int& OutSpawnPoint) override;
 	
 private:
 	void SpawnProjectile();
-	void GetTopSpawnPoint(Vector2& OutSpawnPoint) const;
-	void GetBottomSpawnPoint(Vector2& OutSpawnPoint) const;
-	void GetRightSpawnPoint(Vector2& OutSpawnPoint) const;
-	void GetLeftSpawnPoint(Vector2& OutSpawnPoint) const;
+	void GetTopSpawnPoint(Vector2Int& OutSpawnPoint) const;
+	void GetBottomSpawnPoint(Vector2Int& OutSpawnPoint) const;
+	void GetRightSpawnPoint(Vector2Int& OutSpawnPoint) const;
+	void GetLeftSpawnPoint(Vector2Int& OutSpawnPoint) const;
 };
 

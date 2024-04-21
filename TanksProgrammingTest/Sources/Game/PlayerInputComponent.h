@@ -5,7 +5,7 @@
 class BoxColliderComponent;
 class PlayerProjectileSpawnerComponent;
 class ProjectileSpawnerComponent;
-class Vector2;
+class Vector2Int;
 class TextureComponent;
 
 class PlayerInputComponent : public EntityComponent

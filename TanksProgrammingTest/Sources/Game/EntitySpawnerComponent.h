@@ -1,7 +1,7 @@
 #pragma once
 #include "EntityComponent.h"
 class TextureComponent;
-class Vector2;
+class Vector2Int;
 
 class EntitySpawnerComponent : public EntityComponent
 {
@@ -16,7 +16,7 @@ public:
 
 protected:
 	virtual void DoSpawn() = 0;
-	virtual void SetSpawnPoint(Vector2& OutSpawnPoint) = 0;
+	virtual void SetSpawnPoint(Vector2Int& OutSpawnPoint) = 0;
 	virtual std::string GetNameToSpawn() const = 0;
 
 	bool m_CanSpawn;

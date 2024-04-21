@@ -62,12 +62,12 @@ private:
 public:
 
 	void SetTargetAndCalculateFlowField(int x, int y);
-	Vector2 GetTargetCellScenePosition() const;
+	Vector2Int GetTargetCellScenePosition() const;
 
-	void GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection, const Entity* requester = nullptr);
-	void ReCalculateDistancesInZone(int StartIndex, int Depth = 0);
+	void GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2Int& nextNodeSceneLocation, Vector2Int& flowDirection, const Entity* requester = nullptr) const;
+	void ReCalculateDistancesAndFlowDirectionsInZone(int StartIndex, int Depth = 0);
 	int GetCellIndexFromScenePosition(int sceneX, int sceneY) const;
-	std::tuple<int, int> GetScenePositionFromCellCoords(int cellX, int cellY) const;
-	std::tuple<int, int> GetCellCoordsFromScenePosition(int sceneX, int sceneY) const;
-	std::tuple<int, int> GetCellCoordsFromLinearIndex(int index) const;
+	Vector2Int GetScenePositionFromCellCoords(int cellX, int cellY) const;
+	Vector2Int GetCellCoordsFromScenePosition(int sceneX, int sceneY) const;
+	Vector2Int GetCellCoordsFromLinearIndex(int index) const;
 };

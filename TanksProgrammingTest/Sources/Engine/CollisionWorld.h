@@ -103,10 +103,10 @@ public:
 
 	void TestSweepAndPrune(const std::function<void(const std::shared_ptr <IBoxColliderComponent>, const std::shared_ptr <IBoxColliderComponent>)>& f);
 	bool MultiBoxCast(
-		const Vector2& FromPosition,
-		const AABB& FromBox, const Vector2& Direction, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections,
+		const Vector2Int& FromPosition,
+		const AABB& FromBox, const Vector2Int& Direction, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections,
 		CollisionFlags IncludedObjectTypes);
-	bool SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& Direction, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All) ;
+	bool SingleBoxCast(const Vector2Int& FromPosition, const AABB& FromBox, const Vector2Int& Direction, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All) ;
 
 	// Add/remove Box components from world
 	void AddBox(const std::shared_ptr<IBoxColliderComponent>& Box);

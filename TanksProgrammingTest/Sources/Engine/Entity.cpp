@@ -62,7 +62,7 @@ void Entity::Update(float DeltaTime)
 		{
 			//todo static cast when is ready interface but move it elsewhere, in collider itself
 			auto PositionWithVisualOffset = BoxCollider->GetBox().m_Min;
-			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(PositionWithVisualOffset.x), static_cast<int>(PositionWithVisualOffset.y));
+			ActiveScene->SetTargetAndCalculateFlowField(PositionWithVisualOffset.x, PositionWithVisualOffset.y);
 		}
 	}
 }
@@ -104,7 +104,7 @@ void Entity::UpdateSceneTransform()
 	}
 }
 
-void Entity::SetPosition(Vector2 position)
+void Entity::SetPosition(Vector2Int position)
 {
 	m_ScenePosition.Set(position);
 }
@@ -120,23 +120,23 @@ void Entity::SetFacingDirection(FacingDirection direction)
 	switch (direction)//todo make this a matrix
 	{
 		case FacingDirection::Right:
-			m_ForwardDirection.Set(Vector2::Right);
-			m_RightDirection.Set(Vector2::Up);
+			m_ForwardDirection.Set(Vector2Int::Right);
+			m_RightDirection.Set(Vector2Int::Up);
 			m_RotationDegrees = 90;
 			break;
 		case FacingDirection::Left:
-			m_ForwardDirection.Set(Vector2::Left);
-			m_RightDirection.Set(Vector2::Down);
+			m_ForwardDirection.Set(Vector2Int::Left);
+			m_RightDirection.Set(Vector2Int::Down);
 			m_RotationDegrees = -90;
 			break;
 		case FacingDirection::Up:
-			m_ForwardDirection.Set(Vector2::Up);
-			m_RightDirection.Set(Vector2::Left);
+			m_ForwardDirection.Set(Vector2Int::Up);
+			m_RightDirection.Set(Vector2Int::Left);
 			m_RotationDegrees = 0;
 			break;
 		case FacingDirection::Down:
-			m_ForwardDirection.Set(Vector2::Down);
-			m_RightDirection.Set(Vector2::Right);
+			m_ForwardDirection.Set(Vector2Int::Down);
+			m_RightDirection.Set(Vector2Int::Right);
 			m_RotationDegrees = 180;
 			break;
 	}
@@ -144,13 +144,13 @@ void Entity::SetFacingDirection(FacingDirection direction)
 	m_FacingDirection = direction;
 }
 
-void Entity::SetFacingDirection(Vector2 direction)
+void Entity::SetFacingDirection(Vector2Int direction)
 {
-	if (direction == Vector2::Up)
+	if (direction == Vector2Int::Up)
 		SetFacingDirection(FacingDirection::Up);
-	else if (direction == Vector2::Down)
+	else if (direction == Vector2Int::Down)
 		SetFacingDirection(FacingDirection::Down);
-	else if (direction == Vector2::Right)
+	else if (direction == Vector2Int::Right)
 		SetFacingDirection(FacingDirection::Right);
 	else
 		SetFacingDirection(FacingDirection::Left);
@@ -164,20 +164,20 @@ void Entity::SetTranslation(int x, int y)
 
 auto Entity::GetPositionXY() const -> std::tuple<int, int>
 {
-	return std::make_tuple( static_cast<int>(m_ScenePosition.x), static_cast<int>(m_ScenePosition.y));
+	return std::make_tuple(static_cast<int>(m_ScenePosition.x), static_cast<int>(m_ScenePosition.y));
 }
 
-Vector2 Entity::GetPosition() const
+Vector2Int Entity::GetPosition() const
 {
 	return m_ScenePosition;
 }
 
-Vector2 Entity::GetForwardVector() const
+Vector2Int Entity::GetForwardVector() const
 {
 	return m_ForwardDirection;
 }
 
-Vector2 Entity::GetRightVector() const
+Vector2Int Entity::GetRightVector() const
 {
 	return m_RightDirection;
 }

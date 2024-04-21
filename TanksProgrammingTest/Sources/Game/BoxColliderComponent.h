@@ -19,22 +19,22 @@ public:
 	virtual void OnUpdateSceneTransform() override;
 
 	const virtual AABB& GetBox() const override { return m_Box; }
-	virtual void BacktraceCollisionsDelta(Vector2& CollisionDelta) override;
+	virtual void BacktraceCollisionsDelta(Vector2Int& CollisionDelta) override;
 	bool IntersectsWith(const BoxColliderComponent& other) const;
-	void SetBoxWithOffset(const Vector2 boxMinPosition, const Vector2 boxMaxPosition, const Vector2 boxMinOffset, const Vector2 boxMaxOffset);
+	void SetBoxWithOffset(const Vector2Int boxMinPosition, const Vector2Int boxMaxPosition, const Vector2Int boxMinOffset, const Vector2Int boxMaxOffset);
 	AABB GetTweenSweepBox() const;
 
 protected:
-	bool TryGetCollisionDelta(const IBoxColliderComponent& other, Vector2& collisionDelta) const;
+	bool TryGetCollisionDelta(const IBoxColliderComponent& other, Vector2Int& collisionDelta) const;
 
-	void SetBoxMin(Vector2 boxMin);
-	void SetBoxMax(Vector2 boxMax);
+	void SetBoxMin(Vector2Int boxMin);
+	void SetBoxMax(Vector2Int boxMax);
 
 	AABB m_Box;
 	AABB m_PreviousFrameBox;
 
-	Vector2 m_BoxOffsetMin;
-	Vector2 m_BoxOffsetMax;
+	Vector2Int m_BoxOffsetMin;
+	Vector2Int m_BoxOffsetMax;
 
 	std::weak_ptr<TextureComponent> m_TextureComponent;
 };

@@ -23,7 +23,7 @@ void EnemyTankSpawnerComponent::DoSpawn()
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 	Entity* EnemyTank = ResourceManagerPtr->CreateEntityFromDataTemplate(GetNameToSpawn());//add name to config
 
-	Vector2 OutSpawnPoint(0, 0);
+	Vector2Int OutSpawnPoint(0, 0);
 	SetSpawnPoint(OutSpawnPoint);
 
 	EnemyTank->GetComponent<TextureComponent>()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
@@ -34,7 +34,7 @@ void EnemyTankSpawnerComponent::DoSpawn()
 	Engine::Get()->GetActiveScene()->AddEntity(EnemyTank);
 }
 
-void EnemyTankSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
+void EnemyTankSpawnerComponent::SetSpawnPoint(Vector2Int& OutSpawnPoint)
 {
 	if(auto Texture = GetOwner()->GetComponent<TextureComponent>())
 	{

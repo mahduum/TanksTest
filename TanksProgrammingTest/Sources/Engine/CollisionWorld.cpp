@@ -64,7 +64,7 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<
 		});
 }
 
-bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections, CollisionFlags IncludedObjectTypes)
+bool CollisionWorld::MultiBoxCast(const Vector2Int& FromPosition, const AABB& FromBox, const Vector2Int& ExtentsOffset, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections, CollisionFlags IncludedObjectTypes)
 {
 	AABB ExtendedBox(FromBox.m_Min, FromBox.m_Max);
 	ExtendedBox.UpdateMinMax(FromBox.m_Min + ExtentsOffset);
@@ -117,7 +117,7 @@ bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromB
 	return OutIntersections.begin() != OutIntersections.end();
 }
 
-bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes)
+bool CollisionWorld::SingleBoxCast(const Vector2Int& FromPosition, const AABB& FromBox, const Vector2Int& ExtentsOffset, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes)
 {
 	std::vector<std::shared_ptr<IBoxColliderComponent>> OutIntersections;
 	if(MultiBoxCast(FromPosition, FromBox, ExtentsOffset, OutIntersections, IncludedObjectTypes))

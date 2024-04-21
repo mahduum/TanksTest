@@ -5,7 +5,7 @@
 
 BoxTweenSweepColliderComponent::BoxTweenSweepColliderComponent(Entity* Owner) :
 	BoxColliderComponent(Owner),
-	m_SweepBox(Vector2::Zero, Vector2::Zero)
+	m_SweepBox(Vector2Int::Zero, Vector2Int::Zero)
 {
 }
 

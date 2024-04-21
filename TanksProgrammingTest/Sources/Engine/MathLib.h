@@ -68,6 +68,11 @@ namespace MathLib
 		return fabs(value);
 	}
 
+	inline int Abs(int value)
+	{
+		return abs(value);
+	}
+
 	inline float Cos(float angle)
 	{
 		return cosf(angle);
@@ -266,6 +271,144 @@ public:
 	static const Vector2 Up;
 };
 
+
+// 2D Vector
+class Vector2Int
+{
+public:
+	int x;
+	int y;
+
+	Vector2Int() :
+		x(0),
+		y(0)
+	{}
+
+	Vector2Int(int inX, int inY)
+		: x(inX)
+		, y(inY)
+	{}
+
+	const int* GetAsFloatPtr() const
+	{
+		return reinterpret_cast<const int*>(&x);
+	}
+
+	// Set both components in one line
+	void Set(int inX, int inY)
+	{
+		x = inX;
+		y = inY;
+	}
+
+	void Set(Vector2Int inValue)
+	{
+		x = inValue.x;
+		y = inValue.y;
+	}
+
+	bool operator==(const Vector2Int& other) const
+	{
+		return MathLib::Abs(x - other.x) == 0 && MathLib::Abs(y - other.y) == 0;
+	}
+
+	// Vector addition (a + b)
+	friend Vector2Int operator+(const Vector2Int& a, const Vector2Int& b)
+	{
+		return Vector2Int(a.x + b.x, a.y + b.y);
+	}
+
+	// Vector subtraction (a - b)
+	friend Vector2Int operator-(const Vector2Int& a, const Vector2Int& b)
+	{
+		return Vector2Int(a.x - b.x, a.y - b.y);
+	}
+
+	// Component-wise multiplication
+	// (a.x * b.x, ...)
+	friend Vector2Int operator*(const Vector2Int& a, const Vector2Int& b)
+	{
+		return Vector2Int(a.x * b.x, a.y * b.y);
+	}
+
+	// Scalar multiplication
+	friend Vector2Int operator*(const Vector2Int& vec, int scalar)
+	{
+		return Vector2Int(vec.x * scalar, vec.y * scalar);
+	}
+
+	// Scalar multiplication
+	friend Vector2Int operator*(int scalar, const Vector2Int& vec)
+	{
+		return Vector2Int(vec.x * scalar, vec.y * scalar);
+	}
+
+	// Scalar *=
+	Vector2Int& operator*=(int scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+		return *this;
+	}
+
+	// Vector +=
+	Vector2Int& operator+=(const Vector2Int& right)
+	{
+		x += right.x;
+		y += right.y;
+		return *this;
+	}
+
+	// Vector -=
+	Vector2Int& operator-=(const Vector2Int& right)
+	{
+		x -= right.x;
+		y -= right.y;
+		return *this;
+	}
+
+	// Length squared of vector
+	int LengthSq() const
+	{
+		return (x * x + y * y);
+	}
+
+	// Length of vector
+	float Length() const
+	{
+		return (MathLib::Sqrt(LengthSq()));
+	}
+
+	// Dot product between two vectors (a dot b)
+	static int Dot(const Vector2Int& a, const Vector2Int& b)
+	{
+		return (a.x * b.x + a.y * b.y);
+	}
+
+	// Lerp from A to B by f
+	static Vector2 Lerp(const Vector2Int& aInt, const Vector2Int& bInt, float f)
+	{
+		Vector2 a(aInt.x, aInt.y);
+		Vector2 b(bInt.x, bInt.y);
+		return Vector2(a + f * (b - a));
+	}
+
+	// Reflect V about (normalized) N
+	static Vector2Int Reflect(const Vector2Int& v, const Vector2Int& n)
+	{
+		return v - 2 * Vector2Int::Dot(v, n) * n;
+	}
+
+	// Transform vector by matrix
+	static Vector2Int Transform(const Vector2Int& vec, const class Matrix3& mat, float w = 1.0f);
+
+	static const Vector2Int Zero;
+	static const Vector2Int Right;
+	static const Vector2Int Down;
+	static const Vector2Int Left;
+	static const Vector2Int Up;
+};
+
 class Matrix3
 {
 public:
@@ -360,7 +503,7 @@ public:
 		return Matrix3(temp);
 	}
 
-	static Matrix3 CreateScale(const Vector2& scaleVector)
+	static Matrix3 CreateScale(const Vector2Int& scaleVector)
 	{
 		return CreateScale(scaleVector.x, scaleVector.y);
 	}
@@ -385,7 +528,7 @@ public:
 	}
 
 	// Create a translation matrix (on the xy-plane)
-	static Matrix3 CreateTranslation(const Vector2& trans)
+	/*static Matrix3 CreateTranslation(const Vector2Int& trans)
 	{
 		float temp[3][3] =
 		{
@@ -394,9 +537,10 @@ public:
 			{ trans.x, trans.y, 1.0f },
 		};
 		return Matrix3(temp);
-	}
+	}*/
 
 	static const Matrix3 Identity;
 };
+
 
 

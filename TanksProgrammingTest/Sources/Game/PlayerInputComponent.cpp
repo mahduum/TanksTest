@@ -75,7 +75,7 @@ void PlayerInputComponent::Update(float DeltaTime)
 
 	GetOwner()->SetTranslation(PredictedDeltaX, PredictedDeltaY);
 	
-	Vector2 BacktraceCollisionDelta(0, 0);
+	Vector2Int BacktraceCollisionDelta(0, 0);
 
 	if(auto BoxCollider = m_BoxColliderComponent.lock())
 	{

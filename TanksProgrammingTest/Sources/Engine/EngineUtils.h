@@ -19,7 +19,7 @@ namespace EngineUtils
 		return std::string();
 	}
 
-	std::wstring StringToWstring(std::string StringToConvert)
+	std::wstring StringToWstring(const std::string& StringToConvert)
 	{
 		if (!StringToConvert.empty())
 		{

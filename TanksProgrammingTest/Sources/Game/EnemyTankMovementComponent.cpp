@@ -65,7 +65,7 @@ void EnemyTankMovementComponent::Move(float DeltaTime)
 {
 	m_NextNodeAlpha += DeltaTime * (m_Speed / 30);
 
-	auto newPosition = Vector2::Lerp(m_CurrentNodeLocation, m_NextNodeLocation, m_NextNodeAlpha);
+	auto newPosition = Vector2Int::Lerp(m_CurrentNodeLocation, m_NextNodeLocation, m_NextNodeAlpha);
 	
 	GetOwner()->SetPosition(static_cast<int>(newPosition.x), static_cast<int>(newPosition.y));
 
@@ -80,8 +80,8 @@ void EnemyTankMovementComponent::SetNextNodeLocation()
 {
 	m_NextNodeAlpha = 0;
 
-	Vector2 NewNextNodeLocation{ m_NextNodeLocation.x, m_NextNodeLocation.y };
-	Vector2 NewFacingDirection{ 0, 0 };
+	Vector2Int NewNextNodeLocation{ m_NextNodeLocation.x, m_NextNodeLocation.y };
+	Vector2Int NewFacingDirection{ 0, 0 };
 
 	auto [x, y] = m_NextNodeLocation;
 	Engine::Get()->GetActiveScene()->GetNextNavNodeLocationFromLocation(m_NextNodeLocation.x, m_NextNodeLocation.y, NewNextNodeLocation, NewFacingDirection);//set this node as blocked
@@ -112,7 +112,7 @@ bool EnemyTankMovementComponent::TryGetTargetInfo(TargetInfo& Info) const
 	return false;
 }
 
-bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& Info) const
+bool EnemyTankMovementComponent::ScanForPlayer(Vector2Int Direction, TargetInfo& Info) const
 {
 	if (auto BoxCollider = GetOwner()->GetComponent<BoxColliderComponent>())
 	{
@@ -124,7 +124,7 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& In
 		FromBox.m_Max.Set(FromBox.m_Max.x - QuarterExtentX, FromBox.m_Max.y - QuarterExtentY);
 
 		constexpr float ScanDistanceMultiplier = 330;
-		Vector2 ExtentsOffset{ Direction * ScanDistanceMultiplier };
+		Vector2Int ExtentsOffset{ Direction * ScanDistanceMultiplier };
 
 		std::shared_ptr<IBoxColliderComponent> OutIntersection;
 

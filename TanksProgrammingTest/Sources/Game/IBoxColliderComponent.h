@@ -8,7 +8,7 @@ class IBoxColliderComponent : public IColliderComponent
 public:
 	IBoxColliderComponent(Entity* Owner);
 	IBoxColliderComponent();
-	virtual void BacktraceCollisionsDelta(Vector2& CollisionDelta) = 0;
+	virtual void BacktraceCollisionsDelta(Vector2Int& CollisionDelta) = 0;
 	virtual std::type_index GetLookUpTypeIndex() const override { return typeid(IBoxColliderComponent); }
 	const virtual AABB& GetBox() const = 0;
 };

@@ -116,16 +116,16 @@ public:
 
 	void UpdateSceneTransform();
 
-	void SetPosition(Vector2 position);
+	void SetPosition(Vector2Int position);
 	void SetPosition(int x, int y);
 	void SetFacingDirection(FacingDirection direction);
-	void SetFacingDirection(Vector2 direction);
+	void SetFacingDirection(Vector2Int direction);
 	void SetTranslation(int x, int y);
 
 	auto GetPositionXY() const -> std::tuple<int, int>;
-	Vector2 GetPosition() const;
-	Vector2 GetForwardVector() const;
-	Vector2 GetRightVector() const;
+	Vector2Int GetPosition() const;
+	Vector2Int GetForwardVector() const;
+	Vector2Int GetRightVector() const;
 	FacingDirection GetFacingDirection() const;
 
 	float GetRotationDegrees() const;
@@ -138,9 +138,9 @@ private:
 	std::unordered_map<std::type_index, int> m_ComponentsMap;// {};
 	std::string m_Name;
 	
-	Vector2 m_ScenePosition;
-	Vector2 m_ForwardDirection;
-	Vector2 m_RightDirection;
+	Vector2Int m_ScenePosition;
+	Vector2Int m_ForwardDirection;
+	Vector2Int m_RightDirection;
 	float m_RotationDegrees = 0;
 	FacingDirection m_FacingDirection = FacingDirection::Up;
 

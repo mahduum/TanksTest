@@ -9,7 +9,7 @@ struct TargetInfo
 {
 	bool m_TargetInSight = false;
 	std::optional<int> m_TargetDistance;
-	Vector2 m_AttackDirection;
+	Vector2Int m_AttackDirection;
 	CollisionFlags m_TargetType = CollisionFlags::None;
 };
 
@@ -28,13 +28,13 @@ public:
 	void Move(float DeltaTime);
 	void SetNextNodeLocation();
 	bool TryGetTargetInfo(TargetInfo& Info) const;
-	bool ScanForPlayer(Vector2 Direction, TargetInfo& Info) const;
+	bool ScanForPlayer(Vector2Int Direction, TargetInfo& Info) const;
 
 private:
 
 	int m_Speed;
 	float m_NextNodeAlpha;
-	Vector2 m_CurrentNodeLocation;
-	Vector2 m_NextNodeLocation;
+	Vector2Int m_CurrentNodeLocation;
+	Vector2Int m_NextNodeLocation;
 };
 

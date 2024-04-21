@@ -25,7 +25,7 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 	Entity* Projectile = ResourceManagerPtr->CreateEntityFromDataTemplate(GetNameToSpawn());//add name to config
 
-	Vector2 OutSpawnPoint(0,0);
+	Vector2Int OutSpawnPoint(0,0);
 	SetSpawnPoint(OutSpawnPoint);
 
 	Projectile->GetComponent<TextureComponent>()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
@@ -37,7 +37,7 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 	Engine::Get()->GetActiveScene()->AddEntity(Projectile);
 }
 
-void ProjectileSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
+void ProjectileSpawnerComponent::SetSpawnPoint(Vector2Int& OutSpawnPoint)
 {
 	if(m_TextureComponent.expired())
 	{
@@ -61,25 +61,25 @@ void ProjectileSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
 	}
 }
 
-void ProjectileSpawnerComponent::GetTopSpawnPoint(Vector2& OutSpawnPoint) const
+void ProjectileSpawnerComponent::GetTopSpawnPoint(Vector2Int& OutSpawnPoint) const
 {
 	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2 - 4, TexRect.y - 4);//todo set offset in load config or const
 }
 
-void ProjectileSpawnerComponent::GetBottomSpawnPoint(Vector2& OutSpawnPoint) const
+void ProjectileSpawnerComponent::GetBottomSpawnPoint(Vector2Int& OutSpawnPoint) const
 {
 	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2 - 4, TexRect.y + TexRect.h - 8);//todo set offset in load config or const
 }
 
-void ProjectileSpawnerComponent::GetRightSpawnPoint(Vector2& OutSpawnPoint) const
+void ProjectileSpawnerComponent::GetRightSpawnPoint(Vector2Int& OutSpawnPoint) const
 {
 	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x + TexRect.w - 8, TexRect.y + TexRect.h/2 - 5);//todo set offset in load config or const
 }
 
-void ProjectileSpawnerComponent::GetLeftSpawnPoint(Vector2& OutSpawnPoint) const
+void ProjectileSpawnerComponent::GetLeftSpawnPoint(Vector2Int& OutSpawnPoint) const
 {
 	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x - 1, TexRect.y + TexRect.h / 2 - 5);//todo set offset in load config or const
