@@ -155,7 +155,7 @@ void BoxColliderComponent::BacktraceCollisionsDelta(Vector2Int& CollisionDelta)
 		return;
 	}
 
-	GetOwner()->SetTranslation(-CollisionDelta.x,CollisionDelta.y);
+	GetOwner()->SetTranslation(-CollisionDelta.x, -CollisionDelta.y);
 
 	OnUpdateSceneTransform();
 }
