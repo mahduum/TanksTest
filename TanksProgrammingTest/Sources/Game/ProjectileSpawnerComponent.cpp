@@ -58,24 +58,24 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 
 void ProjectileSpawnerComponent::GetTopSpawnPoint(Vector2& OutSpawnPoint) const
 {
-	auto TexRect = m_TextureComponent->GetRectangle();//always spawn depending on the current texture rect
-	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2, TexRect.y - 5);//offset - 5 set in load config or const
+	auto TexRect = m_TextureComponent->GetRectangle();
+	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2 - 4, TexRect.y - 4);//todo set offset in load config or const
 }
 
 void ProjectileSpawnerComponent::GetBottomSpawnPoint(Vector2& OutSpawnPoint) const
 {
 	auto TexRect = m_TextureComponent->GetRectangle();
-	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2, TexRect.y + TexRect.h + 5);//offset - 5 set in load config or const
+	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2 - 4, TexRect.y + TexRect.h - 8);//todo set offset in load config or const
 }
 
 void ProjectileSpawnerComponent::GetRightSpawnPoint(Vector2& OutSpawnPoint) const
 {
 	auto TexRect = m_TextureComponent->GetRectangle();
-	OutSpawnPoint.Set(TexRect.x + TexRect.w + 5, TexRect.y + TexRect.h/2);//offset - 5 set in load config or const
+	OutSpawnPoint.Set(TexRect.x + TexRect.w - 8, TexRect.y + TexRect.h/2 - 5);//todo set offset in load config or const
 }
 
 void ProjectileSpawnerComponent::GetLeftSpawnPoint(Vector2& OutSpawnPoint) const
 {
 	auto TexRect = m_TextureComponent->GetRectangle();
-	OutSpawnPoint.Set(TexRect.x - 5, TexRect.y + TexRect.h / 2);//offset - 5 set in load config or const
+	OutSpawnPoint.Set(TexRect.x - 1, TexRect.y + TexRect.h / 2 - 5);//todo set offset in load config or const
 }
