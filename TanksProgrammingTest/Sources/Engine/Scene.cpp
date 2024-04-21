@@ -6,9 +6,6 @@
 #include "MathLib.h"
 #include <fstream>
 #include <queue>
-//
-//#include "../Game/BoxColliderComponent.h"
-//#include "../Game/BoxTweenSweepColliderComponent.h"	
 
 #include "../Game/EnemyTankMovementComponent.h"
 
@@ -26,7 +23,7 @@ void Scene::LoadFromConfig(nlohmann::json Config)
 	if (Config.find("Entities") != Config.end())
 	{
 		ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
-		for (auto Item : Config["Entities"].items())//entities that are not fixed in layout
+		for (const auto& Item : Config["Entities"].items())//entities that are not fixed in layout
 		{
 			Entity* NewEntity = new Entity();//todo what type of entity...
 
@@ -89,7 +86,7 @@ void Scene::AddEntity(Entity* Entity)
 {
 	if(Entity->GetComponent<EnemyTankMovementComponent>())
 	{
-		++m_EnemyEntitiesCount;//todo
+		++m_EnemyEntitiesCount;
 	}
 
 	if(m_Entities.end() == m_ValidEntitiesEnd)
@@ -111,8 +108,8 @@ void Scene::RemoveEntity(Entity* Entity)
 		--m_EnemyEntitiesCount;
 	}
 
-	std::vector<::Entity*>::iterator RetIt = std::find(
-		m_Entities.begin(), m_Entities.end(), Entity);
+	std::vector<::Entity*>::iterator RetIt = std::ranges::find(m_Entities
+	                                                           , Entity);
 	if (RetIt != m_Entities.end())
 	{
 		(*RetIt)->UnInitialize();
