@@ -7,6 +7,7 @@
 #include "BoxTweenSweepColliderComponent.h"
 #include "DamageConfigComponent.h"
 #include "EnemyProjectileSpawnerComponent.h"
+#include "EnemyTankCollisionHandlerComponent.h"
 #include "EnemyTankMovementComponent.h"
 #include "EnemyTankSpawnerComponent.h"
 #include "PlayerProjectileSpawnerComponent.h"
@@ -30,6 +31,7 @@ int main(int argc, char* argv[])
 	ResourceManagerPtr->RegisterComponent("EnemyTankSpawnerComponent", new EnemyTankSpawnerComponent());
 	ResourceManagerPtr->RegisterComponent("DamageConfigComponent", new DamageConfigComponent());
 	ResourceManagerPtr->RegisterComponent("AttributeComponent", new AttributeComponent());
+	ResourceManagerPtr->RegisterComponent("EnemyTankCollisionHandlerComponent", new EnemyTankCollisionHandlerComponent());
 
 	Engine::Get()->CreateActiveSceneFromTemplate("MainScene");
 

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Game\EnemyTankCollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\IColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\DamageConfigComponent.cpp" />
     <ClCompile Include="Sources\Game\AttributeComponent.cpp" />
@@ -47,6 +48,7 @@
     <ClCompile Include="Sources\Game\PlayerInputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Game\EnemyTankCollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\IColliderComponent.h" />
     <ClInclude Include="Sources\Game\DamageConfigComponent.h" />
     <ClInclude Include="Sources\Game\AttributeComponent.h" />

@@ -99,6 +99,9 @@
     <ClCompile Include="Sources\Game\IColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Game\EnemyTankCollisionHandlerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Engine\Engine.h">
@@ -177,6 +180,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Game\IColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Game\EnemyTankCollisionHandlerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

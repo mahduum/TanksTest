@@ -299,7 +299,6 @@ void Scene::SetTargetAndCalculateFlowField(int sceneX, int sceneY)
 				Cell.m_FlowDistance = m_FlowDistanceMax;
 			}
 
-			//Calculate the flow field.
 			CalculateDistances();
 			CalculateFlowDirections();
 		}
@@ -327,33 +326,6 @@ void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2In
 
 		nextNodeSceneLocation.Set(GoToNeighbourSceneX, GoToNeighbourSceneY);
 		flowDirection.Set(CellData.m_FlowDirectionX, CellData.m_FlowDirectionY);
-
-		//todo
-		/*get requester key and set cell to be one max value, I enter the index of the cell I blocked when I leave, and when I enter I release the previous cell*/
-		//if (requester != nullptr)
-		//{
-		//	//todo make this cell we are going unwalkable to other units
-		//	//recalculate offsets
-		//	CellData.m_CanBeSteppedOn = false;//no is not walkable
-
-		//	std::queue<int> NeighboursToReevaluate;
-
-		//	//get cells around, find best one, set its own value to +1 and direction to this cell
-		//	for (auto NeighbourOffsets : m_NeighboursOffsets)
-		//	{
-		//		int NeighborX = NeighbourOffsets[0] + CellIndex % m_FlowFieldColumns;//add offset in x to current index
-		//		int NeighborY = NeighbourOffsets[1] + CellIndex / m_FlowFieldColumns;//add offset in y to current index
-		//		int NeighbourIndex = NeighborX + NeighborY * m_FlowFieldColumns;//compose linear index
-		//		//only if it finds value greater than its own, first try to find smaller value and point to it, if it cannot find smaller value, must rebuild two levels
-		//		NeighboursToReevaluate.push(NeighbourIndex);
-		//	}
-
-		//	while (NeighboursToReevaluate.empty() == false)
-		//	{
-		//		int IndexCurrent = NeighboursToReevaluate.front();
-
-		//	}
-		//}
 	}
 	else
 	{
@@ -361,75 +333,6 @@ void Scene::GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2In
 	}
 }
 
-//todo
-void Scene::ReCalculateDistancesAndFlowDirectionsInZone(int StartIndex, int Depth)
-{
-	StartIndex = m_FlowFieldTargetX + m_FlowFieldTargetY * m_FlowFieldColumns;
-
-	//Create a queue that will contain the indices to be checked.
-	std::queue<int> IndicesToEvaluate;
-	//Set the target tile's flow value to 0 and add it to the queue.
-	m_FlowFieldCells[StartIndex].m_FlowDistance = 0;
-	IndicesToEvaluate.push(StartIndex);
-
-	//Loop through the queue and assign distance to each tile.
-	while (IndicesToEvaluate.empty() == false)
-	{
-		int IndexCurrent = IndicesToEvaluate.front();
-		IndicesToEvaluate.pop();
-
-		auto& RedirectFrom = m_FlowFieldCells[IndexCurrent];
-
-		std::vector<std::tuple<int, std::tuple<int, int>>> IndicesAndDirectionsToNeighbour;
-
-		//Check each of the neighbors;
-		for (const auto NeighbourOffsets : m_NeighboursOffsets)
-		{
-			int NeighborX = NeighbourOffsets[0] + IndexCurrent % m_FlowFieldColumns;//add offset in x to current index//tddo put in a method
-			int NeighborY = NeighbourOffsets[1] + IndexCurrent / m_FlowFieldColumns;//add offset in y to current index
-			int NeighbourIndex = NeighborX + NeighborY * m_FlowFieldColumns;//compose linear index
-
-			//Ensure that the neighbor exists and isn't a wall.
-			if (NeighbourIndex > -1 && NeighbourIndex < m_FlowFieldCells.size() &&
-				NeighborX > -1 && NeighborX < m_FlowFieldColumns &&
-				NeighborY > -1 && NeighborY < m_FlowFieldRows &&
-				m_FlowFieldCells[NeighbourIndex].m_CanBeSteppedOn)
-			{
-				IndicesAndDirectionsToNeighbour.emplace_back(NeighbourIndex, std::make_tuple(NeighbourOffsets[0], NeighbourOffsets[1]));
-				//if there is a lower value available simply point to it,
-				//else test or equal value
-				//todo set to max and 
-				//Check if the tile has been assigned a distance yet or not.
-				//if (m_FlowFieldCells[NeighbourIndex].m_FlowDistance == m_FlowDistanceMax)
-				//{
-				//	//If not the set it's distance and add it to the queue.
-				//	m_FlowFieldCells[NeighbourIndex].m_FlowDistance = m_FlowFieldCells[IndexCurrent].m_FlowDistance + 1;
-				//	IndicesToEvaluate.push(NeighbourIndex);
-			}
-		}
-
-		if(IndicesAndDirectionsToNeighbour.empty())
-		{
-			return;
-		}
-
-		std::ranges::sort(IndicesAndDirectionsToNeighbour, [&](const std::tuple<int, std::tuple<int, int>>& A, const std::tuple<int, std::tuple<int, int>>& B)
-			{
-					return m_FlowFieldCells[std::get<0>(A)].m_FlowDistance < m_FlowFieldCells[std::get<0>(B)].m_FlowDistance;
-			});
-
-		const auto& NeighbourData = IndicesAndDirectionsToNeighbour.at(0);
-		
-		RedirectFrom.m_FlowDirectionX = std::get<0>(std::get<1>(NeighbourData));
-		RedirectFrom.m_FlowDirectionY = std::get<1>(std::get<1>(NeighbourData));
-
-		//if not false we found cell that itself does not need redirecting
-		if (m_FlowFieldCells[std::get<0>(NeighbourData)].m_FlowDistance < RedirectFrom.m_FlowDistance == false)
-		{
-			IndicesToEvaluate.push(std::get<0>(NeighbourData));
-		}
-	}
-}
 
 int Scene::GetCellIndexFromScenePosition(int sceneX, int sceneY) const
 {
@@ -451,5 +354,17 @@ Vector2Int Scene::GetCellCoordsFromScenePosition(int sceneX, int sceneY) const
 Vector2Int Scene::GetCellCoordsFromLinearIndex(int index) const
 {
 	return { index % m_FlowFieldColumns, index / m_FlowFieldColumns };
+}
 
+int Scene::GetFlowDistanceAtSceneCoords(int SceneX, int SceneY) const
+{
+	auto CellIndex = GetCellIndexFromScenePosition(SceneX, SceneY);
+	if (CellIndex > -1 && CellIndex < m_FlowFieldCells.size() &&
+		m_FlowFieldTargetX > -1 && m_FlowFieldTargetX < m_FlowFieldColumns &&
+		m_FlowFieldTargetY > -1 && m_FlowFieldTargetY < m_FlowFieldRows)
+	{
+		return m_FlowFieldCells.at(CellIndex).m_FlowDistance;
+	}
+
+	return m_FlowDistanceMax;
 }

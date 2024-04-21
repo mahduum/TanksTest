@@ -65,9 +65,9 @@ public:
 	Vector2Int GetTargetCellScenePosition() const;
 
 	void GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2Int& nextNodeSceneLocation, Vector2Int& flowDirection, const Entity* requester = nullptr) const;
-	void ReCalculateDistancesAndFlowDirectionsInZone(int StartIndex, int Depth = 0);
 	int GetCellIndexFromScenePosition(int sceneX, int sceneY) const;
 	Vector2Int GetScenePositionFromCellCoords(int cellX, int cellY) const;
 	Vector2Int GetCellCoordsFromScenePosition(int sceneX, int sceneY) const;
 	Vector2Int GetCellCoordsFromLinearIndex(int index) const;
+	int GetFlowDistanceAtSceneCoords(int SceneX, int SceneY) const;
 };

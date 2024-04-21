@@ -30,6 +30,8 @@ public:
 	bool TryGetTargetInfo(TargetInfo& Info) const;
 	bool ScanForPlayer(Vector2Int Direction, TargetInfo& Info) const;
 
+	void InvertSpeed() { m_Speed = -m_Speed; }
+
 private:
 
 	int m_Speed;

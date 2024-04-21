@@ -40,7 +40,7 @@ void EnemyTankMovementComponent::Update(float DeltaTime)
 		GetOwner()->SetFacingDirection(OutInfo.m_AttackDirection);
 	}
 
-	if(auto ProjectileSpawner = GetOwner()->GetComponent<EnemyProjectileSpawnerComponent>())//todo refactor to use as interface the abstract class above
+	if(auto ProjectileSpawner = GetOwner()->GetComponent<EnemyProjectileSpawnerComponent>())
 	{
 		ProjectileSpawner->SetActive(OutInfo.m_TargetInSight);
 	}
@@ -73,7 +73,7 @@ void EnemyTankMovementComponent::Move(float DeltaTime)
 
 	GetOwner()->SetComponentsTransformDirty();
 
-	//todo add check collisions from enemies in on collision handler
+	m_Speed = MathLib::Abs(m_Speed);
 }
 
 void EnemyTankMovementComponent::SetNextNodeLocation()

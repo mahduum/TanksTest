@@ -39,11 +39,11 @@ void ICollisionHandlerComponent::LoadFromConfig(nlohmann::json Config)
 	}
 }
 
-void ICollisionHandlerComponent::OnCollision(const std::shared_ptr<IBoxColliderComponent>& CollisionInfo)
+void ICollisionHandlerComponent::OnCollision(const std::shared_ptr<IBoxColliderComponent>& OtherCollider)
 {
-	auto CollisionObjectType = CollisionInfo->GetCollisionObjectType();
+	auto CollisionObjectType = OtherCollider->GetCollisionObjectType();
 	if((CollisionObjectType & m_CollisionResponse) == CollisionObjectType)
 	{
-		OnCollisionImpl(CollisionInfo);
+		OnCollisionImpl(OtherCollider);
 	}
 }

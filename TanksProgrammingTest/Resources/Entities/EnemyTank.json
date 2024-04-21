@@ -27,6 +27,16 @@
 		{
 			"Type" : "BoxColliderComponent",
             "CollisionObjectType" : "Enemy",
+			"RequiredComponents" :
+            [
+                {
+                    "Type" : "EnemyTankCollisionHandlerComponent",
+                    "Blocks" :
+                    [
+                        "Enemy"
+                    ]
+                }
+            ],
 			"OffsetMinX" : 6,
 			"OffsetMinY" : 3,
 			"OffsetMaxX" : -6,
