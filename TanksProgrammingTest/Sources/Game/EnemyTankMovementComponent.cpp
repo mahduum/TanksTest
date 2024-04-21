@@ -91,7 +91,7 @@ void EnemyTankMovementComponent::SetNextNodeLocation()
 	GetOwner()->SetFacingDirection(NewFacingDirection);
 }
 
-bool EnemyTankMovementComponent::TryGetTargetInfo(TargetInfo& Info)
+bool EnemyTankMovementComponent::TryGetTargetInfo(TargetInfo& Info) const
 {
 	if (ScanForPlayer(GetOwner()->GetForwardVector(), Info))
 	{
@@ -126,7 +126,7 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& In
 		constexpr float ScanDistanceMultiplier = 330;
 		Vector2 ExtentsOffset{ Direction * ScanDistanceMultiplier };
 
-		std::shared_ptr<BoxColliderComponent> OutIntersection;
+		std::shared_ptr<IBoxColliderComponent> OutIntersection;
 
 		if (Engine::Get()->GetCollisionWorld()->SingleBoxCast(
 			GetOwner()->GetPosition(),

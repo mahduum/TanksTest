@@ -49,7 +49,7 @@ void ProjectileMovementComponent::Move(float DeltaTime) const
 	auto [x,y] = m_Direction * (m_Speed / 30);
 	GetOwner()->SetTranslation(x, y);
 
-	auto Collider = GetOwner()->GetComponent<IColliderComponent>();
+	auto Collider = GetOwner()->GetComponent<IBoxColliderComponent>();
 	if(Collider == nullptr)
 	{
 		return;

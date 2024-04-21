@@ -102,7 +102,7 @@ void PlayerInputComponent::Update(float DeltaTime)
 
 void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta) const
 {
-	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();
+	const std::vector<std::shared_ptr<IBoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();
 
 	auto MyBoxCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 

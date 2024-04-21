@@ -10,6 +10,6 @@ public:
 
 	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<ProjectileCollisionHandlerComponent>(*this); }
 
-	virtual void OnCollisionImpl(const std::shared_ptr<IColliderComponent>& CollisionInfo) override;
+	virtual void OnCollisionImpl(const std::shared_ptr<IBoxColliderComponent>& CollisionInfo) override;
 };
 

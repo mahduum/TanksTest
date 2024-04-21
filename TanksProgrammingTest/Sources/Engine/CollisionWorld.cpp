@@ -4,18 +4,18 @@
 #include <ranges>
 #include "CollisionUtils.h"
 #include "Entity.h"
-#include "../Game/BoxColliderComponent.h"
+#include "../Game/IBoxColliderComponent.h"
 
-void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<IColliderComponent>, std::shared_ptr<IColliderComponent>)>& f)
+void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<IBoxColliderComponent>, std::shared_ptr<IBoxColliderComponent>)>& f)
 {
 	std::ranges::sort(m_StaticBoxes,
-	                  [](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
+	                  [](const std::shared_ptr<IBoxColliderComponent>& a, const std::shared_ptr<IBoxColliderComponent>& b)
 	                  {
 		                  return a->GetBox().m_Min.x < b->GetBox().m_Min.x;
 	                  });
 
 	std::ranges::sort(m_DynamicBoxes,
-	                  [](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
+	                  [](const std::shared_ptr<IBoxColliderComponent>& a, const std::shared_ptr<IBoxColliderComponent>& b)
 	                  {
 		                  return a->GetBox().m_Min.x < b->GetBox().m_Min.x;
 	                  });
@@ -58,30 +58,30 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<
 		}
 	}
 
-	std::erase_if(m_DynamicBoxes, [](const std::shared_ptr<BoxColliderComponent>& b)
+	std::erase_if(m_DynamicBoxes, [](const std::shared_ptr<IBoxColliderComponent>& b)
 		{
 			return b->GetOwner()->IsAlive == false;//todo optimize, call from scene
 		});
 }
 
-bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections, CollisionFlags IncludedObjectTypes)
+bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections, CollisionFlags IncludedObjectTypes)
 {
 	AABB ExtendedBox(FromBox.m_Min, FromBox.m_Max);
 	ExtendedBox.UpdateMinMax(FromBox.m_Min + ExtentsOffset);
 	ExtendedBox.UpdateMinMax(FromBox.m_Max + ExtentsOffset);
 
 	std::ranges::sort(m_StaticBoxes,
-		[](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
+		[](const std::shared_ptr<IBoxColliderComponent>& a, const std::shared_ptr<IBoxColliderComponent>& b)
 		{
 		    return a->GetBox().m_Min.x < b->GetBox().m_Min.x;
 		});
 
 	auto RangeStatic = std::ranges::views::filter(m_StaticBoxes,
-		[IncludedObjectTypes, &ExtendedBox](const std::shared_ptr<BoxColliderComponent>& BoxColliderComponent)
+		[IncludedObjectTypes, &ExtendedBox](const std::shared_ptr<IBoxColliderComponent>& IBoxColliderComponent)
 		{
-			return (BoxColliderComponent->GetCollisionObjectType() & IncludedObjectTypes) == BoxColliderComponent->GetCollisionObjectType() &&
-				BoxColliderComponent->GetBox().m_Min.x < ExtendedBox.m_Max.x &&
-				Intersect(ExtendedBox, BoxColliderComponent->GetBox());
+			return (IBoxColliderComponent->GetCollisionObjectType() & IncludedObjectTypes) == IBoxColliderComponent->GetCollisionObjectType() &&
+				IBoxColliderComponent->GetBox().m_Min.x < ExtendedBox.m_Max.x &&
+				Intersect(ExtendedBox, IBoxColliderComponent->GetBox());
 		});
 
 	for (const auto& Collider : RangeStatic)
@@ -90,17 +90,17 @@ bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromB
 	}
 
 	std::ranges::sort(m_DynamicBoxes,
-		[](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
+		[](const std::shared_ptr<IBoxColliderComponent>& a, const std::shared_ptr<IBoxColliderComponent>& b)
 		{
 			return a->GetBox().m_Min.x < b->GetBox().m_Min.x;
 		});
 
 	auto RangeDynamic = std::ranges::views::filter(m_DynamicBoxes,
-		[IncludedObjectTypes, &ExtendedBox](const std::shared_ptr<BoxColliderComponent>& BoxColliderComponent)
+		[IncludedObjectTypes, &ExtendedBox](const std::shared_ptr<IBoxColliderComponent>& IBoxColliderComponent)
 		{
-			return (BoxColliderComponent->GetCollisionObjectType() & IncludedObjectTypes) == BoxColliderComponent->GetCollisionObjectType() &&
-				BoxColliderComponent->GetBox().m_Min.x < ExtendedBox.m_Max.x &&
-				Intersect(ExtendedBox, BoxColliderComponent->GetBox());
+			return (IBoxColliderComponent->GetCollisionObjectType() & IncludedObjectTypes) == IBoxColliderComponent->GetCollisionObjectType() &&
+				IBoxColliderComponent->GetBox().m_Min.x < ExtendedBox.m_Max.x &&
+				Intersect(ExtendedBox, IBoxColliderComponent->GetBox());
 		});
 
 	for (const auto& Collider : RangeDynamic)
@@ -109,7 +109,7 @@ bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromB
 	}
 
 	std::ranges::sort(OutIntersections,
-		[&FromPosition](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
+		[&FromPosition](const std::shared_ptr<IBoxColliderComponent>& a, const std::shared_ptr<IBoxColliderComponent>& b)
 		{
 			return (FromPosition - a->GetOwner()->GetPosition()).LengthSq() < (FromPosition - b->GetOwner()->GetPosition()).LengthSq();
 		});
@@ -117,9 +117,9 @@ bool CollisionWorld::MultiBoxCast(const Vector2& FromPosition, const AABB& FromB
 	return OutIntersections.begin() != OutIntersections.end();
 }
 
-bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes)
+bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& ExtentsOffset, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes)
 {
-	std::vector<std::shared_ptr<BoxColliderComponent>> OutIntersections;
+	std::vector<std::shared_ptr<IBoxColliderComponent>> OutIntersections;
 	if(MultiBoxCast(FromPosition, FromBox, ExtentsOffset, OutIntersections, IncludedObjectTypes))
 	{
 		Intersection = OutIntersections.front();
@@ -129,7 +129,7 @@ bool CollisionWorld::SingleBoxCast(const Vector2& FromPosition, const AABB& From
 	return false;
 }
 
-void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent>& Box)
+void CollisionWorld::AddBox(const std::shared_ptr<IBoxColliderComponent>& Box)
 {
 	if (Box->GetOwner()->GetTransformType() == TransformType::Static)
 	{
@@ -141,13 +141,13 @@ void CollisionWorld::AddBox(const std::shared_ptr<BoxColliderComponent>& Box)
 	}
 }
 
-void CollisionWorld::RemoveBox(BoxColliderComponent* box)//todo refactor back to shared
+void CollisionWorld::RemoveBox(IBoxColliderComponent* box)//todo refactor back to shared
 {
 	if (box->GetOwner()->GetTransformType() == TransformType::Static)
 	{
 		if (const auto it =
 			std::ranges::find_if(m_StaticBoxes,
-			                     [box](const std::shared_ptr<BoxColliderComponent>& elem)
+			                     [box](const std::shared_ptr<IBoxColliderComponent>& elem)
 			                     {
 				                     return box == elem.get();
 			                     }); it != m_StaticBoxes.end())
@@ -158,13 +158,13 @@ void CollisionWorld::RemoveBox(BoxColliderComponent* box)//todo refactor back to
 	}
 	else
 	{
-		//std::erase_if(m_DynamicBoxes, [box](const std::shared_ptr<BoxColliderComponent>& b)
+		//std::erase_if(m_DynamicBoxes, [box](const std::shared_ptr<IBoxColliderComponent>& b)
 		//{
 		//	return b.get() == box;
 		//});
 		if (const auto it =
 			std::ranges::find_if(m_DynamicBoxes,
-			                     [box](const std::shared_ptr<BoxColliderComponent>& elem)
+			                     [box](const std::shared_ptr<IBoxColliderComponent>& elem)
 			                     {
 				                     return box == elem.get();
 			                     }); it != m_DynamicBoxes.end())
@@ -175,7 +175,7 @@ void CollisionWorld::RemoveBox(BoxColliderComponent* box)//todo refactor back to
 	}
 }
 
-void CollisionWorld::OnEntitiesCollision(const std::shared_ptr<IColliderComponent>& A, const std::shared_ptr<IColliderComponent>& B)
+void CollisionWorld::OnEntitiesCollision(const std::shared_ptr<IBoxColliderComponent>& A, const std::shared_ptr<IBoxColliderComponent>& B)
 {
 	A->GetOwner()->OnCollision(B);
 	B->GetOwner()->OnCollision(A);

@@ -83,7 +83,7 @@ void Entity::UnInitialize()
 	}
 }
 
-void Entity::OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo)
+void Entity::OnCollision(const std::shared_ptr<IBoxColliderComponent>& CollisionInfo)
 {
 	if(auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())
 	{

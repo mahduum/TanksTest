@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Game\IColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\DamageConfigComponent.cpp" />
     <ClCompile Include="Sources\Game\AttributeComponent.cpp" />
     <ClCompile Include="Sources\Game\PlayerProjectileSpawnerComponent.cpp" />
@@ -26,7 +27,7 @@
     <ClCompile Include="Sources\Game\EnemyTankSpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\EntitySpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\EnemyTankMovementComponent.cpp" />
-    <ClCompile Include="Sources\Game\IColliderComponent.cpp" />
+    <ClCompile Include="Sources\Game\IBoxColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\ICollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileCollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\BoxTweenSweepColliderComponent.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="Sources\Game\PlayerInputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Game\IColliderComponent.h" />
     <ClInclude Include="Sources\Game\DamageConfigComponent.h" />
     <ClInclude Include="Sources\Game\AttributeComponent.h" />
     <ClInclude Include="Sources\Game\PlayerProjectileSpawnerComponent.h" />
@@ -53,7 +55,7 @@
     <ClInclude Include="Sources\Game\EnemyTankSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EntitySpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EnemyTankMovementComponent.h" />
-    <ClInclude Include="Sources\Game\IColliderComponent.h" />
+    <ClInclude Include="Sources\Game\IBoxColliderComponent.h" />
     <ClInclude Include="Sources\Game\ICollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileCollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\BoxTweenSweepColliderComponent.h" />

@@ -112,7 +112,7 @@ public:
 		return nullptr;
 	}
 
-	void OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo);
+	void OnCollision(const std::shared_ptr<IBoxColliderComponent>& CollisionInfo);
 
 	void UpdateSceneTransform();
 

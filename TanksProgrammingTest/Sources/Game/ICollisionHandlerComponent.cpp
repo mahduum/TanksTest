@@ -1,6 +1,6 @@
 #include "ICollisionHandlerComponent.h"
 
-#include "IColliderComponent.h"
+#include "IBoxColliderComponent.h"
 #include "Engine.h"
 #include "Entity.h"
 
@@ -39,7 +39,7 @@ void ICollisionHandlerComponent::LoadFromConfig(nlohmann::json Config)
 	}
 }
 
-void ICollisionHandlerComponent::OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo)
+void ICollisionHandlerComponent::OnCollision(const std::shared_ptr<IBoxColliderComponent>& CollisionInfo)
 {
 	auto CollisionObjectType = CollisionInfo->GetCollisionObjectType();
 	if((CollisionObjectType & m_CollisionResponse) == CollisionObjectType)

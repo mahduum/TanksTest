@@ -7,7 +7,7 @@
 #include "CollisionUtils.h"
 #include "MathLib.h"
 
-class IColliderComponent;
+class IBoxColliderComponent;
 class Entity;
 
 enum class CollisionFlags : unsigned int
@@ -88,11 +88,11 @@ inline CollisionFlags StringToCollisionObjectType(const std::string& EnumName)
 	return CollisionFlags::None;
 }
 
-class BoxColliderComponent;
+class IBoxColliderComponent;
 struct CollisionInfo
 {
 
-	std::weak_ptr<IColliderComponent> m_OtherCollider;
+	std::weak_ptr<IBoxColliderComponent> m_OtherCollider;
 };
 
 class CollisionWorld
@@ -101,33 +101,33 @@ public:
 
 	CollisionWorld() = default;
 
-	void TestSweepAndPrune(const std::function<void(const std::shared_ptr <IColliderComponent>, const std::shared_ptr <IColliderComponent>)>& f);
+	void TestSweepAndPrune(const std::function<void(const std::shared_ptr <IBoxColliderComponent>, const std::shared_ptr <IBoxColliderComponent>)>& f);
 	bool MultiBoxCast(
 		const Vector2& FromPosition,
-		const AABB& FromBox, const Vector2& Direction, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections,
+		const AABB& FromBox, const Vector2& Direction, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections,
 		CollisionFlags IncludedObjectTypes);
-	bool SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& Direction, std::shared_ptr<BoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All) ;
+	bool SingleBoxCast(const Vector2& FromPosition, const AABB& FromBox, const Vector2& Direction, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All) ;
 
 	// Add/remove Box components from world
-	void AddBox(const std::shared_ptr<BoxColliderComponent>& Box);
-	void RemoveBox(BoxColliderComponent* box);
+	void AddBox(const std::shared_ptr<IBoxColliderComponent>& Box);
+	void RemoveBox(IBoxColliderComponent* box);
 
 	size_t GetBoxesCount() const { return m_StaticBoxes.size() + m_DynamicBoxes.size(); }
 
-	static void OnEntitiesCollision(const std::shared_ptr<IColliderComponent>& A, const std::shared_ptr<IColliderComponent>
+	static void OnEntitiesCollision(const std::shared_ptr<IBoxColliderComponent>& A, const std::shared_ptr<IBoxColliderComponent>
 	                                &);
 
-	std::function<void(std::shared_ptr <IColliderComponent>, std::shared_ptr <IColliderComponent>)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
+	std::function<void(std::shared_ptr <IBoxColliderComponent>, std::shared_ptr <IBoxColliderComponent>)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
 
 
-	const std::vector<std::shared_ptr<BoxColliderComponent>>& GetStaticBoxes() const
+	const std::vector<std::shared_ptr<IBoxColliderComponent>>& GetStaticBoxes() const
 	{
 		return m_StaticBoxes;
 	}
 
 private:
 
-	std::vector<std::shared_ptr<BoxColliderComponent>> m_StaticBoxes;
-	std::vector<std::shared_ptr<BoxColliderComponent>> m_DynamicBoxes;
+	std::vector<std::shared_ptr<IBoxColliderComponent>> m_StaticBoxes;
+	std::vector<std::shared_ptr<IBoxColliderComponent>> m_DynamicBoxes;
 };
 
