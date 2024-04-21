@@ -8,10 +8,8 @@ class TextureComponent;
 class BoxColliderComponent : public IColliderComponent
 {
 public:
-
-	BoxColliderComponent();
-
 	BoxColliderComponent(Entity* Owner);
+	BoxColliderComponent();
 
 	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<BoxColliderComponent>(*this); }
 

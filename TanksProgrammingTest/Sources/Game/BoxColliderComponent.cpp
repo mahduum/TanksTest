@@ -41,9 +41,9 @@ void BoxColliderComponent::Initialize()
 
     OnUpdateSceneTransform();
 
-    std::shared_ptr<BoxColliderComponent> CopyPointer = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>());
+    std::shared_ptr<IColliderComponent> CopyPointer = GetOwner()->GetComponent<IColliderComponent>();//todo add box collider interface
 
-    Engine::Get()->GetCollisionWorld()->AddBox(CopyPointer);//todo interface and add from elsewhere
+    Engine::Get()->GetCollisionWorld()->AddBox(std::static_pointer_cast<BoxColliderComponent>(CopyPointer));//todo interface and add from elsewhere
 }
 
 void BoxColliderComponent::UnInitialize()

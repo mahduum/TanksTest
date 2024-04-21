@@ -58,10 +58,10 @@ void Entity::Update(float DeltaTime)
 	if (m_Name == "Player")//Could be done in nicer way, but I run out of time :)
 	{
 		auto ActiveScene = Engine::Get()->GetActiveScene();
-		if (auto Collider = GetComponent<IColliderComponent>(); ActiveScene != nullptr)
+		if (auto BoxCollider = GetComponent<BoxColliderComponent>(); ActiveScene != nullptr)
 		{
 			//todo static cast when is ready interface but move it elsewhere, in collider itself
-			auto PositionWithVisualOffset = std::static_pointer_cast<BoxColliderComponent>(Collider)->GetBox().m_Min;
+			auto PositionWithVisualOffset = BoxCollider->GetBox().m_Min;
 			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(PositionWithVisualOffset.x), static_cast<int>(PositionWithVisualOffset.y));
 		}
 	}
@@ -81,18 +81,6 @@ void Entity::UnInitialize()
 	{
 		Component->UnInitialize();
 	}
-}
-
-void Entity::AddComponent(EntityComponent* Component)//todo add fix
-{
-	AddComponent<EntityComponent>(std::shared_ptr<EntityComponent>{ Component });
-}
-
-void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
-{
-	//RemoveComponent<decltype(Component)>();
-	//auto RetIt = std::remove(m_Components.begin(), m_Components.end(), Component);
-	//todo add new remove
 }
 
 void Entity::OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo)

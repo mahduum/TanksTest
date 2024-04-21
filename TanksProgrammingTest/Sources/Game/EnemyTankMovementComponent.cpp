@@ -112,13 +112,10 @@ bool EnemyTankMovementComponent::TryGetTargetInfo(TargetInfo& Info)
 	return false;
 }
 
-bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& Info)
+bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& Info) const
 {
-	//look up get component will look for interface class and use this
-
-	if (auto Collider = GetOwner()->GetComponent<IColliderComponent>())//todo interface
+	if (auto BoxCollider = GetOwner()->GetComponent<BoxColliderComponent>())
 	{
-		auto BoxCollider = std::static_pointer_cast<BoxColliderComponent>(Collider);
 		auto FromBox = BoxCollider->GetBox();
 		auto QuarterExtentX = (FromBox.m_Max.x - FromBox.m_Min.x) / 4;
 		auto QuarterExtentY = (FromBox.m_Max.y - FromBox.m_Min.y) / 4;

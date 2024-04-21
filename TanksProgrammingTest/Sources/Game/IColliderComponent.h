@@ -10,10 +10,9 @@ public:
 
 	void LoadFromConfig(nlohmann::json Config) override;
 	CollisionFlags GetCollisionObjectType() const { return m_CollisionObjectType; }
+	virtual std::type_index GetLookUpTypeIndex() const override { return typeid(IColliderComponent); }//todo use it as interface only for boxes
 
 protected:
-	virtual std::type_index GetTypeIndex() const override { return typeid(IColliderComponent); }//todo rename to get interface type and add the get type index
-
 	CollisionFlags m_CollisionObjectType;
 };
 

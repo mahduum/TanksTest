@@ -44,18 +44,18 @@ void ProjectileMovementComponent::OnUpdateSceneTransform()
 	EntityComponent::OnUpdateSceneTransform();
 }
 
-void ProjectileMovementComponent::Move(float DeltaTime)
+void ProjectileMovementComponent::Move(float DeltaTime) const
 {
 	auto [x,y] = m_Direction * (m_Speed / 30);
 	GetOwner()->SetTranslation(x, y);
 
-	auto BoxCollider = GetOwner()->GetComponent<IColliderComponent>();
-	if(BoxCollider == nullptr)
+	auto Collider = GetOwner()->GetComponent<IColliderComponent>();
+	if(Collider == nullptr)
 	{
 		return;
 	}
 
-	BoxCollider->OnUpdateSceneTransform();//TODO: maybe do this all in update physics? Have call only colliders?
+	Collider->OnUpdateSceneTransform();//TODO: maybe do this all in update physics? Have call only colliders?
 	//todo cd... first update intentions that will be invisible, then correct transforms, and only then update what is visible on screen?
 	//todo cd... so we update collisions an masse and call collision events (now we can check precise collision info on already known collisions)
 	//todo cd... engine renders after all updates have happened, so we can have movement be happening in a different loop

@@ -23,8 +23,9 @@ public:
 	virtual void OnUpdateSceneTransform();
 
 	void SetOwner(Entity* Owner) { m_Owner = Owner; }
-	Entity* GetOwner() { return m_Owner; }//todo make it shared
-	virtual std::type_index GetTypeIndex() const { return typeid(*this); }
+	Entity* GetOwner() const { return m_Owner; }//todo make it shared
+	virtual std::type_index GetLookUpTypeIndex() const { return typeid(*this); }
+	std::type_index GetTrueTypeIndex() const { return typeid(*this); }
 
 protected:
 	std::vector<EntityComponent*> m_RequiredComponents;//todo make weak pointers

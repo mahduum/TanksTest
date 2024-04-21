@@ -100,11 +100,11 @@ void PlayerInputComponent::Update(float DeltaTime)
 	}
 }
 
-void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
+void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta) const
 {
 	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();
 
-	auto MyBoxCollider = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>());//todo by interface
+	auto MyBoxCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 
 	//first update only collider for testing
 	MyBoxCollider->OnUpdateSceneTransform();

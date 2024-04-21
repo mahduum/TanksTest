@@ -18,7 +18,7 @@ public:
 	void UnInitialize() override;
 	void OnUpdateSceneTransform() override;
 
-	void Move(float DeltaTime);//update actor transform
+	void Move(float DeltaTime) const;//update actor transform
 
 private:
 	int m_Speed;

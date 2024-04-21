@@ -8,7 +8,6 @@
 #include "CollisionWorld.h"
 #include "Engine.h"
 #include "EntityComponent.h"
-#include "../Game/ICollisionHandlerComponent.h"
 
 class EntityComponent;
 
@@ -53,38 +52,61 @@ public:
 	TransformType GetTransformType() const { return m_TransformType; }
 	bool CanBeSteppedOn() const { return m_CanBeSteppedOn; }
 
-	void AddComponent(EntityComponent* Component);
-	void RemoveComponent(EntityComponent* Component);
-
 	template<ComponentType T>
 	void AddComponent(std::shared_ptr<T> Component)
 	{
 		m_Components.emplace_back(Component);
-		m_ComponentsMap.insert({ Component->GetTypeIndex(), m_Components.size() - 1 });
+		m_ComponentsMap.insert({ Component->GetLookUpTypeIndex(), m_Components.size() - 1 });
 	}
 
 	template<ComponentType T>
-	void RemoveComponent()//the type is enough?//todo finish remove
+	void RemoveComponent()
 	{
-		m_ComponentsMap[typeid(T)] = m_Components.size() - 1;
-		std::type_index TypeIndex = typeid(T);
+		std::type_index TypeIndex = T().GetLookUpTypeIndex();
+		m_ComponentsMap[TypeIndex] = m_Components.size() - 1;
 		auto It = m_ComponentsMap.find(TypeIndex);
 		if(It != m_ComponentsMap.end())
 		{
-			m_Components.end() = std::remove(m_Components.begin(), m_Components.end(), It->second);
+			auto IteratorToSwap = m_Components.begin() + It->second;
+			auto SwapWithIterator = m_Components.size() - 1;
+			auto MovedTypeIndex = (*std::prev(m_Components.end()))->GetLookUpTypeIndex();
+			//set released index to moved type
+			m_ComponentsMap[MovedTypeIndex] = It->second;
+			//erase moved type
 			m_ComponentsMap.erase(TypeIndex);
+			//do the swap
+			std::iter_swap(IteratorToSwap, SwapWithIterator);
+			//remove from the back
+			m_Components.pop_back();
 		}
 	}
 
 	template<ComponentType T>
 	std::shared_ptr<T> GetComponent()
 	{
-		std::type_index index = typeid(T);
+		std::type_index TypeIndex = typeid(T);
+		std::type_index TrueTypeIndex = typeid(T);
+		//if it is interface ast to the available type
+		if constexpr (std::is_abstract_v<T> == false)
+		{
+			TypeIndex = T().GetLookUpTypeIndex();
+			TrueTypeIndex = T().GetTrueTypeIndex();
+		}
 
-		auto it = m_ComponentsMap.find(typeid(T));
+		auto it = m_ComponentsMap.find(TypeIndex);
 		if(it != m_ComponentsMap.end())
 		{
-			return std::static_pointer_cast<T>(m_Components.at(it->second));
+			auto Found = m_Components.at(it->second);
+			
+			if constexpr (std::is_abstract_v<T>)
+			{
+				return std::dynamic_pointer_cast<T>(m_Components.at(it->second));//todo avoid dynamic and deduce return type different from input Type
+			}
+
+			if(Found->GetTrueTypeIndex() == TrueTypeIndex)
+			{
+				return std::static_pointer_cast<T>(m_Components.at(it->second));
+			}
 		}
 
 		return nullptr;

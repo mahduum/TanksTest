@@ -28,7 +28,7 @@ public:
 	void Move(float DeltaTime);
 	void SetNextNodeLocation();
 	bool TryGetTargetInfo(TargetInfo& Info);
-	bool ScanForPlayer(Vector2 Direction, TargetInfo& Info);
+	bool ScanForPlayer(Vector2 Direction, TargetInfo& Info) const;
 
 private:
 
