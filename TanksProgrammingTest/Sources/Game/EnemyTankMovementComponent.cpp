@@ -123,7 +123,7 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2Int Direction, TargetInfo&
 		FromBox.m_Min.Set(FromBox.m_Min.x + QuarterExtentX, FromBox.m_Min.y + QuarterExtentY);
 		FromBox.m_Max.Set(FromBox.m_Max.x - QuarterExtentX, FromBox.m_Max.y - QuarterExtentY);
 
-		constexpr float ScanDistanceMultiplier = 330;
+		constexpr int ScanDistanceMultiplier = 330;
 		Vector2Int ExtentsOffset{ Direction * ScanDistanceMultiplier };
 
 		std::shared_ptr<IBoxColliderComponent> OutIntersection;

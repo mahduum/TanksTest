@@ -89,11 +89,6 @@ inline CollisionFlags StringToCollisionObjectType(const std::string& EnumName)
 }
 
 class IBoxColliderComponent;
-struct CollisionInfo
-{
-
-	std::weak_ptr<IBoxColliderComponent> m_OtherCollider;
-};
 
 class CollisionWorld
 {
@@ -106,19 +101,12 @@ public:
 		const Vector2Int& FromPosition,
 		const AABB& FromBox, const Vector2Int& Direction, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections,
 		CollisionFlags IncludedObjectTypes);
-	bool SingleBoxCast(const Vector2Int& FromPosition, const AABB& FromBox, const Vector2Int& Direction, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All) ;
+	bool SingleBoxCast(const Vector2Int& FromPosition, const AABB& FromBox, const Vector2Int& Direction, std::shared_ptr<IBoxColliderComponent>& Intersection, CollisionFlags IncludedObjectTypes = CollisionFlags::All);
 
-	// Add/remove Box components from world
 	void AddBox(const std::shared_ptr<IBoxColliderComponent>& Box);
-	void RemoveBox(IBoxColliderComponent* box);
 
-	size_t GetBoxesCount() const { return m_StaticBoxes.size() + m_DynamicBoxes.size(); }
-
-	static void OnEntitiesCollision(const std::shared_ptr<IBoxColliderComponent>& A, const std::shared_ptr<IBoxColliderComponent>
-	                                &);
-
+	static void OnEntitiesCollision(const std::shared_ptr<IBoxColliderComponent>& A, const std::shared_ptr<IBoxColliderComponent>&);
 	std::function<void(std::shared_ptr <IBoxColliderComponent>, std::shared_ptr <IBoxColliderComponent>)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
-
 
 	const std::vector<std::shared_ptr<IBoxColliderComponent>>& GetStaticBoxes() const
 	{
@@ -126,6 +114,8 @@ public:
 	}
 
 private:
+	/*Removing box from outside must be scheduled, do not remove directly*/
+	void RemoveBox(const std::shared_ptr<IBoxColliderComponent>& Box);
 
 	std::vector<std::shared_ptr<IBoxColliderComponent>> m_StaticBoxes;
 	std::vector<std::shared_ptr<IBoxColliderComponent>> m_DynamicBoxes;

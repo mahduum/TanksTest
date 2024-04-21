@@ -7,6 +7,8 @@
 #include "../Game/BoxColliderComponent.h"
 #include "../Game/ICollisionHandlerComponent.h"
 
+Entity::Entity() : IsAlive(true), m_ScenePosition({-1, -1}){}
+
 void Entity::LoadFromConfig(nlohmann::json Config)
 {
 	m_Name = Config.value("Name", "");
@@ -37,10 +39,18 @@ void Entity::Initialize()
  		Component->Initialize();
 	}
 
-	if (auto TextureComponent = GetComponent<::TextureComponent>())
+	if (auto ColliderComponent = GetComponent<IBoxColliderComponent>())
 	{
-		auto TextureRect = TextureComponent->GetRectangle();
-		SetPosition(TextureRect.x, TextureRect.y);
+		Engine::Get()->GetCollisionWorld()->AddBox(ColliderComponent);
+	}
+
+	if (m_ScenePosition.x < 0 || m_ScenePosition.y < 0)
+	{
+		if (auto TextureComponent = GetComponent<::TextureComponent>())
+		{
+			auto TextureRect = TextureComponent->GetRectangle();
+			SetPosition(TextureRect.x, TextureRect.y);
+		}
 	}
 }
 
@@ -58,9 +68,8 @@ void Entity::Update(float DeltaTime)
 	if (m_Name == "Player")//Could be done in nicer way, but I run out of time :)
 	{
 		auto ActiveScene = Engine::Get()->GetActiveScene();
-		if (auto BoxCollider = GetComponent<BoxColliderComponent>(); ActiveScene != nullptr)
+		if (auto BoxCollider = GetComponent<IBoxColliderComponent>(); ActiveScene != nullptr)
 		{
-			//todo static cast when is ready interface but move it elsewhere, in collider itself
 			auto PositionWithVisualOffset = BoxCollider->GetBox().m_Min;
 			ActiveScene->SetTargetAndCalculateFlowField(PositionWithVisualOffset.x, PositionWithVisualOffset.y);
 		}
@@ -85,10 +94,9 @@ void Entity::UnInitialize()
 
 void Entity::OnCollision(const std::shared_ptr<IBoxColliderComponent>& CollisionInfo)
 {
-	if(auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())
+	if (auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())
 	{
 		CollisionHandler->OnCollision(CollisionInfo);
-
 	}
 }
 
@@ -111,13 +119,12 @@ void Entity::SetPosition(Vector2Int position)
 
 void Entity::SetPosition(int x, int y)
 {
-	m_ScenePosition.Set(static_cast<float>(x), static_cast<float>(y));
+	m_ScenePosition.Set(x, y);
 }
 
 void Entity::SetFacingDirection(FacingDirection direction)
 {
-	//todo if there is time use showing different textures in
-	switch (direction)//todo make this a matrix
+	switch (direction)
 	{
 		case FacingDirection::Right:
 			m_ForwardDirection.Set(Vector2Int::Right);

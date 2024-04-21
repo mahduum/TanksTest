@@ -8,6 +8,11 @@
 
 void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<IBoxColliderComponent>, std::shared_ptr<IBoxColliderComponent>)>& f)
 {
+	std::erase_if(m_DynamicBoxes, [](const std::shared_ptr<IBoxColliderComponent>& b)
+		{
+			return b->GetOwner()->IsAlive == false;
+		});
+
 	std::ranges::sort(m_StaticBoxes,
 	                  [](const std::shared_ptr<IBoxColliderComponent>& a, const std::shared_ptr<IBoxColliderComponent>& b)
 	                  {
@@ -22,10 +27,9 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<
 
 	for (auto a : m_DynamicBoxes)
 	{
-		float max = a->GetBox().m_Max.x;
-		for (size_t j = 0; j < m_StaticBoxes.size(); j++)
+		int max = a->GetBox().m_Max.x;
+		for (auto b : m_StaticBoxes)
 		{
-			auto b = m_StaticBoxes[j];
 			if (b->GetBox().m_Min.x > max)
 			{
 				break;
@@ -41,7 +45,7 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<
 	for (size_t i = 0; i < m_DynamicBoxes.size(); i++)
 	{
 		auto a = m_DynamicBoxes[i];
-		float max = a->GetBox().m_Max.x;
+		int max = a->GetBox().m_Max.x;
 		for (size_t j = i + 1; j < m_DynamicBoxes.size(); j++)
 		{
 			auto b = m_DynamicBoxes[j];
@@ -57,11 +61,6 @@ void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<
 			}
 		}
 	}
-
-	std::erase_if(m_DynamicBoxes, [](const std::shared_ptr<IBoxColliderComponent>& b)
-		{
-			return b->GetOwner()->IsAlive == false;//todo optimize, call from scene
-		});
 }
 
 bool CollisionWorld::MultiBoxCast(const Vector2Int& FromPosition, const AABB& FromBox, const Vector2Int& ExtentsOffset, std::vector<std::shared_ptr<IBoxColliderComponent>>& OutIntersections, CollisionFlags IncludedObjectTypes)
@@ -141,35 +140,23 @@ void CollisionWorld::AddBox(const std::shared_ptr<IBoxColliderComponent>& Box)
 	}
 }
 
-void CollisionWorld::RemoveBox(IBoxColliderComponent* box)//todo refactor back to shared
+void CollisionWorld::RemoveBox(const std::shared_ptr<IBoxColliderComponent>& Box)
 {
-	if (box->GetOwner()->GetTransformType() == TransformType::Static)
+	if (Box->GetOwner()->GetTransformType() == TransformType::Static)
 	{
-		if (const auto it =
-			std::ranges::find_if(m_StaticBoxes,
-			                     [box](const std::shared_ptr<IBoxColliderComponent>& elem)
-			                     {
-				                     return box == elem.get();
-			                     }); it != m_StaticBoxes.end())
+		const auto It = std::ranges::find(m_StaticBoxes, Box);
+		if(It != m_StaticBoxes.end())
 		{
-			std::iter_swap(it, m_StaticBoxes.end() - 1);
+			std::iter_swap(It, m_StaticBoxes.end() - 1);
 			m_StaticBoxes.pop_back();
 		}
 	}
 	else
 	{
-		//std::erase_if(m_DynamicBoxes, [box](const std::shared_ptr<IBoxColliderComponent>& b)
-		//{
-		//	return b.get() == box;
-		//});
-		if (const auto it =
-			std::ranges::find_if(m_DynamicBoxes,
-			                     [box](const std::shared_ptr<IBoxColliderComponent>& elem)
-			                     {
-				                     return box == elem.get();
-			                     }); it != m_DynamicBoxes.end())
+		const auto It = std::ranges::find(m_DynamicBoxes, Box);
+		if (It != m_DynamicBoxes.end())
 		{
-			std::iter_swap(it, m_DynamicBoxes.end() - 1);
+			std::iter_swap(It, m_StaticBoxes.end() - 1);
 			m_DynamicBoxes.pop_back();
 		}
 	}

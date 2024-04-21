@@ -167,13 +167,16 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, n
 				int Width = EntitySpecs["Width"];
 				int Height = EntitySpecs["Height"];
 
+				int PositionX = Column * Width;
+				int PositionY = Row * Height;
+
 				if (auto TextureComponent = NewEntity->GetComponent<::TextureComponent>())
 				{
-					TextureComponent->SetPosition(Column * Width, Row * Height);
+					TextureComponent->SetPosition(PositionX, PositionY);
 					TextureComponent->SetScale(Width, Height);
 				}
 
-				NewEntity->SetPosition(Column * Width, Row * Height);
+				NewEntity->SetPosition(PositionX, PositionY);
 				NewEntity->SetFacingDirection(FacingDirection::Up);
 
 				AddEntity(NewEntity);

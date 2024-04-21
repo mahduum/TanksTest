@@ -34,12 +34,7 @@ class Entity
 {
 
 public:
-	bool IsAlive = true;
-	Entity()
-	{
-		m_ComponentsMap = std::unordered_map<std::type_index, int>();
-		m_Components = std::vector<std::shared_ptr<EntityComponent>>();
-	}
+	Entity();
 
 	void LoadFromConfig(nlohmann::json Config);
 	void Initialize();
@@ -129,13 +124,13 @@ public:
 	FacingDirection GetFacingDirection() const;
 
 	float GetRotationDegrees() const;
-
 	void SetComponentsTransformDirty();
 
-	
+	bool IsAlive;
+
 private:
-	std::vector<std::shared_ptr<EntityComponent>> m_Components;// = std::vector<std::shared_ptr<EntityComponent>>();//todo make it unordered set
-	std::unordered_map<std::type_index, int> m_ComponentsMap;// {};
+	std::vector<std::shared_ptr<EntityComponent>> m_Components;
+	std::unordered_map<std::type_index, int> m_ComponentsMap;
 	std::string m_Name;
 	
 	Vector2Int m_ScenePosition;
@@ -147,6 +142,5 @@ private:
 	//fixed config values
 	TransformType m_TransformType = TransformType::Static;
 	bool m_CanBeSteppedOn = false;
-
 	bool m_UpdateSceneTransform = true;
 };

@@ -29,17 +29,13 @@ void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 
 void BoxColliderComponent::Initialize()
 {
-    m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();//todo add texture back as weak
+    m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();
     if(m_TextureComponent.expired())
     {
         SDL_LogError(0, "Box collider requires texture information!!!");
     }
 
-    OnUpdateSceneTransform();
-
-    std::shared_ptr<IBoxColliderComponent> CopyPointer = GetOwner()->GetComponent<IBoxColliderComponent>();//todo add box collider interface
-
-    Engine::Get()->GetCollisionWorld()->AddBox(std::static_pointer_cast<BoxColliderComponent>(CopyPointer));//todo interface and add from elsewhere
+	OnUpdateSceneTransform();
 }
 
 void BoxColliderComponent::UnInitialize()
