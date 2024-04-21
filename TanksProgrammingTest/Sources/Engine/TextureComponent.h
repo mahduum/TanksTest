@@ -3,7 +3,7 @@
 #include "EntityComponent.h"
 #include "Engine.h"
 
-class TextureComponent : public EntityComponent//todo rotatable texture
+class TextureComponent : public EntityComponent
 {
 
 public:

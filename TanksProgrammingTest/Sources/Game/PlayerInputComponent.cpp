@@ -9,10 +9,7 @@
 
 
 PlayerInputComponent::PlayerInputComponent(Entity* Owner)
-	: EntityComponent(Owner),
-	m_TextureComponent(nullptr),
-	m_ProjectileSpawnerComponent(nullptr),
-	m_BoxColliderComponent(nullptr)
+	: EntityComponent(Owner)
 {
 }
 
@@ -23,9 +20,8 @@ PlayerInputComponent::PlayerInputComponent()
 
 void PlayerInputComponent::Initialize()
 {
-	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();//todo set to weak
-	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<PlayerProjectileSpawnerComponent>();//todo refactor to use as interface the abstract class above and set to weak
-	m_BoxColliderComponent = GetOwner()->GetComponent<BoxColliderComponent>();//todo refactor to use as interface the abstract class above and set to weak
+	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<PlayerProjectileSpawnerComponent>();
+	m_BoxColliderComponent = GetOwner()->GetComponent<BoxColliderComponent>();
 }
 
 void PlayerInputComponent::Update(float DeltaTime)
@@ -81,7 +77,10 @@ void PlayerInputComponent::Update(float DeltaTime)
 	
 	Vector2 BacktraceCollisionDelta(0, 0);
 
-	m_BoxColliderComponent->BacktraceCollisionsDelta(BacktraceCollisionDelta);
+	if(auto BoxCollider = m_BoxColliderComponent.lock())
+	{
+		BoxCollider->BacktraceCollisionsDelta(BacktraceCollisionDelta);
+	}
 
 	if (PredictedDeltaX != 0 && std::abs(BacktraceCollisionDelta.x) < std::abs(PredictedDeltaX))
 	{
@@ -99,5 +98,8 @@ void PlayerInputComponent::Update(float DeltaTime)
 
 void PlayerInputComponent::Shoot() const
 {
-	m_ProjectileSpawnerComponent->DoSpawn();
+	if(auto ProjectileSpawner = m_ProjectileSpawnerComponent.lock())
+	{
+		ProjectileSpawner->DoSpawn();
+	}
 }

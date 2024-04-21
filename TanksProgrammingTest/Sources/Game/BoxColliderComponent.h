@@ -25,16 +25,16 @@ public:
 	AABB GetTweenSweepBox() const;
 
 protected:
-	SDL_Rect* GetRectangle() const;
 	bool TryGetCollisionDelta(const IBoxColliderComponent& other, Vector2& collisionDelta) const;
 
 	void SetBoxMin(Vector2 boxMin);
 	void SetBoxMax(Vector2 boxMax);
 
-	std::shared_ptr<TextureComponent> m_TextureComponent;
 	AABB m_Box;
 	AABB m_PreviousFrameBox;
 
 	Vector2 m_BoxOffsetMin;
 	Vector2 m_BoxOffsetMax;
+
+	std::weak_ptr<TextureComponent> m_TextureComponent;
 };

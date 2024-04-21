@@ -5,7 +5,6 @@
 class ICollisionHandlerComponent : public EntityComponent
 {
 public:
-
 	ICollisionHandlerComponent(Entity* Owner);
 	ICollisionHandlerComponent();
 
@@ -19,7 +18,6 @@ public:
 	CollisionFlags GetCollisionResponse() const { return m_CollisionResponse; }
 
 private:
-
 	CollisionFlags m_CollisionResponse;
 };
 

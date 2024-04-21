@@ -4,7 +4,6 @@
 class BoxTweenSweepColliderComponent : public BoxColliderComponent
 {
 public:
-
 	BoxTweenSweepColliderComponent(Entity* Owner);
 	BoxTweenSweepColliderComponent();
 
@@ -13,6 +12,5 @@ public:
 	virtual const AABB& GetBox() const override;
 
 private:
-
 	AABB m_SweepBox;
 };

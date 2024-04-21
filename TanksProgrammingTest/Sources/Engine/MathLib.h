@@ -5,7 +5,6 @@
 
 #pragma once
 #include <cmath>
-#include <memory.h>
 #include <limits>
 
 enum class FacingDirection : unsigned int
@@ -114,7 +113,6 @@ namespace MathLib
 		return fmod(numer, denom);
 	}
 }
-
 
 // 2D Vector
 class Vector2

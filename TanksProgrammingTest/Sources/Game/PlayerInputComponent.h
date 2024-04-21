@@ -23,7 +23,6 @@ public:
 	void Shoot() const;
 
 private:
-	std::shared_ptr<TextureComponent> m_TextureComponent;
-	std::shared_ptr<PlayerProjectileSpawnerComponent> m_ProjectileSpawnerComponent;
-	std::shared_ptr<BoxColliderComponent> m_BoxColliderComponent;
+	std::weak_ptr<PlayerProjectileSpawnerComponent> m_ProjectileSpawnerComponent;
+	std::weak_ptr<BoxColliderComponent> m_BoxColliderComponent;
 };

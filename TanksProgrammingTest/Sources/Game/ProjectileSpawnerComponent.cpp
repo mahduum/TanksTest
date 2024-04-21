@@ -19,8 +19,31 @@ void ProjectileSpawnerComponent::DoSpawn()
 	SpawnProjectile();
 }
 
+void ProjectileSpawnerComponent::SpawnProjectile()
+{
+	//todo keep cached loaded prefabs
+	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
+	Entity* Projectile = ResourceManagerPtr->CreateEntityFromDataTemplate(GetNameToSpawn());//add name to config
+
+	Vector2 OutSpawnPoint(0,0);
+	SetSpawnPoint(OutSpawnPoint);
+
+	Projectile->GetComponent<TextureComponent>()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
+	Projectile->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
+
+	Projectile->SetFacingDirection(GetOwner()->GetFacingDirection());
+	Projectile->Initialize();
+
+	Engine::Get()->GetActiveScene()->AddEntity(Projectile);
+}
+
 void ProjectileSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
 {
+	if(m_TextureComponent.expired())
+	{
+		return;
+	}
+
 	switch (GetOwner()->GetFacingDirection())
 	{
 	case FacingDirection::Up:
@@ -38,44 +61,26 @@ void ProjectileSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
 	}
 }
 
-void ProjectileSpawnerComponent::SpawnProjectile()
-{
-	//todo keep a pool of them
-	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
-	Entity* Projectile = ResourceManagerPtr->CreateEntityFromDataTemplate(GetNameToSpawn());//add name to config
-
-	Vector2 OutSpawnPoint(0,0);
-	SetSpawnPoint(OutSpawnPoint);
-
-	Projectile->GetComponent<TextureComponent>()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
-	Projectile->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
-
-	Projectile->SetFacingDirection(GetOwner()->GetFacingDirection());
-	Projectile->Initialize();
-
-	Engine::Get()->GetActiveScene()->AddEntity(Projectile);
-}
-
 void ProjectileSpawnerComponent::GetTopSpawnPoint(Vector2& OutSpawnPoint) const
 {
-	auto TexRect = m_TextureComponent->GetRectangle();
+	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2 - 4, TexRect.y - 4);//todo set offset in load config or const
 }
 
 void ProjectileSpawnerComponent::GetBottomSpawnPoint(Vector2& OutSpawnPoint) const
 {
-	auto TexRect = m_TextureComponent->GetRectangle();
+	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x + TexRect.w / 2 - 4, TexRect.y + TexRect.h - 8);//todo set offset in load config or const
 }
 
 void ProjectileSpawnerComponent::GetRightSpawnPoint(Vector2& OutSpawnPoint) const
 {
-	auto TexRect = m_TextureComponent->GetRectangle();
+	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x + TexRect.w - 8, TexRect.y + TexRect.h/2 - 5);//todo set offset in load config or const
 }
 
 void ProjectileSpawnerComponent::GetLeftSpawnPoint(Vector2& OutSpawnPoint) const
 {
-	auto TexRect = m_TextureComponent->GetRectangle();
+	auto TexRect = m_TextureComponent.lock()->GetRectangle();
 	OutSpawnPoint.Set(TexRect.x - 1, TexRect.y + TexRect.h / 2 - 5);//todo set offset in load config or const
 }

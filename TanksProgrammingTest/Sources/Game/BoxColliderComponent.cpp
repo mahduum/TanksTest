@@ -10,7 +10,6 @@ BoxColliderComponent:: BoxColliderComponent(): BoxColliderComponent(nullptr)
 
 BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
 	IBoxColliderComponent(Owner),
-	m_TextureComponent(nullptr),
 	m_Box(Vector2::Zero, Vector2::Zero),
 	m_PreviousFrameBox(Vector2::Zero, Vector2::Zero),
 	m_BoxOffsetMin(Vector2::Zero),
@@ -31,7 +30,7 @@ void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 void BoxColliderComponent::Initialize()
 {
     m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();//todo add texture back as weak
-    if(m_TextureComponent == nullptr)
+    if(m_TextureComponent.expired())
     {
         SDL_LogError(0, "Box collider requires texture information!!!");
     }
@@ -50,11 +49,14 @@ void BoxColliderComponent::UnInitialize()
 
 void BoxColliderComponent::OnUpdateSceneTransform()
 {
-    auto TexRect = GetRectangle();
-    auto [x, y] = GetOwner()->GetPositionXY();
+	if(const auto& Texture = m_TextureComponent.lock())
+	{
+		const auto& TexRect = Texture->GetRectangle();
+		auto [x, y] = GetOwner()->GetPositionXY();
 
-    SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);
-    SetBoxMax(Vector2(x + TexRect->w, y + TexRect->h) + m_BoxOffsetMax);
+		SetBoxMin(Vector2(x, y) + m_BoxOffsetMin);
+		SetBoxMax(Vector2(x + TexRect.w, y + TexRect.h) + m_BoxOffsetMax);
+	}
 }
 
 bool BoxColliderComponent::IntersectsWith(const BoxColliderComponent& other) const
@@ -86,11 +88,6 @@ void BoxColliderComponent::SetBoxMax(Vector2 boxMax)
 {
     m_PreviousFrameBox.m_Max.Set(m_Box.m_Max);
     m_Box.m_Max.Set(boxMax);
-}
-
-SDL_Rect* BoxColliderComponent::GetRectangle() const
-{
-	return &m_TextureComponent->GetRectangle();
 }
 
 bool BoxColliderComponent::TryGetCollisionDelta(const IBoxColliderComponent& other, Vector2& collisionDelta) const

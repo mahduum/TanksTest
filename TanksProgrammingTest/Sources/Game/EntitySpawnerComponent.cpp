@@ -4,7 +4,6 @@
 #include <SDL_log.h>
 
 EntitySpawnerComponent::EntitySpawnerComponent(Entity* Owner) : EntityComponent(Owner),
-																m_TextureComponent(nullptr),
                                                                 m_CanSpawn(false),
                                                                 m_SpawnRateSeconds(0),
                                                                 m_TimeSinceLastSpawn(0)
