@@ -2,6 +2,7 @@
 
 #include "EntityComponent.h"
 
+class BoxColliderComponent;
 class PlayerProjectileSpawnerComponent;
 class ProjectileSpawnerComponent;
 class Vector2;
@@ -19,11 +20,10 @@ public:
 	virtual void Initialize() override;
 	virtual void Update(float DeltaTime) override;
 
-	void FixCollisionsAABB(Vector2& collisionDelta) const;//TODO PUT IT ON A DIFFERENT COMPONENT, DEFER INPUT TO DIFFERENT COMPONENT
-
 	void Shoot() const;
 
 private:
 	std::shared_ptr<TextureComponent> m_TextureComponent;
 	std::shared_ptr<PlayerProjectileSpawnerComponent> m_ProjectileSpawnerComponent;
+	std::shared_ptr<BoxColliderComponent> m_BoxColliderComponent;
 };
