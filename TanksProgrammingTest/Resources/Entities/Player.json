@@ -15,6 +15,10 @@
 			"Type" : "PlayerInputComponent"
 		},
 		{
+			"Type" : "AttributeComponent",
+			"Health" : 100
+		},
+		{
 			"Type" : "PlayerProjectileSpawnerComponent"
 		},
 		{

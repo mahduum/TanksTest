@@ -16,7 +16,7 @@ void EntityComponent::LoadFromConfig(nlohmann::json Config)
 
 	if (Config.find("RequiredComponents") != Config.end())
 	{
-		for (auto ComponentItem : Config["RequiredComponents"].items())
+		for (const auto& ComponentItem : Config["RequiredComponents"].items())
 		{
 			nlohmann::json ComponentConfig = ComponentItem.value();
 			std::string Type = ComponentConfig["Type"];

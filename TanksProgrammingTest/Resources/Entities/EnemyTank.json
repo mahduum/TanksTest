@@ -21,6 +21,10 @@
 			"SpawnRateSeconds" : 1
 		},
 		{
+			"Type" : "AttributeComponent",
+			"Health" : 100
+		},
+		{
 			"Type" : "BoxColliderComponent",
             "CollisionObjectType" : "Enemy",
 			"OffsetMinX" : 6,

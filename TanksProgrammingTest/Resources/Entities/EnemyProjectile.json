@@ -16,6 +16,10 @@
             "Speed" : 200
         },
         {
+            "Type" : "DamageConfigComponent",
+            "DamageAmount" : 10
+        },
+        {
 			"Type" : "BoxTweenSweepColliderComponent",
             "CollisionObjectType" : "Projectile",
             "RequiredComponents" :

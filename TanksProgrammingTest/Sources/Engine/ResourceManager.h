@@ -33,5 +33,5 @@ private:
 	std::map<std::string, nlohmann::json> m_Entities;
 	std::map<std::string, nlohmann::json> m_Scenes;
 
-	std::map<std::string, EntityComponent*> m_ComponentsPrototypes;
+	std::map<std::string, EntityComponent*> m_ComponentsPrototypes;//todo how to release it???
 };

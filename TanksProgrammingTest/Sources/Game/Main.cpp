@@ -1,9 +1,11 @@
+#include "AttributeComponent.h"
 #include "Engine.h"
 #include "ResourceManager.h"
 #include "TextureComponent.h"
 #include "PlayerInputComponent.h"
 #include "BoxColliderComponent.h"
 #include "BoxTweenSweepColliderComponent.h"
+#include "DamageConfigComponent.h"
 #include "EnemyProjectileSpawnerComponent.h"
 #include "EnemyTankMovementComponent.h"
 #include "EnemyTankSpawnerComponent.h"
@@ -26,6 +28,8 @@ int main(int argc, char* argv[])
 	ResourceManagerPtr->RegisterComponent("EnemyProjectileSpawnerComponent", new EnemyProjectileSpawnerComponent());
 	ResourceManagerPtr->RegisterComponent("EnemyTankMovementComponent", new EnemyTankMovementComponent());
 	ResourceManagerPtr->RegisterComponent("EnemyTankSpawnerComponent", new EnemyTankSpawnerComponent());
+	ResourceManagerPtr->RegisterComponent("DamageConfigComponent", new DamageConfigComponent());
+	ResourceManagerPtr->RegisterComponent("AttributeComponent", new AttributeComponent());
 
 	Engine::Get()->CreateActiveSceneFromTemplate("MainScene");
 

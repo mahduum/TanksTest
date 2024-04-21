@@ -16,7 +16,7 @@ void ProjectileMovementComponent::LoadFromConfig(nlohmann::json Config)
 {
 	EntityComponent::LoadFromConfig(Config);
 
-	m_Speed = Config.value("Speed", 1000);
+	m_Speed = Config.value("Speed", 200);
 }
 
 void ProjectileMovementComponent::Initialize()
