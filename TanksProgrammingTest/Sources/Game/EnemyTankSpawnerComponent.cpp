@@ -26,7 +26,7 @@ void EnemyTankSpawnerComponent::DoSpawn()
 	Vector2 OutSpawnPoint(0, 0);
 	SetSpawnPoint(OutSpawnPoint);
 
-	EnemyTank->GetComponent<TextureComponent>().value()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
+	EnemyTank->GetComponent<TextureComponent>()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
 	EnemyTank->SetPosition(GetOwner()->GetPosition());
 	EnemyTank->SetFacingDirection(GetOwner()->GetFacingDirection());
 	EnemyTank->Initialize();
@@ -36,10 +36,9 @@ void EnemyTankSpawnerComponent::DoSpawn()
 
 void EnemyTankSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
 {
-	auto TexOpt = GetOwner()->GetComponent<TextureComponent>();
-	if(TexOpt.has_value())
+	if(auto Texture = GetOwner()->GetComponent<TextureComponent>())
 	{
-		auto TexRect = TexOpt.value()->GetRectangle();
+		auto TexRect = Texture->GetRectangle();
 		OutSpawnPoint.Set(TexRect.x, TexRect.y);
 	}
 }

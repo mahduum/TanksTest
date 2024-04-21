@@ -17,11 +17,11 @@ ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent() : Pro
 
 void ProjectileCollisionHandlerComponent::OnCollisionImpl(const std::shared_ptr<IColliderComponent>& CollisionInfo)
 {
-	auto AttributeComponentOpt = CollisionInfo->GetOwner()->GetComponent<AttributeComponent>();
+	auto  Attributes = CollisionInfo->GetOwner()->GetComponent<AttributeComponent>();
 	auto DamageConfig = GetOwner()->GetComponent<DamageConfigComponent>();
-	if (AttributeComponentOpt.has_value() && DamageConfig.has_value())
+	if ( Attributes != nullptr && DamageConfig != nullptr)
 	{
-		AttributeComponentOpt.value()->ApplyHealthChange(-DamageConfig.value()->GetDamageAmount());
+		Attributes->ApplyHealthChange(-DamageConfig->GetDamageAmount());
 	}
 	GetOwner()->IsAlive = false;
 }

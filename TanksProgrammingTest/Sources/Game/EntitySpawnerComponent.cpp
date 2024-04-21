@@ -26,7 +26,7 @@ void EntitySpawnerComponent::LoadFromConfig(nlohmann::json Config)
 void EntitySpawnerComponent::Initialize()
 {
 	EntityComponent::Initialize();
-	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>().value();
+	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();
 }
 
 void EntitySpawnerComponent::Update(float DeltaTime)

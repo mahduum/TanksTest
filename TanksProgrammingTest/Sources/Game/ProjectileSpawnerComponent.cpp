@@ -47,7 +47,7 @@ void ProjectileSpawnerComponent::SpawnProjectile()
 	Vector2 OutSpawnPoint(0,0);
 	SetSpawnPoint(OutSpawnPoint);
 
-	Projectile->GetComponent<TextureComponent>().value()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
+	Projectile->GetComponent<TextureComponent>()->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
 	Projectile->SetPosition(OutSpawnPoint.x, OutSpawnPoint.y);
 
 	Projectile->SetFacingDirection(GetOwner()->GetFacingDirection());

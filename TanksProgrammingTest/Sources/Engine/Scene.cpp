@@ -86,7 +86,7 @@ void Scene::UnInitialize()
 
 void Scene::AddEntity(Entity* Entity)
 {
-	if(Entity->GetComponent<EnemyTankMovementComponent>().has_value())
+	if(Entity->GetComponent<EnemyTankMovementComponent>())
 	{
 		++m_EnemyEntitiesCount;//todo
 	}
@@ -105,7 +105,7 @@ void Scene::AddEntity(Entity* Entity)
 
 void Scene::RemoveEntity(Entity* Entity)
 {
-	if (Entity->GetComponent<EnemyTankMovementComponent>().has_value())
+	if (Entity->GetComponent<EnemyTankMovementComponent>())
 	{
 		--m_EnemyEntitiesCount;
 	}
@@ -169,11 +169,10 @@ void Scene::LoadSceneFromLayout(nlohmann::json Content, nlohmann::json Legend, n
 				int Width = EntitySpecs["Width"];
 				int Height = EntitySpecs["Height"];
 
-				auto TexCompOpt = NewEntity->GetComponent<TextureComponent>();
-				if(TexCompOpt.has_value())
+				if (auto TextureComponent = NewEntity->GetComponent<::TextureComponent>())
 				{
-					TexCompOpt.value()->SetPosition(Column * Width, Row * Height);
-					TexCompOpt.value()->SetScale(Width, Height);
+					TextureComponent->SetPosition(Column * Width, Row * Height);
+					TextureComponent->SetScale(Width, Height);
 				}
 
 				NewEntity->SetPosition(Column * Width, Row * Height);

@@ -19,7 +19,7 @@ protected:
 	virtual void SetSpawnPoint(Vector2& OutSpawnPoint) = 0;
 	virtual std::string GetNameToSpawn() const = 0;
 
-	std::shared_ptr<TextureComponent> m_TextureComponent;
+	std::shared_ptr<TextureComponent> m_TextureComponent;//todo set to weak
 
 	bool m_CanSpawn;
 	float m_SpawnRateSeconds;

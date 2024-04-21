@@ -32,8 +32,8 @@ void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 
 void BoxColliderComponent::Initialize()
 {
-    auto TexOpt = GetOwner()->GetComponent<TextureComponent>();
-    if(TexOpt.has_value() == false)
+    auto Texture = GetOwner()->GetComponent<TextureComponent>();//todo add texture back as weak
+    if(Texture == nullptr)
     {
         SDL_LogError(0, "Box collider requires texture information!!!");
         return;
@@ -41,12 +41,9 @@ void BoxColliderComponent::Initialize()
 
     OnUpdateSceneTransform();
 
-    std::shared_ptr<BoxColliderComponent> CopyPointer = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>().value());
-    //auto BoxOpt = GetOwner()->GetComponent<BoxColliderComponent>();
-    //auto BoxSweepOpt = GetOwner()->GetComponent<BoxTweenSweepColliderComponent>();
-    //CopyPointer = BoxOpt.has_value() ? BoxOpt.value() : BoxSweepOpt.value();
+    std::shared_ptr<BoxColliderComponent> CopyPointer = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>());
 
-    Engine::Get()->GetCollisionWorld()->AddBox(CopyPointer);//todo interface
+    Engine::Get()->GetCollisionWorld()->AddBox(CopyPointer);//todo interface and add from elsewhere
 }
 
 void BoxColliderComponent::UnInitialize()
@@ -64,7 +61,7 @@ void BoxColliderComponent::OnUpdateSceneTransform()
 
 SDL_Rect* BoxColliderComponent::GetRectangle()
 {
-    return &GetOwner()->GetComponent<TextureComponent>().value()->GetRectangle();
+    return &GetOwner()->GetComponent<TextureComponent>()->GetRectangle();
 }
 
 bool BoxColliderComponent::IntersectsWith(const BoxColliderComponent& other) const

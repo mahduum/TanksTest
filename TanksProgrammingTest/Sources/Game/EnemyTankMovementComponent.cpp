@@ -40,10 +40,9 @@ void EnemyTankMovementComponent::Update(float DeltaTime)
 		GetOwner()->SetFacingDirection(OutInfo.m_AttackDirection);
 	}
 
-	auto ProjectileSpawnerOpt = GetOwner()->GetComponent<EnemyProjectileSpawnerComponent>();//todo refactor to use as interface the abstract class above
-	if (ProjectileSpawnerOpt.has_value())
+	if(auto ProjectileSpawner = GetOwner()->GetComponent<EnemyProjectileSpawnerComponent>())//todo refactor to use as interface the abstract class above
 	{
-		ProjectileSpawnerOpt.value()->SetActive(OutInfo.m_TargetInSight);
+		ProjectileSpawner->SetActive(OutInfo.m_TargetInSight);
 	}
 
 	constexpr int MinApproachDistanceInLOS = 300;
@@ -115,11 +114,11 @@ bool EnemyTankMovementComponent::TryGetTargetInfo(TargetInfo& Info)
 
 bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& Info)
 {
-	auto ColliderOpt = GetOwner()->GetComponent<IColliderComponent>();//look up get component will look for interface class and use this
+	//look up get component will look for interface class and use this
 
-	if (ColliderOpt.has_value())
+	if (auto Collider = GetOwner()->GetComponent<IColliderComponent>())//todo interface
 	{
-		auto BoxCollider = std::static_pointer_cast<BoxColliderComponent>(ColliderOpt.value());
+		auto BoxCollider = std::static_pointer_cast<BoxColliderComponent>(Collider);
 		auto FromBox = BoxCollider->GetBox();
 		auto QuarterExtentX = (FromBox.m_Max.x - FromBox.m_Min.x) / 4;
 		auto QuarterExtentY = (FromBox.m_Max.y - FromBox.m_Min.y) / 4;

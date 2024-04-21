@@ -37,10 +37,9 @@ void Entity::Initialize()
  		Component->Initialize();
 	}
 
-	auto TexOpt = GetComponent<::TextureComponent>();
-	if(TexOpt.has_value())
+	if (auto TextureComponent = GetComponent<::TextureComponent>())
 	{
-		auto TextureRect = TexOpt.value()->GetRectangle();
+		auto TextureRect = TextureComponent->GetRectangle();
 		SetPosition(TextureRect.x, TextureRect.y);
 	}
 }
@@ -59,11 +58,10 @@ void Entity::Update(float DeltaTime)
 	if (m_Name == "Player")//Could be done in nicer way, but I run out of time :)
 	{
 		auto ActiveScene = Engine::Get()->GetActiveScene();
-		auto BoxColliderOpt = GetComponent<IColliderComponent>();
-		if (ActiveScene && BoxColliderOpt.has_value())
+		if (auto Collider = GetComponent<IColliderComponent>(); ActiveScene != nullptr)
 		{
 			//todo static cast when is ready interface but move it elsewhere, in collider itself
-			auto PositionWithVisualOffset = std::static_pointer_cast<BoxColliderComponent>(BoxColliderOpt.value())->GetBox().m_Min;
+			auto PositionWithVisualOffset = std::static_pointer_cast<BoxColliderComponent>(Collider)->GetBox().m_Min;
 			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(PositionWithVisualOffset.x), static_cast<int>(PositionWithVisualOffset.y));
 		}
 	}
@@ -99,11 +97,10 @@ void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
 
 void Entity::OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo)
 {
-	auto CollisionHandlerOption = GetComponent<ICollisionHandlerComponent>();
-
-	if(CollisionHandlerOption.has_value())
+	if(auto CollisionHandler = GetComponent<ICollisionHandlerComponent>())
 	{
-		CollisionHandlerOption.value()->OnCollision(CollisionInfo);
+		CollisionHandler->OnCollision(CollisionInfo);
+
 	}
 }
 

@@ -77,7 +77,7 @@ public:
 	}
 
 	template<ComponentType T>
-	std::optional<std::shared_ptr<T>> GetComponent()
+	std::shared_ptr<T> GetComponent()
 	{
 		std::type_index index = typeid(T);
 
@@ -87,7 +87,7 @@ public:
 			return std::static_pointer_cast<T>(m_Components.at(it->second));
 		}
 
-		return std::nullopt;
+		return nullptr;
 	}
 
 	void OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo);

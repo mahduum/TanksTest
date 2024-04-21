@@ -22,8 +22,8 @@ PlayerInputComponent::PlayerInputComponent()
 
 void PlayerInputComponent::Initialize()
 {
-	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>().value();
-	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<PlayerProjectileSpawnerComponent>().value();//todo refactor to use as interface the abstract class above
+	m_TextureComponent = GetOwner()->GetComponent<TextureComponent>();//todo set to weak
+	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<PlayerProjectileSpawnerComponent>();//todo refactor to use as interface the abstract class above and set to weak
 }
 
 void PlayerInputComponent::Update(float DeltaTime)
@@ -104,7 +104,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
 	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();
 
-	auto MyBoxCollider = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>().value());//todo by interface
+	auto MyBoxCollider = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>());//todo by interface
 
 	//first update only collider for testing
 	MyBoxCollider->OnUpdateSceneTransform();
