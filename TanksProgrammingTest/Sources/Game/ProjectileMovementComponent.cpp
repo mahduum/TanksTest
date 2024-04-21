@@ -51,7 +51,7 @@ void ProjectileMovementComponent::Move(float DeltaTime)
 	//move only collider so collisions can be verified:
 	//todo verifiy if exists!!! or add as requirement
 
-	auto BoxOpt = GetOwner()->GetComponent<BoxTweenSweepColliderComponent>();
+	auto BoxOpt = GetOwner()->GetComponent<IColliderComponent>();
 	if(BoxOpt.has_value() == false)
 	{
 		return;

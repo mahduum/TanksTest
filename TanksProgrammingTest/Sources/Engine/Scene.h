@@ -21,7 +21,7 @@ public:
 
 	void AddEntity(Entity* Entity);//todo with shared???
 	void RemoveEntity(Entity* Entity);//todo with shared
-	void RemoveInvalidated();
+	void RemoveDeadEntities();
 
 	bool CanSpawnEnemy() const { return m_EnemyEntitiesCount < m_MaxEnemyEntitiesInScene; }
 
@@ -64,7 +64,8 @@ public:
 	void SetTargetAndCalculateFlowField(int x, int y);
 	Vector2 GetTargetCellScenePosition() const;
 
-	void GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection) const;
+	void GetNextNavNodeLocationFromLocation(int sceneX, int sceneY, Vector2& nextNodeSceneLocation, Vector2& flowDirection, const Entity* requester = nullptr);
+	void ReCalculateDistancesInZone(int StartIndex, int Depth = 0);
 	int GetCellIndexFromScenePosition(int sceneX, int sceneY) const;
 	std::tuple<int, int> GetScenePositionFromCellCoords(int cellX, int cellY) const;
 	std::tuple<int, int> GetCellCoordsFromScenePosition(int sceneX, int sceneY) const;

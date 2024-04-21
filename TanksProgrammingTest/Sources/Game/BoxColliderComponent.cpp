@@ -11,7 +11,7 @@ BoxColliderComponent:: BoxColliderComponent(): BoxColliderComponent(nullptr)
 }
 
 BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
-	ColliderComponent(Owner),
+	IColliderComponent(Owner),
 	//m_TextureComponent(nullptr),
 	m_Box(Vector2::Zero, Vector2::Zero),
 	m_PreviousFrameBox(Vector2::Zero, Vector2::Zero),
@@ -22,7 +22,7 @@ BoxColliderComponent::BoxColliderComponent(Entity* Owner) :
 
 void BoxColliderComponent::LoadFromConfig(nlohmann::json Config)
 {
-    ColliderComponent::LoadFromConfig(Config);
+    IColliderComponent::LoadFromConfig(Config);
 
     m_BoxOffsetMin.x = Config.value("OffsetMinX", 0);
     m_BoxOffsetMin.y = Config.value("OffsetMinY", 0);
@@ -41,12 +41,12 @@ void BoxColliderComponent::Initialize()
 
     OnUpdateSceneTransform();
 
-    std::shared_ptr<BoxColliderComponent> copy;
-    auto BoxOpt = GetOwner()->GetComponent<BoxColliderComponent>();
-    auto BoxSweepOpt = GetOwner()->GetComponent<BoxTweenSweepColliderComponent>();
-    copy = BoxOpt.has_value() ? BoxOpt.value() : BoxSweepOpt.value();
+    std::shared_ptr<BoxColliderComponent> CopyPointer = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>().value());
+    //auto BoxOpt = GetOwner()->GetComponent<BoxColliderComponent>();
+    //auto BoxSweepOpt = GetOwner()->GetComponent<BoxTweenSweepColliderComponent>();
+    //CopyPointer = BoxOpt.has_value() ? BoxOpt.value() : BoxSweepOpt.value();
 
-    Engine::Get()->GetCollisionWorld()->AddBox(copy);//todo interface
+    Engine::Get()->GetCollisionWorld()->AddBox(CopyPointer);//todo interface
 }
 
 void BoxColliderComponent::UnInitialize()

@@ -7,7 +7,7 @@
 #include "CollisionUtils.h"
 #include "MathLib.h"
 
-class ColliderComponent;
+class IColliderComponent;
 class Entity;
 
 enum class CollisionFlags : unsigned int
@@ -92,7 +92,7 @@ class BoxColliderComponent;
 struct CollisionInfo
 {
 
-	std::weak_ptr<ColliderComponent> m_OtherCollider;
+	std::weak_ptr<IColliderComponent> m_OtherCollider;
 };
 
 class CollisionWorld
@@ -101,7 +101,7 @@ public:
 
 	CollisionWorld() = default;
 
-	void TestSweepAndPrune(const std::function<void(const std::shared_ptr <ColliderComponent>, const std::shared_ptr <ColliderComponent>)>& f);
+	void TestSweepAndPrune(const std::function<void(const std::shared_ptr <IColliderComponent>, const std::shared_ptr <IColliderComponent>)>& f);
 	bool MultiBoxCast(
 		const Vector2& FromPosition,
 		const AABB& FromBox, const Vector2& Direction, std::vector<std::shared_ptr<BoxColliderComponent>>& OutIntersections,
@@ -114,10 +114,10 @@ public:
 
 	size_t GetBoxesCount() const { return m_StaticBoxes.size() + m_DynamicBoxes.size(); }
 
-	static void OnEntitiesCollision(const std::shared_ptr<ColliderComponent>& A, const std::shared_ptr<ColliderComponent>
+	static void OnEntitiesCollision(const std::shared_ptr<IColliderComponent>& A, const std::shared_ptr<IColliderComponent>
 	                                &);
 
-	std::function<void(std::shared_ptr <ColliderComponent>, std::shared_ptr <ColliderComponent>)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
+	std::function<void(std::shared_ptr <IColliderComponent>, std::shared_ptr <IColliderComponent>)> CollisionHandler{ &CollisionWorld::OnEntitiesCollision };
 
 
 	const std::vector<std::shared_ptr<BoxColliderComponent>>& GetStaticBoxes() const

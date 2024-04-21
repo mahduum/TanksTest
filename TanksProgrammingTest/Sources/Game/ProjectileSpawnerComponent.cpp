@@ -23,16 +23,16 @@ void ProjectileSpawnerComponent::SetSpawnPoint(Vector2& OutSpawnPoint)
 {
 	switch (GetOwner()->GetFacingDirection())
 	{
-	case FacingDirection::UP:
+	case FacingDirection::Up:
 		GetTopSpawnPoint(OutSpawnPoint);
 		break;
-	case FacingDirection::DOWN:
+	case FacingDirection::Down:
 		GetBottomSpawnPoint(OutSpawnPoint);
 		break;
-	case FacingDirection::RIGHT:
+	case FacingDirection::Right:
 		GetRightSpawnPoint(OutSpawnPoint);
 		break;
-	case FacingDirection::LEFT:
+	case FacingDirection::Left:
 		GetLeftSpawnPoint(OutSpawnPoint);
 		break;
 	}

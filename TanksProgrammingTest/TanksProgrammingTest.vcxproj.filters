@@ -66,16 +66,13 @@
     <ClCompile Include="Sources\Game\BoxTweenSweepColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Game\DefaultCollisionHandlerComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Game\ProjectileCollisionHandlerComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Game\ICollisionHandlerComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Game\ColliderComponent.cpp">
+    <ClCompile Include="Sources\Game\IColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Game\EnemyTankMovementComponent.cpp">
@@ -91,6 +88,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Game\PlayerProjectileSpawnerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Game\AttributeComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -140,16 +140,13 @@
     <ClInclude Include="Sources\Game\BoxTweenSweepColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Game\DefaultCollisionHandlerComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Game\ProjectileCollisionHandlerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Game\ICollisionHandlerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Game\ColliderComponent.h">
+    <ClInclude Include="Sources\Game\IColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Game\EnemyTankMovementComponent.h">
@@ -165,6 +162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Game\PlayerProjectileSpawnerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Game\AttributeComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

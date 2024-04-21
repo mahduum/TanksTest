@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Game\AttributeComponent.cpp" />
     <ClCompile Include="Sources\Game\PlayerProjectileSpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\EnemyProjectileSpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\EnemyTankSpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\EntitySpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\EnemyTankMovementComponent.cpp" />
-    <ClCompile Include="Sources\Game\ColliderComponent.cpp" />
+    <ClCompile Include="Sources\Game\IColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\ICollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileCollisionHandlerComponent.cpp" />
-    <ClCompile Include="Sources\Game\DefaultCollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\BoxTweenSweepColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileSpawnerComponent.cpp" />
     <ClCompile Include="Sources\Game\ProjectileMovementComponent.cpp" />
@@ -45,15 +45,15 @@
     <ClCompile Include="Sources\Game\PlayerInputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Game\AttributeComponent.h" />
     <ClInclude Include="Sources\Game\PlayerProjectileSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EnemyProjectileSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EnemyTankSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EntitySpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EnemyTankMovementComponent.h" />
-    <ClInclude Include="Sources\Game\ColliderComponent.h" />
+    <ClInclude Include="Sources\Game\IColliderComponent.h" />
     <ClInclude Include="Sources\Game\ICollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileCollisionHandlerComponent.h" />
-    <ClInclude Include="Sources\Game\DefaultCollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\BoxTweenSweepColliderComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\ProjectileMovementComponent.h" />

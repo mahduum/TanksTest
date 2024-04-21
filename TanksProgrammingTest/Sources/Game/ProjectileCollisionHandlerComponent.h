@@ -1,7 +1,7 @@
 #pragma once
-#include "DefaultCollisionHandlerComponent.h"
+#include "ICollisionHandlerComponent.h"
 
-class ProjectileCollisionHandlerComponent : public DefaultCollisionHandlerComponent
+class ProjectileCollisionHandlerComponent : public ICollisionHandlerComponent
 {
 public:
 
@@ -10,6 +10,6 @@ public:
 
 	std::shared_ptr<EntityComponent> Clone() const override { return std::make_shared<ProjectileCollisionHandlerComponent>(*this); }
 
-	virtual void OnCollisionImpl(const std::shared_ptr<ColliderComponent>& CollisionInfo) override;
+	virtual void OnCollisionImpl(const std::shared_ptr<IColliderComponent>& CollisionInfo) override;
 };
 

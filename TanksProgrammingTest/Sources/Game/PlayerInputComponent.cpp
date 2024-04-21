@@ -85,13 +85,13 @@ void PlayerInputComponent::Update(float DeltaTime)
 	if (PredictedDeltaX != 0 && std::abs(BacktraceCollisionDelta.x) < std::abs(PredictedDeltaX))
 	{
 		//moved horizontally set rotation in x
-		GetOwner()->SetFacingDirection(PredictedDeltaX > 0 ? FacingDirection::RIGHT : FacingDirection::LEFT);
+		GetOwner()->SetFacingDirection(PredictedDeltaX > 0 ? FacingDirection::Right : FacingDirection::Left);
 		GetOwner()->SetComponentsTransformDirty();//will update in entity update
 	}
 	else if (std::abs(BacktraceCollisionDelta.y) < std::abs(PredictedDeltaY))
 	{
 		//moved vertically set rotation in y
-		GetOwner()->SetFacingDirection(PredictedDeltaY > 0 ? FacingDirection::DOWN : FacingDirection::UP);
+		GetOwner()->SetFacingDirection(PredictedDeltaY > 0 ? FacingDirection::Down : FacingDirection::Up);
 		GetOwner()->SetComponentsTransformDirty();//will update in entity update
 	}
 	else
@@ -103,16 +103,17 @@ void PlayerInputComponent::Update(float DeltaTime)
 void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 {
 	const std::vector<std::shared_ptr<BoxColliderComponent>> Colliders = Engine::Get()->GetCollisionWorld()->GetStaticBoxes();
-	auto MyCollider = GetOwner()->GetComponent<BoxColliderComponent>().value();
+
+	auto MyBoxCollider = std::static_pointer_cast<BoxColliderComponent>(GetOwner()->GetComponent<IColliderComponent>().value());//todo by interface
 
 	//first update only collider for testing
-	MyCollider->OnUpdateSceneTransform();
+	MyBoxCollider->OnUpdateSceneTransform();
 
-	for (auto OtherCollider : Colliders)
+	for (const auto& OtherCollider : Colliders)
 	{
 		Vector2 TempCollisionDelta(0, 0);
 
-		if (OtherCollider != MyCollider && MyCollider->TryGetCollisionDelta(*OtherCollider, TempCollisionDelta))
+		if (OtherCollider != MyBoxCollider && MyBoxCollider->TryGetCollisionDelta(*OtherCollider, TempCollisionDelta))
 		{
 			if(MathLib::Abs(TempCollisionDelta.x) > MathLib::Abs(CollisionDelta.x))
 			{
@@ -126,7 +127,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 		}
 	}
 
-	auto OwnersBox = MyCollider->GetBox();
+	auto OwnersBox = MyBoxCollider->GetBox();
 	int MaxWidth = 0, MaxHeight = 0;
 	SDL_GetWindowSize(Engine::Get()->GetWindow(), &MaxWidth, &MaxHeight);
 
@@ -163,7 +164,7 @@ void PlayerInputComponent::FixCollisionsAABB(Vector2& CollisionDelta)
 
 	GetOwner()->SetTranslation(-static_cast<int>(CollisionDelta.x), -static_cast<int>(CollisionDelta.y));
 
-	MyCollider->OnUpdateSceneTransform();
+	MyBoxCollider->OnUpdateSceneTransform();
 }
 
 void PlayerInputComponent::Shoot() const

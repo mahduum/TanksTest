@@ -4,14 +4,12 @@
 #include "PlayerInputComponent.h"
 #include "BoxColliderComponent.h"
 #include "BoxTweenSweepColliderComponent.h"
-#include "DefaultCollisionHandlerComponent.h"
 #include "EnemyProjectileSpawnerComponent.h"
 #include "EnemyTankMovementComponent.h"
 #include "EnemyTankSpawnerComponent.h"
 #include "PlayerProjectileSpawnerComponent.h"
 #include "ProjectileCollisionHandlerComponent.h"
 #include "ProjectileMovementComponent.h"
-#include "ProjectileSpawnerComponent.h"
 
 int main(int argc, char* argv[])
 {
@@ -20,7 +18,6 @@ int main(int argc, char* argv[])
 	ResourceManager* ResourceManagerPtr = Engine::Get()->GetResourceManager();
 	ResourceManagerPtr->RegisterComponent("PlayerInputComponent", new PlayerInputComponent());
 	ResourceManagerPtr->RegisterComponent("TextureComponent", new TextureComponent());
-	ResourceManagerPtr->RegisterComponent("DefaultCollisionHandlerComponent", new DefaultCollisionHandlerComponent());
 	ResourceManagerPtr->RegisterComponent("ProjectileCollisionHandlerComponent", new ProjectileCollisionHandlerComponent());
 	ResourceManagerPtr->RegisterComponent("BoxColliderComponent", new BoxColliderComponent());
 	ResourceManagerPtr->RegisterComponent("BoxTweenSweepColliderComponent", new BoxTweenSweepColliderComponent());

@@ -6,7 +6,7 @@
 #include "Entity.h"
 #include "../Game/BoxColliderComponent.h"
 
-void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<ColliderComponent>, std::shared_ptr<ColliderComponent>)>& f)
+void CollisionWorld::TestSweepAndPrune(const std::function<void(std::shared_ptr<IColliderComponent>, std::shared_ptr<IColliderComponent>)>& f)
 {
 	std::ranges::sort(m_StaticBoxes,
 	                  [](const std::shared_ptr<BoxColliderComponent>& a, const std::shared_ptr<BoxColliderComponent>& b)
@@ -175,7 +175,7 @@ void CollisionWorld::RemoveBox(BoxColliderComponent* box)//todo refactor back to
 	}
 }
 
-void CollisionWorld::OnEntitiesCollision(const std::shared_ptr<ColliderComponent>& A, const std::shared_ptr<ColliderComponent>& B)
+void CollisionWorld::OnEntitiesCollision(const std::shared_ptr<IColliderComponent>& A, const std::shared_ptr<IColliderComponent>& B)
 {
 	A->GetOwner()->OnCollision(B);
 	B->GetOwner()->OnCollision(A);

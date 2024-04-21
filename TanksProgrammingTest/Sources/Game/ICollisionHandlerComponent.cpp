@@ -1,6 +1,6 @@
 #include "ICollisionHandlerComponent.h"
 
-#include "ColliderComponent.h"
+#include "IColliderComponent.h"
 #include "Engine.h"
 #include "Entity.h"
 
@@ -39,7 +39,7 @@ void ICollisionHandlerComponent::LoadFromConfig(nlohmann::json Config)
 	}
 }
 
-void ICollisionHandlerComponent::OnCollision(const std::shared_ptr<ColliderComponent>& CollisionInfo)
+void ICollisionHandlerComponent::OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo)
 {
 	auto CollisionObjectType = CollisionInfo->GetCollisionObjectType();
 	if(GetOwner()->GetName() == "PlayerProjectile")

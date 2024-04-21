@@ -85,7 +85,7 @@ void EnemyTankMovementComponent::SetNextNodeLocation()
 	Vector2 NewFacingDirection{ 0, 0 };
 
 	auto [x, y] = m_NextNodeLocation;
-	Engine::Get()->GetActiveScene()->GetNextNavNodeLocationFromLocation(m_NextNodeLocation.x, m_NextNodeLocation.y, NewNextNodeLocation, NewFacingDirection);
+	Engine::Get()->GetActiveScene()->GetNextNavNodeLocationFromLocation(m_NextNodeLocation.x, m_NextNodeLocation.y, NewNextNodeLocation, NewFacingDirection);//set this node as blocked
 	m_CurrentNodeLocation = m_NextNodeLocation;
 	m_NextNodeLocation = NewNextNodeLocation;
 
@@ -115,11 +115,12 @@ bool EnemyTankMovementComponent::TryGetTargetInfo(TargetInfo& Info)
 
 bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& Info)
 {
-	auto BoxOpt = GetOwner()->GetComponent<BoxColliderComponent>();
+	auto ColliderOpt = GetOwner()->GetComponent<IColliderComponent>();//look up get component will look for interface class and use this
 
-	if (BoxOpt.has_value())
+	if (ColliderOpt.has_value())
 	{
-		auto FromBox = BoxOpt.value()->GetBox();
+		auto BoxCollider = std::static_pointer_cast<BoxColliderComponent>(ColliderOpt.value());
+		auto FromBox = BoxCollider->GetBox();
 		auto QuarterExtentX = (FromBox.m_Max.x - FromBox.m_Min.x) / 4;
 		auto QuarterExtentY = (FromBox.m_Max.y - FromBox.m_Min.y) / 4;
 
@@ -139,7 +140,7 @@ bool EnemyTankMovementComponent::ScanForPlayer(Vector2 Direction, TargetInfo& In
 			OutIntersection->GetCollisionObjectType() == CollisionFlags::Player)
 		{
 			auto colliderPos = OutIntersection->GetBox().m_Min;
-			auto enemyColliderPos = BoxOpt.value()->GetBox().m_Min;
+			auto enemyColliderPos = BoxCollider->GetBox().m_Min;
 			auto diff = colliderPos - enemyColliderPos;
 			auto dist = diff.Length();
 			Info.m_AttackDirection = Direction;

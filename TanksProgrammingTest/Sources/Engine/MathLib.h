@@ -10,10 +10,10 @@
 
 enum class FacingDirection : unsigned int
 {
-	RIGHT,
-	LEFT,
-	UP,
-	DOWN
+	Right,
+	Left,
+	Up,
+	Down
 };
 
 namespace MathLib

@@ -16,7 +16,6 @@ public:
 	virtual std::shared_ptr<EntityComponent> Clone() const = 0;
 
 	virtual void LoadFromConfig(nlohmann::json Config);
-	virtual void OnLoaded();
 	virtual void Initialize();
 	virtual void Update(float DeltaTime);
 	virtual void Draw();
@@ -28,7 +27,7 @@ public:
 	virtual std::type_index GetTypeIndex() const { return typeid(*this); }
 
 protected:
-	std::vector<EntityComponent*> m_RequiredComponents;
+	std::vector<EntityComponent*> m_RequiredComponents;//todo make weak pointers
 
 private:
 	Entity* m_Owner;

@@ -26,15 +26,8 @@ void EntityComponent::LoadFromConfig(nlohmann::json Config)
 			RequiredComponent->SetOwner(GetOwner());
 			RequiredComponent->Initialize();
 			GetOwner()->AddComponent(RequiredComponent);//todo mark this component as being depended on, use its type as a key, so if its dependant is removed we check if anything other depends on it before we remove it too
-			SDL_Log("Adding requirement component of type: %s", typeid(*RequiredComponent).name());
 		}
 	}
-
-	OnLoaded();
-}
-
-void EntityComponent::OnLoaded()
-{
 }
 
 void EntityComponent::Initialize()

@@ -59,10 +59,11 @@ void Entity::Update(float DeltaTime)
 	if (m_Name == "Player")//Could be done in nicer way, but I run out of time :)
 	{
 		auto ActiveScene = Engine::Get()->GetActiveScene();
-		auto BoxColliderOpt = GetComponent<BoxColliderComponent>();
+		auto BoxColliderOpt = GetComponent<IColliderComponent>();
 		if (ActiveScene && BoxColliderOpt.has_value())
 		{
-			auto PositionWithVisualOffset = BoxColliderOpt.value()->GetBox().m_Min;
+			//todo static cast when is ready interface but move it elsewhere, in collider itself
+			auto PositionWithVisualOffset = std::static_pointer_cast<BoxColliderComponent>(BoxColliderOpt.value())->GetBox().m_Min;
 			ActiveScene->SetTargetAndCalculateFlowField(static_cast<int>(PositionWithVisualOffset.x), static_cast<int>(PositionWithVisualOffset.y));
 		}
 	}
@@ -96,7 +97,7 @@ void Entity::RemoveComponent(EntityComponent* Component)//todo remove fix
 	//todo add new remove
 }
 
-void Entity::OnCollision(const std::shared_ptr<ColliderComponent>& CollisionInfo)
+void Entity::OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo)
 {
 	auto CollisionHandlerOption = GetComponent<ICollisionHandlerComponent>();
 
@@ -133,22 +134,22 @@ void Entity::SetFacingDirection(FacingDirection direction)
 	//todo if there is time use showing different textures in
 	switch (direction)//todo make this a matrix
 	{
-		case FacingDirection::RIGHT:
+		case FacingDirection::Right:
 			m_ForwardDirection.Set(Vector2::Right);
 			m_RightDirection.Set(Vector2::Up);
 			m_RotationDegrees = 90;
 			break;
-		case FacingDirection::LEFT:
+		case FacingDirection::Left:
 			m_ForwardDirection.Set(Vector2::Left);
 			m_RightDirection.Set(Vector2::Down);
 			m_RotationDegrees = -90;
 			break;
-		case FacingDirection::UP:
+		case FacingDirection::Up:
 			m_ForwardDirection.Set(Vector2::Up);
 			m_RightDirection.Set(Vector2::Left);
 			m_RotationDegrees = 0;
 			break;
-		case FacingDirection::DOWN:
+		case FacingDirection::Down:
 			m_ForwardDirection.Set(Vector2::Down);
 			m_RightDirection.Set(Vector2::Right);
 			m_RotationDegrees = 180;
@@ -161,13 +162,13 @@ void Entity::SetFacingDirection(FacingDirection direction)
 void Entity::SetFacingDirection(Vector2 direction)
 {
 	if (direction == Vector2::Up)
-		SetFacingDirection(FacingDirection::UP);
+		SetFacingDirection(FacingDirection::Up);
 	else if (direction == Vector2::Down)
-		SetFacingDirection(FacingDirection::DOWN);
+		SetFacingDirection(FacingDirection::Down);
 	else if (direction == Vector2::Right)
-		SetFacingDirection(FacingDirection::RIGHT);
+		SetFacingDirection(FacingDirection::Right);
 	else
-		SetFacingDirection(FacingDirection::LEFT);
+		SetFacingDirection(FacingDirection::Left);
 }
 
 void Entity::SetTranslation(int x, int y)

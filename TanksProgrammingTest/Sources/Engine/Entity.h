@@ -90,7 +90,7 @@ public:
 		return std::nullopt;
 	}
 
-	void OnCollision(const std::shared_ptr<ColliderComponent>& CollisionInfo);
+	void OnCollision(const std::shared_ptr<IColliderComponent>& CollisionInfo);
 
 	void UpdateSceneTransform();
 
@@ -120,7 +120,7 @@ private:
 	Vector2 m_ForwardDirection;
 	Vector2 m_RightDirection;
 	float m_RotationDegrees = 0;
-	FacingDirection m_FacingDirection = FacingDirection::UP;
+	FacingDirection m_FacingDirection = FacingDirection::Up;
 
 	//fixed config values
 	TransformType m_TransformType = TransformType::Static;

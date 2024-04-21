@@ -2,12 +2,12 @@
 
 #include <SDL_log.h>
 
-#include "ColliderComponent.h"
+#include "IColliderComponent.h"
 #include "Entity.h"
 #include "Scene.h"
 #include "TextureComponent.h"
 
-ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent(Entity* Owner) : DefaultCollisionHandlerComponent(Owner)
+ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent(Entity* Owner) : ICollisionHandlerComponent(Owner)
 {
 }
 
@@ -15,8 +15,8 @@ ProjectileCollisionHandlerComponent::ProjectileCollisionHandlerComponent() : Pro
 {
 }
 
-void ProjectileCollisionHandlerComponent::OnCollisionImpl(const std::shared_ptr<ColliderComponent>& CollisionInfo)
+void ProjectileCollisionHandlerComponent::OnCollisionImpl(const std::shared_ptr<IColliderComponent>& CollisionInfo)
 {
-	SDL_Log("Projectile killed");
+	SDL_Log("Projectile killed");//look on the owner if it has data
 	GetOwner()->IsAlive = false;
 }

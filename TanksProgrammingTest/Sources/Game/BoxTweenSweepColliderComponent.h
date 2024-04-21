@@ -16,4 +16,3 @@ private:
 
 	AABB m_SweepBox;
 };
-
