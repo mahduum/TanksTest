@@ -46,6 +46,7 @@
     <ClCompile Include="Sources\Game\BoxColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\Main.cpp" />
     <ClCompile Include="Sources\Game\PlayerInputComponent.cpp" />
+    <ClCompile Include="Sources\Engine\TDelegate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Game\EnemyTankCollisionHandlerComponent.h" />
@@ -75,6 +76,7 @@
     <ClInclude Include="Sources\Engine\EngineUtils.h" />
     <ClInclude Include="Sources\Game\BoxColliderComponent.h" />
     <ClInclude Include="Sources\Game\PlayerInputComponent.h" />
+    <ClInclude Include="Sources\Engine\TDelegate.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="External\SDL2_image-2.0.5\lib\x64\SDL2_image.dll" />
@@ -144,9 +146,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)Sources\Engine;$(ProjectDir)External\json-develop\single_include;$(ProjectDir)\External\SDL2-2.0.14\include;$(ProjectDir)External\SDL2_image-2.0.5\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Sources\Engine;$(ProjectDir)External\json-develop\single_include;$(ProjectDir)\External\SDL2-2.0.14\include;$(ProjectDir)External\SDL2_image-2.0.5\include;$(ProjectDir)External\magic_enum\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\External\SDL2-2.0.14\lib\x64\;$(ProjectDir)\External\SDL2_image-2.0.5\lib\x64\;$(LibraryPath)\</LibraryPath>
     <AllProjectIncludesArePublic>false</AllProjectIncludesArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -198,6 +202,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <EnableModules>Yes</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

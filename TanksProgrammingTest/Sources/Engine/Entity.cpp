@@ -102,9 +102,16 @@ void Entity::OnCollision(const std::shared_ptr<IBoxColliderComponent>& Collision
 
 void Entity::UpdateSceneTransform()
 {
-	if (m_UpdateSceneTransform == false) return;
+	if (m_UpdateSceneTransform == false)
+	{
+		return;
+	}
 
 	m_UpdateSceneTransform = false;
+
+	if (GetName() == "Player") {
+		SDL_Log("Unmarked components transform dirty");
+	}
 
 	for (const auto& Comp : m_Components)
 	{
@@ -167,6 +174,8 @@ void Entity::SetTranslation(int x, int y)
 {
 	m_ScenePosition.x += x;
 	m_ScenePosition.y += y;
+
+	//todo on update scene transform should happen here
 }
 
 auto Entity::GetPositionXY() const -> std::tuple<int, int>

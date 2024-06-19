@@ -20,3 +20,33 @@ Few things to have in mind while approaching this Task:
 - If we had all the time in the world we could make all the features in the world. But like with everything, we have our limits. There will be a moment when you simply don't have more time to make it right... But if you had more time, what would you do to enhance your current solution? Leave us some comments / document on where would you put more efforts to make it better.
 
 Have Fun! The task shouldn't take more than a couple of days. Once it's ready, send us your solution. Should you have any questions, don't hesitate to contact us here: magdalena.negacz@teyon.com or piotr.derkowski@teyon.com
+
+****************************************************************************************
+
+Response To Test Authors
+
+I really had a lot of fun with this test, although it wasn't without hurdles at times, maybe because it's been some time since I could write raw C++ for a game written practically from scratch.
+I have very little experience with SDL from the past but fortunately it could be used sparingly for this project. Regardless of how my work will be judged I am very pleased that I had an opportunity
+of doing this kind of task, especially that most of the time, for practical reasons, I am constrained to using commercial engines. In any case I will be happy to receive a feedback on it.
+I am presenting it with slight delay, because I got sick while making this task but in all honesty it took me entire 7 days. I tried to finish it of as well as I could to my current abilities.
+
+What I would still improve:
+1. I would change the player input mechanics so it uses grid node coordinates cell to cell motion like enemies do. For now I decided to leave player and collision fixes on it according to my original idea, if not 
+	else just to present a diffrent approach and how it could be implemented.
+2. For now as last minimal effort I provided simple enemy-to-enemy collision avoidance mechanics but I would prefer them to modify parts of the flow field and in result create detours to player for any enemy further away.
+3. I placed main transform information directly on Entity, because it is the one thing all of them need to have and using a separate transform component for such a simple game seemed to me more complicated that was needed.
+4. Even if the Entity class is not a pure Entity in data oriented sense and is more like Unreal's Actor or Unity's GameObject I decided not to introduce inheritance to it (the Unreal way) mostly because it seemed
+	to be the intention of this project, how the Entities were defined in .json and later loaded, that they don't have polymorphism. I choosed the other solution given the specializations for given functionalities
+	through EntityComponents, and also by introducing `RequiredComponents` configuration for Entities. This also seemed quite modular and flexible enough.
+
+As for additional gameplay features there are quite many things that come to mind:
+1. Power-ups, like health, projectile strenght boosts, additional shields.
+2. Mystery pick-ups, some do damage, some do good, one can reverse input controls, or make player invisible, allow to shoot in all four directions and/or in diagonals.
+3. Possibility of placing anti-tank mines.
+4. Teleports that move player from one place on the map to the other, also they could appear unexpectadly where we wouldn't want them.
+
+That's just a couple of ideas.
+
+In conclusion, I'd like to thank once more for even considering me a candidate. I loved `Robocop - Rogue City` game, it really had the Robocop feel to it (I am a big fan of the movie).
+
+Adam Maciejewski

@@ -109,7 +109,7 @@ public:
 
 	void OnCollision(const std::shared_ptr<IBoxColliderComponent>& CollisionInfo);
 
-	void UpdateSceneTransform();
+	void UpdateSceneTransform();//this should not happen before we calculate all
 
 	void SetPosition(Vector2Int position);
 	void SetPosition(int x, int y);

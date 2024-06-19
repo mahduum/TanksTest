@@ -19,7 +19,7 @@ public:
 	void Draw();
 	void UnInitialize();
 
-	void AddEntity(Entity* Entity);//todo with shared???
+	void AddEntity(Entity* Entity);//todo with shared
 	void RemoveEntity(Entity* Entity);//todo with shared
 	void RemoveDeadEntities();
 

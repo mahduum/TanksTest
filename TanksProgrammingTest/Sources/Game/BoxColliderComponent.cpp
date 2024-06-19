@@ -49,7 +49,6 @@ void BoxColliderComponent::OnUpdateSceneTransform()
 	{
 		const auto& TexRect = Texture->GetRectangle();
 		auto [x, y] = GetOwner()->GetPositionXY();
-
 		SetBoxMin(Vector2Int(x, y) + m_BoxOffsetMin);
 		SetBoxMax(Vector2Int(x + TexRect.w, y + TexRect.h) + m_BoxOffsetMax);
 	}
@@ -155,6 +154,7 @@ void BoxColliderComponent::BacktraceCollisionsDelta(Vector2Int& CollisionDelta)
 		return;
 	}
 
+	SDL_Log("Player input: backtracing translation: x: %d, y: %d", -CollisionDelta.x, -CollisionDelta.y);
 	GetOwner()->SetTranslation(-CollisionDelta.x, -CollisionDelta.y);
 
 	OnUpdateSceneTransform();
