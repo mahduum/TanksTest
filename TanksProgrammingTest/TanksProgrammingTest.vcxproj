@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Game\InputActionBindings.cpp" />
+    <ClCompile Include="Sources\Game\ActionKeyMapping.cpp" />
+    <ClCompile Include="Sources\Game\InputActions.cpp" />
     <ClCompile Include="Sources\Game\EnemyTankCollisionHandlerComponent.cpp" />
     <ClCompile Include="Sources\Game\IColliderComponent.cpp" />
     <ClCompile Include="Sources\Game\DamageConfigComponent.cpp" />
@@ -49,10 +52,14 @@
     <ClCompile Include="Sources\Engine\TDelegate.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Game\InputActionBindings.h" />
+    <ClInclude Include="Sources\Game\ActionKeyMapping.h" />
+    <ClInclude Include="Sources\Game\InputActions.h" />
     <ClInclude Include="Sources\Game\EnemyTankCollisionHandlerComponent.h" />
     <ClInclude Include="Sources\Game\IColliderComponent.h" />
     <ClInclude Include="Sources\Game\DamageConfigComponent.h" />
     <ClInclude Include="Sources\Game\AttributeComponent.h" />
+    <ClInclude Include="Sources\Game\KeyState.h" />
     <ClInclude Include="Sources\Game\PlayerProjectileSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EnemyProjectileSpawnerComponent.h" />
     <ClInclude Include="Sources\Game\EnemyTankSpawnerComponent.h" />

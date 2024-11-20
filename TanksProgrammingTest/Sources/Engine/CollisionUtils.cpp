@@ -4,6 +4,8 @@
 // 
 // Released under the BSD License
 // ----------------------------------------------------------------
+#pragma warning(push)
+#pragma warning(disable : 4244)
 
 #include "CollisionUtils.h"
 
@@ -165,3 +167,5 @@ bool Intersect(const LineSegment& l, const AABB& b, float& outT,
 	//None of the intersections are within bounds of box
 	return false;
 }
+
+#pragma warning(pop)

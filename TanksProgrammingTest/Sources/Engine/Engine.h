@@ -7,6 +7,8 @@
 #include <string>
 #include "CollisionUtils.h"
 
+typedef unsigned char uint8;
+
 class CollisionWorld;
 class Scene;
 class ResourceManager;

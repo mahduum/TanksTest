@@ -2,6 +2,8 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
+#pragma warning(push)
+#pragma warning(disable : 4244)
 
 #pragma once
 #include <cmath>
@@ -408,6 +410,8 @@ public:
 	static const Vector2Int Left;
 	static const Vector2Int Up;
 };
+
+#pragma warning(pop)
 
 
 

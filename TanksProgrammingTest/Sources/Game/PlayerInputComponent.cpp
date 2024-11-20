@@ -7,6 +7,8 @@
 #include "MathLib.h"
 #include "PlayerProjectileSpawnerComponent.h"
 #include "magic_enum/magic_enum_all.hpp"
+#include "ActionKeyMapping.h"
+#include "InputActionBindings.h"
 
 PlayerInputComponent::PlayerInputComponent(Entity* Owner)
 	: EntityComponent(Owner)
@@ -22,6 +24,8 @@ void PlayerInputComponent::Initialize()
 {
 	m_ProjectileSpawnerComponent = GetOwner()->GetComponent<PlayerProjectileSpawnerComponent>();
 	m_BoxColliderComponent = GetOwner()->GetComponent<BoxColliderComponent>();
+
+	//todo initialize bindings
 }
 
 void PlayerInputComponent::Update(float DeltaTime)
@@ -75,11 +79,36 @@ void PlayerInputComponent::Update(float DeltaTime)
 		//4. Triggered delegates and triggered delegates this tick are emptied (they were filled with matching actions).
 		//5. Action value bindings are updated with current value (its used for dynamic binding and blueprints
 			
-	const Uint8* keystates = SDL_GetKeyboardState(NULL);//todo use this for continuous movement
+	const Uint8* keystates = SDL_GetKeyboardState(NULL);//bools true for pressed, false for not pressed
 
-	if (keystates[SDL_SCANCODE_UP]) {
-		//SDL_Log("Player input: UP is PRESSED");
+	/*for (auto keyCode : KeysPressedThisTick)
+	{
+
+	}*/
+
+	/*for (int i = 0; i < SDL_NUM_SCANCODES; ++i) {
+		if (keystates[i]) {
+			std::cout << "Key with scancode " << i << " is pressed." << std::endl;
+		}
+	}*/
+
+	//Evaluate Key map state
+	for (auto& pair : KeyStateMap)
+	{
+		bool currentState = keystates[pair.first];
+		pair.second.bDownPrevious = pair.second.bDown;
+		pair.second.bDown = currentState;
+		KeyDownPrevious.emplace(pair.first, pair.second.bDownPrevious);//todo check if I need to reset it first and reserve a new
 	}
+
+
+	//if (keystates[SDL_SCANCODE_UP])//for count use: SDL_NUM_SCANCODES
+	//{
+	//	//SDL_Log("Player input: UP is PRESSED");
+	//	//get to Keymaps and check for pressed keys and update bPrevious
+	//}
+
+	//if key is not in map, then it is not pressed, check this from Unreal: `enum EInputEvent : int`
 
 	for (const SDL_Event& Event : Events)
 	{
@@ -87,8 +116,9 @@ void PlayerInputComponent::Update(float DeltaTime)
 		{
 			//register key down, movement key down will only orient the player, key being pressed will move the player
 			//must bind scan code to delegate, use map with scan code
-			case (SDL_KEYDOWN):
+			case (SDL_KEYDOWN)://todo register any key that was pressed
 			{
+				//todo fill KeyMapStates:
 				switch (Event.key.keysym.scancode)
 				{
 					case SDL_SCANCODE_W :
@@ -115,11 +145,56 @@ void PlayerInputComponent::Update(float DeltaTime)
 				}
 			}
 		}
+
+		if (Event.type == SDL_KEYDOWN)//when to remove
+		{
+			SDL_Scancode keyCode = Event.key.keysym.scancode;
+			if (KeyDownPrevious.contains(keyCode) == false ||
+				KeyDownPrevious[keyCode] == false)
+			{
+				KeyState keyState;
+				keyState.bDown = true;
+				KeyStateMap.emplace(keyCode, keyState);//try find first, and check if emplace on top works
+			}
+			//add to keymap with values, copy (pressed previous frame) , held state
+		}
+		else if (Event.type == SDL_KEYUP)//dont need this, if the key is not bDown, but was bPrevious than it means that is was released
+		{
+
+		}
 	}
 
-	if (m_PressedKey.has_value()) {
+	//Evaluate delegates, iterate by
+	for (const auto& mapping : m_ActionKeyMappings)
+	{
+		auto keyCode = mapping.Key;
+		auto it = KeyStateMap.find(keyCode);
+		if (it == KeyStateMap.end()) {
+			continue;
+		}
+		auto keyState = it->second;
 
+		bool bKeyIsReleased = !keyState.bDown && keyState.bDownPrevious;
+		bool bKeyIsHeld = keyState.bDown && keyState.bDownPrevious;
+
+		KeyEventType keyEvent = bKeyIsHeld ? KeyEventType::Held
+			: (bKeyIsHeld || bKeyIsReleased) ? KeyEventType::Actuated
+			: KeyEventType::None;
+
+		ProcessActionMapping(mapping.Action, DeltaTime, keyEvent, keyState.bDown/*conversion*/);
 	}
+
+	//todo post tick processing of action instanced data
+	// ...
+	// 
+	/////For each input component (todo in the future):
+	// Evaluate action event bindings:
+	static std::vector<std::unique_ptr<InputActionEventBinding/*is like interface*/>> TriggeredDelegates;//clone delegates into it
+	//iterate over bindings:
+	// ...
+	// Evaluate action value bindings:
+	// ...
+	//this will be irrelevant:
 
 	if(PredictedDeltaX == 0 && PredictedDeltaY == 0)
 	{
@@ -149,10 +224,77 @@ void PlayerInputComponent::Update(float DeltaTime)
 	}
 }
 
+InputActionInstance& PlayerInputComponent::FindOrAddActionInstanceData(std::shared_ptr<const InputAction> InputAction)
+{
+	auto It = ActionInstanceData.find(InputAction);
+
+	if (It != ActionInstanceData.end())
+	{
+		return It->second;
+	}
+
+	return (ActionInstanceData.emplace(InputAction, InputActionInstance(InputAction))).first->second;
+}
+
 void PlayerInputComponent::Shoot() const
 {
 	if(auto ProjectileSpawner = m_ProjectileSpawnerComponent.lock())
 	{
 		ProjectileSpawner->DoSpawn();
 	}
+}
+
+//TODO must map this delegate, map each key to direction, also move to controller class!
+void PlayerInputComponent::Move(const InputActionValue<Vector2>& value) const//substitute for specializations of InputActionValue Get(), 
+{
+	const int Speed = 100;
+	auto delta = Speed / 30;
+
+	auto [PredictedDeltaX, PredictedDeltaY] = Vector2 (value.Get().x * delta, value.Get().y * delta);
+
+	if (PredictedDeltaX == 0 && PredictedDeltaY == 0)
+	{
+		return;
+	}
+
+	GetOwner()->SetTranslation(PredictedDeltaX, PredictedDeltaY);
+
+	Vector2Int BacktraceCollisionDelta(0, 0);
+
+	if (auto BoxCollider = m_BoxColliderComponent.lock())
+	{
+		BoxCollider->BacktraceCollisionsDelta(BacktraceCollisionDelta);
+	}
+
+	if (PredictedDeltaX != 0 && std::abs(BacktraceCollisionDelta.x) < std::abs(PredictedDeltaX))
+	{
+		//moved horizontally set rotation in x
+		GetOwner()->SetFacingDirection(PredictedDeltaX > 0 ? FacingDirection::Right : FacingDirection::Left);
+		GetOwner()->SetComponentsTransformDirty();//will update in entity update
+	}
+	else if (std::abs(BacktraceCollisionDelta.y) < std::abs(PredictedDeltaY))
+	{
+		//moved vertically set rotation in y
+		GetOwner()->SetFacingDirection(PredictedDeltaY > 0 ? FacingDirection::Down : FacingDirection::Up);
+		GetOwner()->SetComponentsTransformDirty();//will update in entity update
+	}
+}
+
+void PlayerInputComponent::ProcessActionMapping(const std::shared_ptr<const InputAction> Action, float DeltaTime, KeyEventType KeyEvent, InputActionValue<bool> RawActionValue)
+{
+	auto InstanceActionData = FindOrAddActionInstanceData(Action);
+
+	//todo add TriggerStateTracker for trigger states
+	//todo get action value type from actiondata.value.getvaluetype() for
+	if (KeyEvent != KeyEventType::None /*or should always trigger*/)
+	{
+		//todo apply modifiers to raw key value
+		InstanceActionData.Value = RawActionValue;//todo later set to modified
+
+		//TODO!!!!!!!!!
+		//for some reason trigger events are post tick
+		//use trigger state conversions from `GetTriggerStateChangeEvent`
+	}
+
+	//todo set trigger trackers
 }
